@@ -14,7 +14,7 @@ namespace Server
         {
             // Конфигурация и службы веб-API
             var cors = new EnableCorsAttribute(ConfigurationManager.AppSettings["origins"], "*", "*");
-            config.EnableCors();
+            config.EnableCors(cors);
 
             // Маршруты веб-API
             config.MapHttpAttributeRoutes();
