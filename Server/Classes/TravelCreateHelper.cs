@@ -149,12 +149,13 @@ namespace Server.Classes
         {
             // TODO: слишком большой метод
 
-            List<string> defaultCategoriesId = new List<string>() { "4", "5", "6" }; // кафе, ресторан, бар
+            List<string> eatingCategoriesId = new List<string>() { "4", "5", "6" }; // кафе, ресторан, бар
             int placeInDayCount = 5;    // сколько мест мы хотим посещать в день
             int filterCoefficient = 5;  // 1 / доля мест, которые подойдут по категориям
             int defaultLimit = 1000;    // максимум мест по-умолчанию
             decimal radius = 100m;      // радиус поиска в километрах
             int activeHourseCount = 8;  // сколько часов в сутках считаем активными
+            int hoursWithoutEating = 3; // сколько часов мы терпим и не едим
 
             if (parsed?.Result?.Valid != true)
                 return;
@@ -178,9 +179,11 @@ namespace Server.Classes
 
             List<NaviAddressInfo> filteredAddresses = new List<NaviAddressInfo>(addrInfoList);
             // берем выбранные категории + точки питания
-            var catIdList = parsed.Categories.Select(c => c.NaviId);
-            catIdList = catIdList.Union(defaultCategoriesId).Distinct();      // добавляем точки питания. TODO: Возможно, это надо делать позже
+            var catIdList = parsed.Categories.Select(c => c.NaviId).Distinct();
             filteredAddresses = addrInfoList.Where(x => x.Category != null && catIdList.ToList().Contains(x.Category.NaviId)).ToList();
+
+            List<NaviAddressInfo> eatingAddresses = new List<NaviAddressInfo>(addrInfoList);
+            eatingAddresses = addrInfoList.Where(x => x.Category != null && eatingCategoriesId.ToList().Contains(x.Category.NaviId)).ToList();
 
             int neededPlacesCount = daysCount * placeInDayCount;  // сколько мест надо выбрать
             filteredAddresses = filteredAddresses.OrderBy(x => CalcDistance(x, parsed.City)).Take(neededPlacesCount).ToList();            
@@ -189,6 +192,7 @@ namespace Server.Classes
 
             // получаем дополнительную информацию по адресам
             filteredAddresses = naviLoadHelper.LoadAdditionalInfoParallel(filteredAddresses);
+            eatingAddresses = naviLoadHelper.LoadAdditionalInfoParallel(eatingAddresses);       // TODO: грузить быстрее (только нужное)
 
             // мест может быть найдено меньше, поэтому перевычисляем
             neededPlacesCount = filteredAddresses.Count();
@@ -206,6 +210,7 @@ namespace Server.Classes
                     Travel = parsed.Travel
                 };
 
+                int lastEatHour = 0;    // когда ели последний раз
                 int tempHour = 9;
                 int tempOrder = 0;
 
@@ -218,29 +223,32 @@ namespace Server.Classes
                 }
 
                 var basePlace = filteredAddresses   // опорная точка на сегодня
-                    //.Where(x => x.Category !=     // может быть стоит исключить места питания?
                     .OrderBy(x => x.Latitude)
                     .FirstOrDefault();
 
                 if (basePlace != null)
                 {
-                    schedule.PlacePoint.Add(CreatePlacePoint(schedule, tempDate, tempHour, tempOrder++, basePlace));
-                    tempHour += hoursOnPlace;
-                    if (!filteredAddresses.Any())
-                        continue;
-                    filteredAddresses.Remove(basePlace);
-
-                    filteredAddresses = filteredAddresses.OrderBy(x => CalcDistance(x, basePlace)).ToList();
+                    filteredAddresses = filteredAddresses.OrderBy(x => CalcDistance(x, basePlace)).ToList(); // наверху должна оказаться сама базовая точка
                     for (int i = tempOrder; i <= placeInDayCount; i++)
                     {
+                        if (tempHour - lastEatHour >= hoursWithoutEating)
+                        {
+                            // пора поесть
+                            var eatNear = eatingAddresses.OrderBy(x => CalcDistance(x, filteredAddresses[0])).FirstOrDefault();
+                            if (eatNear != null)
+                            {
+                                schedule.PlacePoint.Add(CreatePlacePoint(schedule, tempDate, tempHour, tempOrder++, eatNear));
+                                tempHour++; // на еду час дадим
+                                lastEatHour = tempHour;
+                            }
+                        }
+
                         if (!filteredAddresses.Any())
                             break;
                         schedule.PlacePoint.Add(CreatePlacePoint(schedule, tempDate, tempHour, tempOrder++, filteredAddresses[0]));
                         tempHour += hoursOnPlace;
                         filteredAddresses.RemoveAt(0);
                     }
-
-                    // TODO: предполагаем, когда что работает, добавляем точки питания
                 }
 
                 if (tempDate < parsed.EndDate.Date) // не последний день - возвращаемся в гостиницу
@@ -252,6 +260,16 @@ namespace Server.Classes
             }
 
             parsed.Result.Schedules = new List<Schedule>(scheduleList);
+        }
+
+        private void Merge(NaviAddressInfo from, NaviAddressInfo to)
+        {
+            to.Id = from.Id;
+            to.Category = from.Category;
+            to.City = from.City;
+            to.Description = from.Description;
+            to.Name = from.Name;
+            to.Picture = from.Picture;
         }
 
         private PlacePoint CreatePlacePoint(Schedule schedule, DateTime tempDate, int hour, int order, NaviAddressInfo address)
