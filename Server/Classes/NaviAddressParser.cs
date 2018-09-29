@@ -67,6 +67,9 @@ namespace Server.Classes
                     addrInfo.SelfAddress = field.Value.Value<string>();
                     break;
                 case "name":
+                    addrInfo.Name = field.Value.Value<string>();
+                    break;
+                case "description":
                     addrInfo.Description = field.Value.Value<string>();
                     break;
                 case "image":

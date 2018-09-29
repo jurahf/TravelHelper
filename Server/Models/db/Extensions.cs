@@ -27,7 +27,7 @@ namespace Server.Models
     {
         public override string ToString()
         {
-            return $"[{ContainerAddress}]{SelfAddress} {Description}";
+            return $"[{ContainerAddress}]{SelfAddress} {Name}";
         }
     }
 

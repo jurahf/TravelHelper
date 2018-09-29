@@ -28,6 +28,7 @@ namespace Server.Models
         public decimal Longitude { get; set; }
         public string Picture { get; set; }
         public string Description { get; set; }
+        public string Name { get; set; }
 
         [JsonIgnore]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]

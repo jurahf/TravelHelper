@@ -258,7 +258,7 @@ namespace Server.Classes
         {
             return new PlacePoint()
             {
-                CustomName = address.Description,
+                CustomName = address.Name,
                 //Schedule = schedule,
                 NaviAddressInfo = address,
                 Order = order,

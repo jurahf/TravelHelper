@@ -39,6 +39,11 @@ textarea {
     top: 0;
 }*/
 
+img.cardImage {
+    max-width: 350px !important;
+    min-width: 350px;
+    max-height: 350px;
+}
 
 html, body {
     height: 100%;

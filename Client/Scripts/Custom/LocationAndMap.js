@@ -232,11 +232,39 @@ function initMapGoogle(lat, lng) {
         var point = pointsArr[i];
         if (point.Lat != 0 || point.Lng != null) {
             var point_location = new google.maps.LatLng(point.Lat, point.Lng);
-            var point_marker = AddMarker(point_location, point.Caption, getImageForPoint(point));
-            AddMarkerLabel(point_marker, point.Description);
+            var point_marker = AddMarker(point_location, point.Caption, getIconForPoint(point));
+            AddMarkerLabel(point_marker, point.Name);
+
+            point_marker.addListener('click', createMarkerMessage(point_marker, point));
         }
     }
 }
+
+function createMarkerMessage(marker, point) {
+    var contentString =
+        '<div id="content">' +
+            '<div id="siteNotice">' +
+            '</div>' +
+            '<h3 id="firstHeading" class="firstHeading">' + point.Name + '</h3>' +
+            '<div id="bodyContent">' +
+                '<img src="' + point.Picture + '" alt="' + point.Name + '" class="cardImage" />' +
+                '<p>' + point.Description + '</p>' +
+            '</div>' +
+        '</div>';
+
+    var infowindow = new google.maps.InfoWindow({
+        content: contentString
+        //, maxWidth:
+    });
+
+    //google.maps.event.addDomListener(document.getElementById('map'), 'click', function () { alert(infowindow); infowindow.close(); });
+
+    return function () {
+        infowindow.open(map, marker)
+    }
+}
+
+
 
 function initMapYandex(lat, lng) {
     // добавим саму карту
@@ -250,7 +278,7 @@ function initMapYandex(lat, lng) {
     // маркеры из текущего путешествия
 }
 
-function getImageForPoint(point) {
+function getIconForPoint(point) {
     // TODO: point.Category, уже посещенные
     return point.Today ? '/Images/marker-green-small.png' : '/Images/marker-disabled-small.png'
 }
