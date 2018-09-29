@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Server
 {
@@ -11,7 +13,7 @@ namespace Server
         public static void Register(HttpConfiguration config)
         {
             // Конфигурация и службы веб-API
-
+            var cors = new EnableCorsAttribute(ConfigurationManager.AppSettings["origins"], "*", "*");
             config.EnableCors();
 
             // Маршруты веб-API

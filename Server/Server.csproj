@@ -162,10 +162,6 @@
     <Content Include="index.html" />
     <Content Include="Models\db\1 - Insert categories.sql" />
     <Content Include="Models\db\2 - Insert cities.sql" />
-    <Content Include="Models\db\TravelHelperDatabase.mdf" />
-    <Content Include="Models\db\TravelHelperDatabase_log.ldf">
-      <DependentUpon>TravelHelperDatabase.mdf</DependentUpon>
-    </Content>
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Model1.Context.cs</LastGenOutput>

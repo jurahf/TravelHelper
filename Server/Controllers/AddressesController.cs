@@ -4,6 +4,7 @@ using Server.Classes;
 using Server.Models;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -13,13 +14,10 @@ using System.Web.Http.Cors;
 
 namespace Server.Controllers
 {
-    // TODO: адрес клиента из конфига
-    [EnableCors(origins: "http://localhost:2168", headers: "*", methods: "*")]
     public class AddressesController : ApiController
     {
         private DBWork data = new DBWork();
-        // TODO: из конфига
-        private string serviceUrl = "https://api.naviaddress.com/api/v1.5/";  // вроде там был еще какой-то тестовый
+        private string serviceUrl = ConfigurationManager.AppSettings["NaviApiAddress"];  // вроде там был еще какой-то тестовый
 
         [HttpGet]
         public List<NaviAddressInfo> SearchAddresses([FromUri]AddressSearchArgs args)

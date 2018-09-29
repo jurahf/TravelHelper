@@ -344,15 +344,15 @@
 <!-- яндекс.карты -->
 <!--<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>-->
 
+<script src="~/Scripts/Custom/ServerApiConfig.js"></script>
 <script src="~/Scripts/Custom/LocationAndMap.js"></script>
 <script src="~/Scripts/Custom/Autocomplete.js"></script>
 <script src="~/Scripts/Custom/MagicForTravelEditModal.js"></script>
 <script type="text/javascript">
     /*******************************************************************************************/
     function selectTravel(login, travelId) {
-        // todo: адрес из конфига
         var xmlHttp = new XMLHttpRequest(); // вообще-то json
-        xmlHttp.open("GET", "http://localhost:62012/api/Travel/SelectTravel?login=" + login + "&id=" + travelId, true); // false for synchronous request
+        xmlHttp.open("GET", selectTravelActionAddress + "?login=" + login + "&id=" + travelId, true); // false for synchronous request
         xmlHttp.onload = function () {
                 window.location.replace(currUrl);
         }

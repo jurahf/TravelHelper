@@ -3,9 +3,8 @@
 function getCountriesFunc(queryStr) {
     var cities = [];
 
-    // TODO: адрес сервера из конфига
     var xmlHttp = new XMLHttpRequest(); // вообще-то json
-    xmlHttp.open("GET", "http://localhost:62012/api/Addresses/SearchCity?querystr=" + queryStr + "&limit=10", false); // false for synchronous request
+    xmlHttp.open("GET", searchCityActionAddress + "?querystr=" + queryStr + "&limit=10", false); // false for synchronous request
     xmlHttp.send(null);
     var json = JSON.parse(xmlHttp.responseText);
     

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
@@ -8,7 +9,7 @@ namespace Client.Helpers
 {
     public static class HttpQueryHelper
     {
-        private const string serviceUrl = "http://localhost:62012";        // TODO: в конфиг, или DI
+        private static string serviceUrl = ConfigurationManager.AppSettings["ServerAddress"];
 
         public static HttpClient CreateHttpClient()
         {
