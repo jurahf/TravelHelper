@@ -1,0 +1,502 @@
+﻿@{
+    ViewBag.Title = "Домашняя";
+}
+@using Client.Models;
+
+
+<div>
+    <div id="map"></div>
+</div>
+
+
+@section tempTravel{
+    <a>
+        @{ 
+            Travel selectedTravel = ViewBag.SelectedTravel as Travel;
+            if (selectedTravel == null)
+            {
+                @:Путешествие не выбрано
+            }
+            else
+            {
+                @:@selectedTravel.Name
+            }
+        }
+    </a>
+}
+
+@section actionsLiElementClass {
+
+    @{
+        Travel selectedTravel = ViewBag.SelectedTravel as Travel;
+        if (selectedTravel == null)
+        {
+            @:action-disabled
+        }
+        else
+        {
+            @:
+        }
+    }
+}
+
+@section nextPointButton {
+    <a onclick="nextPoint();">Следующая точка</a>
+
+    @*<div class="btn-toolbar hidden-hover" role="toolbar" aria-label="">
+        <div class="btn-group mr-2" role="group" aria-label="Обновить">
+            <button type="button" class="btn btn-success">
+                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+            </button>
+        </div>
+        <div class="btn-group" role="group" aria-label="Скрыть">
+            <button type="button" class="btn btn-info">
+                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            </button>
+        </div>
+    </div>*@
+}
+
+@section scheduleButton {
+    <a data-toggle="modal" data-target="#schedule-modal">@ViewBag.ScheduleTitle</a>
+}
+
+@section anotherTravels {
+    <ul class="dropdown-menu">
+    @{
+        List<Travel> travelList = (List<Travel>)ViewBag.Travels;
+        if (travelList?.Any() == true)
+        {
+            foreach (var travel in travelList.OrderBy(x => x.StartDate))
+            {
+                <li><a onclick="selectTravel('@(((User)ViewBag.User).Login)', @(travel.Id));">@travel.Name</a></li>
+            }
+        }
+        else
+        {
+            <li><a href="#">Путешествия не добавлены</a></li>
+        }
+    }
+    </ul>
+}
+
+@section newTravelButton {
+    <a data-toggle="modal" data-target="#new-travel-modal">Новое путешествие</a>
+}
+
+<!-- модальное окно расписание на сегодня -->
+<div id="schedule-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">@ViewBag.ScheduleTitle</h4>
+            </div>
+
+            <div class="modal-body">
+                @{ Schedule schedule = (Schedule)ViewBag.Schedule; }
+
+                <table id="tableTempSchedule" class="table table-hover" value="@(schedule?.Id ?? 0)">
+                    <tbody>
+                        @{
+                        if (schedule?.PlacePoint?.Any() == true)
+                        {
+                            foreach (var point in schedule.PlacePoint.OrderBy(x => x.Order))
+                            {
+                    @:
+                        <tr id="rowTempShedule@(point.Id)" value="@(point.NaviAddressInfo == null ? "" : $"[{point.NaviAddressInfo.ContainerAddress}]{point.NaviAddressInfo.SelfAddress}")">
+                            <td class="marker-cell">
+                                @{
+                                    if (schedule.TempPoint == point.Order)
+                                    {
+                                        @: <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                                    }
+                                }
+                            </td>
+                            <td class="name-cell" value="@(point.CustomName)">@point.ToString()</td>
+                            <td class="time-cell" value="@(point.Time.ToString("yyyy-MM-ddTHH:mm:ss"))">@point.Time.ToString("HH:mm")</td>
+                            <td class="buttons-cell">
+                                <div class="btn-group" role="group">
+                                    <button type="button" onclick="rowUp('#tableTempSchedule', '#rowTempShedule@(point.Id)');" class="btn btn-default @(point.Order == 0 ? "disabled" : "")">
+                                        <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                                    </button>
+                                    <button type="button" onclick="rowDown('#tableTempSchedule', '#rowTempShedule@(point.Id)');" class="btn btn-default @(point.Order == schedule.PlacePoint.Count - 1 ? "disabled" : "")">
+                                        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" onclick="rowDelete('#tableTempSchedule', '#rowTempShedule@(point.Id)');" class="btn btn-default">
+                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                                            }
+                                        }
+                                    }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">
+                                <div class="btn-group" role="group">
+                                    <button onclick="rowAdd('#tableTempSchedule');" type="button" class="btn btn-success">
+                                        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <div class="modal-footer">
+                <div class="alert alert-danger hidden" role="alert" id="scheduleErrContainer">
+                    Произошла ошибка! <p id="scheduleErrText"></p>
+                </div>
+
+                <div id="scheduleProgress" class="progress hidden">
+                    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    </div>
+                </div>
+
+                <button type="button" onclick="rowsSave('#tableTempSchedule');" class="btn btn-success">Сохранить</button>
+            </div>
+        </div>
+    </div>
+</div> 
+
+<!-- Модальное окно "Новое путешествие" -->
+<div id="new-travel-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Новое путешествие</h4>
+            </div>
+            <div class="modal-body form-group has-feedback">
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="tabTravel">
+                        <!-- место -->
+                        <div class="row">
+                            <div class="col-lg-10 col-lg-offset-1">
+                                <!-- безболезненно заменить на label не получилось -->
+                                <!--
+                        -->
+                                <div class="autocomplete" id="city-container">
+                                    <span id="city-validation" class="glyphicon form-control-feedback"></span>
+                                    <input id="tbCity" type="text" name="tbCity" class="form-control" placeholder="Город">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row"><p>&nbsp;</p></div>
+
+                        <!-- время -->
+                        <div class="row">
+                            <div class="input-group input-daterange">
+                                <div class="col-lg-4 col-lg-offset-1" id="from-container">
+                                    <span id="from-validation" class="glyphicon form-control-feedback"></span>
+                                    <input type="text" class="form-control" id='date-range-start' placeholder="С">
+                                </div>
+                                <div class="col-lg-4 col-lg-offset-2 col-sm-offset-2 col-xs-offset-2 col-md-offset-2" id="to-container">
+                                    <span id="to-validation" class="glyphicon form-control-feedback"></span>
+                                    <input type="text" class="form-control" id='date-range-end' placeholder="по">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row"><p>&nbsp;</p></div>
+
+                        <!-- хочу посетить (категории) -->
+                        <div class="row">
+                            <div class="col-lg-10 col-lg-offset-1">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Хочу посетить</h5>
+                                        @{
+                                            List<Category> categories = ViewBag.Categories;
+                                            foreach (var bigCategory in categories.Where(x => x.Childs?.Any() == true).OrderBy(x => x.Id))
+                                            {
+                                                @:
+                                                <div class="panel-group choosing-group">
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                            <h4 class="panel-title">
+                                                                <a data-toggle="collapse" href="#category-@bigCategory.Id">@bigCategory.Name</a>
+                                                            </h4>
+                                                        </div>
+                                                        <div id="category-@bigCategory.Id" class="panel-collapse collapse">
+                                                            <ul class="list-group" id="categories-list">
+                                                                @{ foreach (var smallCategory in bigCategory.Childs.OrderBy(x => x.Name))
+                                                                    {
+                                                                        <li class="list-group-item">
+                                                                            <input class="form-check-input" value="@smallCategory.NaviId" type="checkbox" id="check-cat-@smallCategory.Id">
+                                                                            <label class="form-check-label" for="check-cat-@smallCategory.Id">
+                                                                                @smallCategory.Name
+                                                                            </label>
+                                                                        </li>
+                                                                    }
+                                                                }
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                                    }
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row"><p>&nbsp;</p></div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane" id="tabSchedule">
+                        <!-- доп. места (в том числе гостиница и вокзалы) -->
+                        <div class="row">
+                            <div class="col-lg-10 col-lg-offset-1">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="panel-group ">
+                                            <div class="panel panel-default">
+                                                <div class="panel-heading">
+                                                    <h4 class="panel-title">
+                                                        <a data-toggle="collapse" href="#additional-places">Дополнительные места</a>
+                                                    </h4>
+                                                </div>
+                                                <div id="additional-places" class="panel-collapse collapse">
+                                                    <ul class="list-group">
+                                                        <li class="list-group-item place-item">
+                                                            <div class="row">
+                                                                <div class="input-group">
+                                                                    <label for="hotel-place" value="Гостиница" class="place-name col-lg-2 col-md-2 col-sm-2 col-xs-2 col-form-label">Гостиница</label>
+                                                                    <div value="" class="col-lg-7 col-md-7 col-sm-7 col-xs-7">
+                                                                        <input type="text" class="form-control place-value" id="hotel-place">
+                                                                    </div>
+                                                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                                        <button class="btn btn-primary" type="button">На карте</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                        <li class="list-group-item">
+                                                            <button type="button" class="btn btn-success">
+                                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                                            </button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- расписания по дням -->
+                        <table class="table table-hover" id="generated-schedule">
+                            <tbody>
+
+                            </tbody>
+                            <tfoot>
+                                @*<tr>
+                                    <td colspan="4">
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="btn btn-success">
+                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>*@
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+
+            </div>  @*  modal body  *@
+            <div class="modal-footer">
+                <div class="alert alert-danger hidden" role="alert" id="travelErrContainer">
+                    Произошла ошибка! <p id="travelErrText"></p>
+                </div>
+
+                <div id="travelProgress" class="progress hidden">
+                    <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                    </div>
+                </div>
+                <button id="btnTravelForward" type="button" class="btn btn-default" onclick="preSaveTravel();">Далее</button>
+                <button id="btnTravelSave" type="button" class="btn btn-success disabled" onclick="saveTravel();">Сохранить</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
+            </div>
+        </div>
+    </div>
+</div>  
+<!-- конец модального окна "новое путешествие" -->
+
+
+
+@section scripts {
+
+<!-- google.maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu5nZKbeK-WHQ70oqOWo-_4VmwOwKP9YQ"></script>
+<!-- яндекс.карты -->
+<!--<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>-->
+
+<script src="~/Scripts/Custom/LocationAndMap.js"></script>
+<script src="~/Scripts/Custom/Autocomplete.js"></script>
+<script src="~/Scripts/Custom/MagicForTravelEditModal.js"></script>
+<script type="text/javascript">
+    /*******************************************************************************************/
+    function selectTravel(login, travelId) {
+        // todo: адрес из конфига
+        var xmlHttp = new XMLHttpRequest(); // вообще-то json
+        xmlHttp.open("GET", "http://localhost:62012/api/Travel/SelectTravel?login=" + login + "&id=" + travelId, true); // false for synchronous request
+        xmlHttp.onload = function () {
+                window.location.replace(currUrl);
+        }
+        xmlHttp.send(null);
+    }
+
+
+
+
+    /*********************** Автокомплит ******************************************************/
+    autocomplete(document.getElementById("tbCity"), getCountriesFunc);
+
+
+
+    /************************ Геолокация  и карта *****************************************************/
+    var pointsArr = [];   // точки для отображения на карте
+    var tempPointIndex = 0;
+    var minPointIndex = 0;
+    var maxPointIndex = 0;
+    var tripSetted = false;
+    var tempCity = {};
+
+    @{
+        Travel selectedTravel = ViewBag.SelectedTravel as Travel;
+        DateTime tempDate = schedule?.Date.Date ?? DateTime.Today;
+        if (selectedTravel?.Schedules != null)
+        {
+            int i = 0;
+            bool findMax = false;
+            foreach (var p in selectedTravel?.Schedules.SelectMany(s => s.PlacePoint).OrderBy(x => x.Time))
+            {
+                @:var point@(i) = {};
+                    @:point@(i).Lat = @(p.NaviAddressInfo?.Latitude.ToString().Replace(',', '.'));
+                    @:point@(i).Lng = @(p.NaviAddressInfo?.Longitude.ToString().Replace(',', '.'));
+                    @:point@(i).Category = '@(p.NaviAddressInfo?.Category?.Name)';
+                    @:point@(i).Caption = '@(p.CustomName)';
+                    @:point@(i).Description = '@(p.NaviAddressInfo?.Description)';
+                    @:point@(i).Today = @( p.Time.Date == tempDate ? "true" : "false" );
+                    @:pointsArr.push(point@(i));
+
+                if (p.Time.Date == tempDate && schedule.TempPoint == p.Order)
+                {
+                    @:tempPointIndex = @(i);
+                        @:minPointIndex = @(i);
+                    }
+
+                if (p.Time.Date > tempDate && !findMax)
+                {
+                    findMax = true;
+                    @:maxPointIndex = @(i - 1);
+                }
+
+                i++;
+            }
+        }
+
+        if (selectedTravel?.City != null)
+        {
+            @:tempCity.Lat = @(selectedTravel.City.Lat.ToString().Replace(',', '.'));
+            @:tempCity.Lng = @(selectedTravel.City.Lng.ToString().Replace(',', '.'));
+            @:tempCity.Name = '@(selectedTravel.City.Name)';
+            @:tempCity.Country = '@(selectedTravel.City.Country)';
+        }
+}
+
+    function InitMapWithParams() {
+        getGeolocationAndInitMap(pointsArr, tempCity);
+    }
+
+    function nextPoint() {
+        if (pointsArr[tempPointIndex]) {
+            if (tripSetted) { // маршрут уже проложен, по-умолчанию идем к следующей точке
+                moveTempPointIndex();
+                pointWasPassed();
+            }
+            else {
+                tripSetted = true;
+            }
+
+            var point = pointsArr[tempPointIndex];
+
+            while (point.Lat == 0) {    // костыль. вообще нулей быть не должно
+                moveTempPointIndex();
+                point = pointsArr[tempPointIndex];
+            }
+            pointWasPassed();
+
+            ShowTripTo(point.Lat, point.Lng);
+        }
+        // TODO: Как скрыть маршрут? Как обновить текущий маршрут?
+    }
+
+    function moveTempPointIndex() {
+        tempPointIndex++;
+
+        if (tempPointIndex > maxPointIndex) {
+            tempPointIndex = minPointIndex;
+        }
+    }
+
+    function pointWasPassed() {
+        // TODO: отправить запрос на сервер - надо отметить, что точка посещена
+        // данные брать из:
+        //var pointsArr = [];   // точки для отображения на карте
+        //var tempPointIndex = 0;
+    }
+
+
+     google.maps.event.addDomListener(window, 'load', InitMapWithParams);
+    //ymaps.ready(InitMapWithParams);
+
+    var currUrl = '@(Url.Action("Index", "Home", null, Request.Url.Scheme))';
+
+    /************************* Контролы ***************************************************************/
+    $(document).ready(function () {
+        $(function () {
+
+
+
+            initSettings(currUrl);
+
+            //$('.input-daterange input').each(function () {
+            //    $(this).datepicker('clearDates');
+            //});
+
+            $('.input-daterange').datepicker({
+                    format: 'dd.mm.yyyy',
+                autoclose: false,
+                language: 'ru',
+            });
+
+                //$('#date-range-start').datepicker({
+                //    format: 'dd.mm.yyyy',
+                //    autoclose: false,
+                //    language: 'ru',
+                //});
+                //$('#date-range-end').datepicker({
+                //    format: 'dd.mm.yyyy',
+                //    autoclose: false,
+                //    language: 'ru',
+                //});
+            });
+        });
+
+</script>
+
+}

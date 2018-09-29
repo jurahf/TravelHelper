@@ -1,0 +1,670 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="NaviTravelModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2012" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityContainer Name="NaviTravelModelStoreContainer">
+    <EntitySet Name="UserSet" EntityType="NaviTravelModel.Store.UserSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TravelSet" EntityType="NaviTravelModel.Store.TravelSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="ScheduleSet" EntityType="NaviTravelModel.Store.ScheduleSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="PlacePointSet" EntityType="NaviTravelModel.Store.PlacePointSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="CategorySet" EntityType="NaviTravelModel.Store.CategorySet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="NaviAddressInfoSet" EntityType="NaviTravelModel.Store.NaviAddressInfoSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="CitySet" EntityType="NaviTravelModel.Store.CitySet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="UserSettingsSet" EntityType="NaviTravelModel.Store.UserSettingsSet" store:Type="Tables" Schema="dbo" />
+    <EntitySet Name="TravelCategory" EntityType="NaviTravelModel.Store.TravelCategory" store:Type="Tables" Schema="dbo" />
+    <AssociationSet Name="UserTravel" Association="NaviTravelModel.Store.UserTravel">
+      <End Role="User" EntitySet="UserSet" />
+      <End Role="Travel" EntitySet="TravelSet" />
+    </AssociationSet>
+    <AssociationSet Name="TravelSchedule" Association="NaviTravelModel.Store.TravelSchedule">
+      <End Role="Travel" EntitySet="TravelSet" />
+      <End Role="Schedule" EntitySet="ScheduleSet" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelCategory_Travel" Association="NaviTravelModel.Store.FK_TravelCategory_Travel">
+      <End Role="Travel" EntitySet="TravelSet" />
+      <End Role="TravelCategory" EntitySet="TravelCategory" />
+    </AssociationSet>
+    <AssociationSet Name="FK_TravelCategory_Category" Association="NaviTravelModel.Store.FK_TravelCategory_Category">
+      <End Role="Category" EntitySet="CategorySet" />
+      <End Role="TravelCategory" EntitySet="TravelCategory" />
+    </AssociationSet>
+    <AssociationSet Name="SchedulePlacePoint" Association="NaviTravelModel.Store.SchedulePlacePoint">
+      <End Role="Schedule" EntitySet="ScheduleSet" />
+      <End Role="PlacePoint" EntitySet="PlacePointSet" />
+    </AssociationSet>
+    <AssociationSet Name="NaviAddressInfoPlacePoint" Association="NaviTravelModel.Store.NaviAddressInfoPlacePoint">
+      <End Role="NaviAddressInfo" EntitySet="NaviAddressInfoSet" />
+      <End Role="PlacePoint" EntitySet="PlacePointSet" />
+    </AssociationSet>
+    <AssociationSet Name="CategoryNaviAddressInfo" Association="NaviTravelModel.Store.CategoryNaviAddressInfo">
+      <End Role="Category" EntitySet="CategorySet" />
+      <End Role="NaviAddressInfo" EntitySet="NaviAddressInfoSet" />
+    </AssociationSet>
+    <AssociationSet Name="CategoryCategory" Association="NaviTravelModel.Store.CategoryCategory">
+      <End Role="Parent" EntitySet="CategorySet" />
+      <End Role="Childs" EntitySet="CategorySet" />
+    </AssociationSet>
+    <AssociationSet Name="CityTravel" Association="NaviTravelModel.Store.CityTravel">
+      <End Role="City" EntitySet="CitySet" />
+      <End Role="Travel" EntitySet="TravelSet" />
+    </AssociationSet>
+    <AssociationSet Name="CityNaviAddressInfo" Association="NaviTravelModel.Store.CityNaviAddressInfo">
+      <End Role="City" EntitySet="CitySet" />
+      <End Role="NaviAddressInfo" EntitySet="NaviAddressInfoSet" />
+    </AssociationSet>
+    <AssociationSet Name="UserSettingsUser" Association="NaviTravelModel.Store.UserSettingsUser">
+      <End Role="UserSettings" EntitySet="UserSettingsSet" />
+      <End Role="User" EntitySet="UserSet" />
+    </AssociationSet>
+  </EntityContainer>
+  <EntityType Name="UserSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Login" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="UserSettings_Id" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="TravelSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="StartDate" Type="datetime" Nullable="false" />
+    <Property Name="EndDate" Type="datetime" Nullable="false" />
+    <Property Name="User_Id" Type="int" Nullable="false" />
+    <Property Name="City_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ScheduleSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Date" Type="datetime" Nullable="false" />
+    <Property Name="TempPoint" Type="int" Nullable="false" />
+    <Property Name="Travel_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PlacePointSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Order" Type="int" Nullable="false" />
+    <Property Name="CustomName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Time" Type="datetime" Nullable="false" />
+    <Property Name="Schedule_Id" Type="int" Nullable="true" />
+    <Property Name="NaviAddressInfo_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="CategorySet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="NaviId" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Parent_Id" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="NaviAddressInfoSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="ContainerAddress" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="SelfAddress" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Latitude" Type="decimal" Nullable="false" Scale="10" />
+    <Property Name="Longitude" Type="decimal" Nullable="false" Scale="10" />
+    <Property Name="Picture" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Category_Id" Type="int" Nullable="true" />
+    <Property Name="City_Id" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="CitySet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Country" Type="nvarchar(max)" Nullable="true" />
+    <Property Name="Lat" Type="decimal" Nullable="false" Scale="10" />
+    <Property Name="Lng" Type="decimal" Nullable="false" Scale="10" />
+  </EntityType>
+  <EntityType Name="UserSettingsSet">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="SelectedTravelId" Type="int" Nullable="true" />
+  </EntityType>
+  <EntityType Name="TravelCategory">
+    <Key>
+      <PropertyRef Name="TravelCategory_Category_Id" />
+      <PropertyRef Name="Categories_Id" />
+    </Key>
+    <Property Name="TravelCategory_Category_Id" Type="int" Nullable="false" />
+    <Property Name="Categories_Id" Type="int" Nullable="false" />
+  </EntityType>
+  <Association Name="UserTravel">
+    <End Role="User" Type="NaviTravelModel.Store.UserSet" Multiplicity="1" />
+    <End Role="Travel" Type="NaviTravelModel.Store.TravelSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="User">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Travel">
+        <PropertyRef Name="User_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="TravelSchedule">
+    <End Role="Travel" Type="NaviTravelModel.Store.TravelSet" Multiplicity="1" />
+    <End Role="Schedule" Type="NaviTravelModel.Store.ScheduleSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Travel">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Schedule">
+        <PropertyRef Name="Travel_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="SchedulePlacePoint">
+    <End Role="Schedule" Type="NaviTravelModel.Store.ScheduleSet" Multiplicity="0..1" />
+    <End Role="PlacePoint" Type="NaviTravelModel.Store.PlacePointSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Schedule">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PlacePoint">
+        <PropertyRef Name="Schedule_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="NaviAddressInfoPlacePoint">
+    <End Role="NaviAddressInfo" Type="NaviTravelModel.Store.NaviAddressInfoSet" Multiplicity="1" />
+    <End Role="PlacePoint" Type="NaviTravelModel.Store.PlacePointSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NaviAddressInfo">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="PlacePoint">
+        <PropertyRef Name="NaviAddressInfo_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CategoryNaviAddressInfo">
+    <End Role="Category" Type="NaviTravelModel.Store.CategorySet" Multiplicity="0..1" />
+    <End Role="NaviAddressInfo" Type="NaviTravelModel.Store.NaviAddressInfoSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="NaviAddressInfo">
+        <PropertyRef Name="Category_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CategoryCategory">
+    <End Role="Parent" Type="NaviTravelModel.Store.CategorySet" Multiplicity="0..1" />
+    <End Role="Childs" Type="NaviTravelModel.Store.CategorySet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Parent">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Childs">
+        <PropertyRef Name="Parent_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CityTravel">
+    <End Role="City" Type="NaviTravelModel.Store.CitySet" Multiplicity="1" />
+    <End Role="Travel" Type="NaviTravelModel.Store.TravelSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="City">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="Travel">
+        <PropertyRef Name="City_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="CityNaviAddressInfo">
+    <End Role="City" Type="NaviTravelModel.Store.CitySet" Multiplicity="0..1" />
+    <End Role="NaviAddressInfo" Type="NaviTravelModel.Store.NaviAddressInfoSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="City">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="NaviAddressInfo">
+        <PropertyRef Name="City_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="UserSettingsUser">
+    <End Role="UserSettings" Type="NaviTravelModel.Store.UserSettingsSet" Multiplicity="0..1" />
+    <End Role="User" Type="NaviTravelModel.Store.UserSet" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="UserSettings">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="User">
+        <PropertyRef Name="UserSettings_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TravelCategory_Travel">
+    <End Role="Travel" Type="NaviTravelModel.Store.TravelSet" Multiplicity="1" />
+    <End Role="TravelCategory" Type="NaviTravelModel.Store.TravelCategory" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Travel">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TravelCategory">
+        <PropertyRef Name="TravelCategory_Category_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_TravelCategory_Category">
+    <End Role="TravelCategory" Type="NaviTravelModel.Store.TravelCategory" Multiplicity="*" />
+    <End Role="Category" Type="NaviTravelModel.Store.CategorySet" Multiplicity="1" />
+    <ReferentialConstraint>
+      <Principal Role="Category">
+        <PropertyRef Name="Id" />
+      </Principal>
+      <Dependent Role="TravelCategory">
+        <PropertyRef Name="Categories_Id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+</Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="NaviTravelModel" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
+        <EntityContainer Name="NaviTravelModelContainer" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="UserSet" EntityType="NaviTravelModel.User" />
+          <EntitySet Name="TravelSet" EntityType="NaviTravelModel.Travel" />
+          <EntitySet Name="ScheduleSet" EntityType="NaviTravelModel.Schedule" />
+          <EntitySet Name="PlacePointSet" EntityType="NaviTravelModel.PlacePoint" />
+          <EntitySet Name="CategorySet" EntityType="NaviTravelModel.Category" />
+          <EntitySet Name="NaviAddressInfoSet" EntityType="NaviTravelModel.NaviAddressInfo" />
+          <AssociationSet Name="UserTravel" Association="NaviTravelModel.UserTravel">
+            <End Role="User" EntitySet="UserSet" />
+            <End Role="Travel" EntitySet="TravelSet" />
+          </AssociationSet>
+          <AssociationSet Name="TravelSchedule" Association="NaviTravelModel.TravelSchedule">
+            <End Role="Travel" EntitySet="TravelSet" />
+            <End Role="Schedule" EntitySet="ScheduleSet" />
+          </AssociationSet>
+          <AssociationSet Name="TravelCategory" Association="NaviTravelModel.TravelCategory">
+            <End Role="Travel" EntitySet="TravelSet" />
+            <End Role="Category" EntitySet="CategorySet" />
+          </AssociationSet>
+          <AssociationSet Name="SchedulePlacePoint" Association="NaviTravelModel.SchedulePlacePoint">
+            <End Role="Schedule" EntitySet="ScheduleSet" />
+            <End Role="PlacePoint" EntitySet="PlacePointSet" />
+          </AssociationSet>
+          <AssociationSet Name="NaviAddressInfoPlacePoint" Association="NaviTravelModel.NaviAddressInfoPlacePoint">
+            <End Role="NaviAddressInfo" EntitySet="NaviAddressInfoSet" />
+            <End Role="PlacePoint" EntitySet="PlacePointSet" />
+          </AssociationSet>
+          <AssociationSet Name="CategoryNaviAddressInfo" Association="NaviTravelModel.CategoryNaviAddressInfo">
+            <End Role="Category" EntitySet="CategorySet" />
+            <End Role="NaviAddressInfo" EntitySet="NaviAddressInfoSet" />
+          </AssociationSet>
+          <AssociationSet Name="CategoryCategory" Association="NaviTravelModel.CategoryCategory">
+            <End Role="Parent" EntitySet="CategorySet" />
+            <End Role="Childs" EntitySet="CategorySet" />
+          </AssociationSet>
+          <EntitySet Name="CitySet" EntityType="NaviTravelModel.City" />
+          <AssociationSet Name="CityTravel" Association="NaviTravelModel.CityTravel">
+            <End Role="City" EntitySet="CitySet" />
+            <End Role="Travel" EntitySet="TravelSet" />
+          </AssociationSet>
+          <AssociationSet Name="CityNaviAddressInfo" Association="NaviTravelModel.CityNaviAddressInfo">
+            <End Role="City" EntitySet="CitySet" />
+            <End Role="NaviAddressInfo" EntitySet="NaviAddressInfoSet" />
+          </AssociationSet>
+          <EntitySet Name="UserSettingsSet" EntityType="NaviTravelModel.UserSettings" />
+          <AssociationSet Name="UserSettingsUser" Association="NaviTravelModel.UserSettingsUser">
+            <End Role="UserSettings" EntitySet="UserSettingsSet" />
+            <End Role="User" EntitySet="UserSet" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Login" Type="String" Nullable="false" />
+          <NavigationProperty Name="UserSettings" Relationship="NaviTravelModel.UserSettingsUser" FromRole="User" ToRole="UserSettings" />
+        </EntityType>
+        <EntityType Name="Travel">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="true" />
+          <Property Name="StartDate" Type="DateTime" Nullable="false" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="NaviTravelModel.UserTravel" FromRole="Travel" ToRole="User" />
+          <NavigationProperty Name="Schedules" Relationship="NaviTravelModel.TravelSchedule" FromRole="Travel" ToRole="Schedule" />
+          <NavigationProperty Name="Categories" Relationship="NaviTravelModel.TravelCategory" FromRole="Travel" ToRole="Category" />
+          <NavigationProperty Name="City" Relationship="NaviTravelModel.CityTravel" FromRole="Travel" ToRole="City" />
+        </EntityType>
+        <EntityType Name="Schedule">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Date" Type="DateTime" Nullable="false" />
+          <Property Name="TempPoint" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Travel" Relationship="NaviTravelModel.TravelSchedule" FromRole="Schedule" ToRole="Travel" />
+          <NavigationProperty Name="PlacePoint" Relationship="NaviTravelModel.SchedulePlacePoint" FromRole="Schedule" ToRole="PlacePoint" />
+        </EntityType>
+        <EntityType Name="PlacePoint">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Order" Type="Int32" Nullable="false" />
+          <Property Name="CustomName" Type="String" Nullable="false" />
+          <Property Name="Time" Type="DateTime" Nullable="false" />
+          <NavigationProperty Name="Schedule" Relationship="NaviTravelModel.SchedulePlacePoint" FromRole="PlacePoint" ToRole="Schedule" />
+          <NavigationProperty Name="NaviAddressInfo" Relationship="NaviTravelModel.NaviAddressInfoPlacePoint" FromRole="PlacePoint" ToRole="NaviAddressInfo" />
+        </EntityType>
+        <EntityType Name="Category">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="NaviId" Type="String" Nullable="true" />
+          <NavigationProperty Name="Parent" Relationship="NaviTravelModel.CategoryCategory" FromRole="Childs" ToRole="Parent" />
+          </EntityType>
+        <EntityType Name="NaviAddressInfo">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ContainerAddress" Type="String" Nullable="true" />
+          <Property Name="SelfAddress" Type="String" Nullable="true" />
+          <Property Name="Latitude" Type="Decimal" Nullable="false" Scale="10" />
+          <Property Name="Longitude" Type="Decimal" Nullable="false" Scale="10" />
+          <Property Name="Picture" Type="String" Nullable="true" />
+          <Property Name="Description" Type="String" Nullable="true" />
+          <NavigationProperty Name="PlacePoint" Relationship="NaviTravelModel.NaviAddressInfoPlacePoint" FromRole="NaviAddressInfo" ToRole="PlacePoint" />
+          <NavigationProperty Name="Category" Relationship="NaviTravelModel.CategoryNaviAddressInfo" FromRole="NaviAddressInfo" ToRole="Category" />
+          <NavigationProperty Name="City" Relationship="NaviTravelModel.CityNaviAddressInfo" FromRole="NaviAddressInfo" ToRole="City" />
+        </EntityType>
+        <Association Name="UserTravel">
+          <End Type="NaviTravelModel.User" Role="User" Multiplicity="1" />
+          <End Type="NaviTravelModel.Travel" Role="Travel" Multiplicity="*" />
+        </Association>
+        <Association Name="TravelSchedule">
+          <End Type="NaviTravelModel.Travel" Role="Travel" Multiplicity="1" />
+          <End Type="NaviTravelModel.Schedule" Role="Schedule" Multiplicity="*" />
+        </Association>
+        <Association Name="TravelCategory">
+          <End Type="NaviTravelModel.Travel" Role="Travel" Multiplicity="*" />
+          <End Type="NaviTravelModel.Category" Role="Category" Multiplicity="*" />
+        </Association>
+        <Association Name="SchedulePlacePoint">
+          <End Type="NaviTravelModel.Schedule" Role="Schedule" Multiplicity="0..1" />
+          <End Type="NaviTravelModel.PlacePoint" Role="PlacePoint" Multiplicity="*" />
+        </Association>
+        <Association Name="NaviAddressInfoPlacePoint">
+          <End Type="NaviTravelModel.NaviAddressInfo" Role="NaviAddressInfo" Multiplicity="1" />
+          <End Type="NaviTravelModel.PlacePoint" Role="PlacePoint" Multiplicity="*" />
+        </Association>
+        <Association Name="CategoryNaviAddressInfo">
+          <End Type="NaviTravelModel.Category" Role="Category" Multiplicity="0..1" />
+          <End Type="NaviTravelModel.NaviAddressInfo" Role="NaviAddressInfo" Multiplicity="*" />
+        </Association>
+        <Association Name="CategoryCategory">
+          <End Type="NaviTravelModel.Category" Role="Parent" Multiplicity="0..1" />
+          <End Type="NaviTravelModel.Category" Role="Childs" Multiplicity="*" />
+        </Association>
+        <EntityType Name="City">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" />
+          <Property Name="Country" Type="String" Nullable="true" />
+          <Property Name="Lat" Type="Decimal" Nullable="false" Scale="10" />
+          <Property Name="Lng" Type="Decimal" Nullable="false" Scale="10" />
+        </EntityType>
+        <Association Name="CityTravel">
+          <End Type="NaviTravelModel.City" Role="City" Multiplicity="1" />
+          <End Type="NaviTravelModel.Travel" Role="Travel" Multiplicity="*" />
+        </Association>
+        <Association Name="CityNaviAddressInfo">
+          <End Type="NaviTravelModel.City" Role="City" Multiplicity="0..1" />
+          <End Type="NaviTravelModel.NaviAddressInfo" Role="NaviAddressInfo" Multiplicity="*" />
+        </Association>
+        <EntityType Name="UserSettings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SelectedTravelId" Type="Int32" Nullable="true" />
+        </EntityType>
+        <Association Name="UserSettingsUser">
+          <End Type="NaviTravelModel.UserSettings" Role="UserSettings" Multiplicity="0..1" />
+          <End Type="NaviTravelModel.User" Role="User" Multiplicity="*" />
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+    <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="NaviTravelModelStoreContainer" CdmEntityContainer="NaviTravelModelContainer">
+    <EntitySetMapping Name="UserSet">
+      <EntityTypeMapping TypeName="IsTypeOf(NaviTravelModel.User)">
+        <MappingFragment StoreEntitySet="UserSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Login" ColumnName="Login" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TravelSet">
+      <EntityTypeMapping TypeName="IsTypeOf(NaviTravelModel.Travel)">
+        <MappingFragment StoreEntitySet="TravelSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+          <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ScheduleSet">
+      <EntityTypeMapping TypeName="IsTypeOf(NaviTravelModel.Schedule)">
+        <MappingFragment StoreEntitySet="ScheduleSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Date" ColumnName="Date" />
+          <ScalarProperty Name="TempPoint" ColumnName="TempPoint" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PlacePointSet">
+      <EntityTypeMapping TypeName="IsTypeOf(NaviTravelModel.PlacePoint)">
+        <MappingFragment StoreEntitySet="PlacePointSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Order" ColumnName="Order" />
+          <ScalarProperty Name="CustomName" ColumnName="CustomName" />
+          <ScalarProperty Name="Time" ColumnName="Time" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CategorySet">
+      <EntityTypeMapping TypeName="IsTypeOf(NaviTravelModel.Category)">
+        <MappingFragment StoreEntitySet="CategorySet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="NaviId" ColumnName="NaviId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="NaviAddressInfoSet">
+      <EntityTypeMapping TypeName="IsTypeOf(NaviTravelModel.NaviAddressInfo)">
+        <MappingFragment StoreEntitySet="NaviAddressInfoSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="ContainerAddress" ColumnName="ContainerAddress" />
+          <ScalarProperty Name="SelfAddress" ColumnName="SelfAddress" />
+          <ScalarProperty Name="Latitude" ColumnName="Latitude" />
+          <ScalarProperty Name="Longitude" ColumnName="Longitude" />
+          <ScalarProperty Name="Picture" ColumnName="Picture" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CitySet">
+      <EntityTypeMapping TypeName="IsTypeOf(NaviTravelModel.City)">
+        <MappingFragment StoreEntitySet="CitySet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Country" ColumnName="Country" />
+          <ScalarProperty Name="Lat" ColumnName="Lat" />
+          <ScalarProperty Name="Lng" ColumnName="Lng" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserSettingsSet">
+      <EntityTypeMapping TypeName="IsTypeOf(NaviTravelModel.UserSettings)">
+        <MappingFragment StoreEntitySet="UserSettingsSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="SelectedTravelId" ColumnName="SelectedTravelId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="UserTravel" TypeName="NaviTravelModel.UserTravel" StoreEntitySet="TravelSet">
+      <EndProperty Name="User">
+        <ScalarProperty Name="Id" ColumnName="User_Id" />
+      </EndProperty>
+      <EndProperty Name="Travel">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TravelSchedule" TypeName="NaviTravelModel.TravelSchedule" StoreEntitySet="ScheduleSet">
+      <EndProperty Name="Travel">
+        <ScalarProperty Name="Id" ColumnName="Travel_Id" />
+      </EndProperty>
+      <EndProperty Name="Schedule">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TravelCategory" TypeName="NaviTravelModel.TravelCategory" StoreEntitySet="TravelCategory">
+      <EndProperty Name="Travel">
+        <ScalarProperty Name="Id" ColumnName="TravelCategory_Category_Id" />
+      </EndProperty>
+      <EndProperty Name="Category">
+        <ScalarProperty Name="Id" ColumnName="Categories_Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="SchedulePlacePoint" TypeName="NaviTravelModel.SchedulePlacePoint" StoreEntitySet="PlacePointSet">
+      <EndProperty Name="Schedule">
+        <ScalarProperty Name="Id" ColumnName="Schedule_Id" />
+      </EndProperty>
+      <EndProperty Name="PlacePoint">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+      <Condition ColumnName="Schedule_Id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="NaviAddressInfoPlacePoint" TypeName="NaviTravelModel.NaviAddressInfoPlacePoint" StoreEntitySet="PlacePointSet">
+      <EndProperty Name="NaviAddressInfo">
+        <ScalarProperty Name="Id" ColumnName="NaviAddressInfo_Id" />
+      </EndProperty>
+      <EndProperty Name="PlacePoint">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="CategoryNaviAddressInfo" TypeName="NaviTravelModel.CategoryNaviAddressInfo" StoreEntitySet="NaviAddressInfoSet">
+      <EndProperty Name="Category">
+        <ScalarProperty Name="Id" ColumnName="Category_Id" />
+      </EndProperty>
+      <EndProperty Name="NaviAddressInfo">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+      <Condition ColumnName="Category_Id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="CategoryCategory" TypeName="NaviTravelModel.CategoryCategory" StoreEntitySet="CategorySet">
+      <EndProperty Name="Parent">
+        <ScalarProperty Name="Id" ColumnName="Parent_Id" />
+      </EndProperty>
+      <EndProperty Name="Childs">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+      <Condition ColumnName="Parent_Id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="CityTravel" TypeName="NaviTravelModel.CityTravel" StoreEntitySet="TravelSet">
+      <EndProperty Name="City">
+        <ScalarProperty Name="Id" ColumnName="City_Id" />
+      </EndProperty>
+      <EndProperty Name="Travel">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="CityNaviAddressInfo" TypeName="NaviTravelModel.CityNaviAddressInfo" StoreEntitySet="NaviAddressInfoSet">
+      <EndProperty Name="City">
+        <ScalarProperty Name="Id" ColumnName="City_Id" />
+      </EndProperty>
+      <EndProperty Name="NaviAddressInfo">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+      <Condition ColumnName="City_Id" IsNull="false" />
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="UserSettingsUser" TypeName="NaviTravelModel.UserSettingsUser" StoreEntitySet="UserSet">
+      <EndProperty Name="UserSettings">
+        <ScalarProperty Name="Id" ColumnName="UserSettings_Id" />
+      </EndProperty>
+      <EndProperty Name="User">
+        <ScalarProperty Name="Id" ColumnName="Id" />
+      </EndProperty>
+      <Condition ColumnName="UserSettings_Id" IsNull="false" />
+    </AssociationSetMapping>
+  </EntityContainerMapping>
+</Mapping></edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <edmx:Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </edmx:Connection>
+    <edmx:Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="Нет" />
+        <DesignerProperty Name="UseLegacyProvider" Value="False" />
+      </DesignerInfoPropertySet>
+    </edmx:Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="ead0cecba55d43a4bc54a741414b0a7d" Name="Diagram1">
+        <EntityTypeShape EntityType="NaviTravelModel.User" Width="1.5" PointX="3" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="NaviTravelModel.Travel" Width="1.5" PointX="5.25" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="NaviTravelModel.Schedule" Width="1.5" PointX="7.5" PointY="2.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="NaviTravelModel.PlacePoint" Width="1.5" PointX="3" PointY="3.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="NaviTravelModel.Category" Width="1.5" PointX="7.5" PointY="4.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="NaviTravelModel.NaviAddressInfo" Width="1.5" PointX="0.75" PointY="3.25" IsExpanded="true" />
+        <AssociationConnector Association="NaviTravelModel.UserTravel" ManuallyRouted="false" />
+        <AssociationConnector Association="NaviTravelModel.TravelSchedule" ManuallyRouted="false" />
+        <AssociationConnector Association="NaviTravelModel.TravelCategory" ManuallyRouted="false" />
+        <AssociationConnector Association="NaviTravelModel.SchedulePlacePoint" ManuallyRouted="false" />
+        <AssociationConnector Association="NaviTravelModel.NaviAddressInfoPlacePoint" ManuallyRouted="false" />
+        <AssociationConnector Association="NaviTravelModel.CategoryNaviAddressInfo" />
+        <AssociationConnector Association="NaviTravelModel.CategoryCategory" />
+        <EntityTypeShape EntityType="NaviTravelModel.City" Width="1.5" PointX="5.25" PointY="6.625" />
+        <AssociationConnector Association="NaviTravelModel.CityTravel" />
+        <AssociationConnector Association="NaviTravelModel.CityNaviAddressInfo" />
+        <EntityTypeShape EntityType="NaviTravelModel.UserSettings" Width="1.5" PointX="0.5" PointY="0.75" />
+        <AssociationConnector Association="NaviTravelModel.UserSettingsUser" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

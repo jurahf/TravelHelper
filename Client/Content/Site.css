@@ -1,0 +1,141 @@
+﻿/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+.nav li {
+    text-transform: uppercase;
+}
+
+.padding-bottom15 {
+    padding-bottom: 15px;
+}
+
+.navbar-fixed-left,
+.navbar-fixed-right {
+    min-width: 250px;
+}
+
+/*.map-container {
+    height: 100%;
+    width: 100%;
+    left: 0;
+    position: relative;
+    top: 0;
+}*/
+
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.content-container, .content-container > div, .content-container > div #map {
+    height: inherit;
+}
+
+.content-container {
+    padding-left: 0px;
+    padding-top: 98px;
+}
+
+@media (min-width: 768px) {
+  .content-container {
+    padding-left: 250px;
+    padding-top: 0px;
+  }
+}
+
+.action-disabled .btn {
+    cursor: not-allowed;
+    opacity: 0.65;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+
+.choosing-group,
+.panel-group.choosing-group{
+    margin: 0;
+}
+
+.hidden-hover-container .hidden-hover {
+    display: none;
+}
+
+.hidden-hover-container:hover .hidden-hover {
+    display: block;
+}
+
+/************************* Для автокомплита ********************************************************/
+/** { box-sizing: border-box; }
+body {
+  font: 16px Arial; 
+}
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+}*/
+.autocomplete {
+  /*the container must be positioned relative:*/
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+.autocomplete input {
+    width: 100%;
+    margin: 0;
+    max-width: none;
+}
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+.autocomplete-items div:hover {
+  /*when hovering an item:*/
+  background-color: #e9e9e9; 
+}
+.autocomplete-active {
+  /*when navigating through the items using the arrow keys:*/
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
+}
+/*********************************************************************************/
