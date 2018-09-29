@@ -1015,7 +1015,10 @@ INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region]
 	(997, 'Cameroon', 'South Province', 'Kribi', 'Камерун', 'Юг', 'Криби', '2.9405941', '9.9101915', 55224),
 	(998, 'Cameroon', 'Far North', 'Kousseri', 'Камерун', 'Крайнесеверный регион', 'Куссери', '12.087083', '15.0148322', 435547),
 	(999, 'Cameroon', 'North Province', 'Guider', 'Камерун', 'Северный', 'Гиде', '9.9256779', '13.9434035', 84647),
-	(1000, 'Cameroon', 'North Province', 'Garoua', 'Камерун', 'Северный', 'Гаруа', '9.3226016', '13.393389', 436899),
+	(1000, 'Cameroon', 'North Province', 'Garoua', 'Камерун', 'Северный', 'Гаруа', '9.3226016', '13.393389', 436899);
+	GO
+
+INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region], [city], [lat], [lng], [population]) VALUES
 	(1001, 'Cameroon', 'West', 'Foumbot', 'Камерун', 'Запад', 'Фумбо', '5.5028937', '10.6365483', 84065),
 	(1002, 'Cameroon', 'West', 'Foumban', 'Камерун', 'Запад', 'Фумбан', '5.7204203', '10.901604', 92673),
 	(1003, 'Cameroon', 'Littoral', 'Edea', 'Камерун', 'Литторал', 'Эдеа', '3.7953482', '10.1367166', 203149),
@@ -2015,7 +2018,10 @@ INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region]
 	(1997, 'Germany', 'Lower Saxony', 'Osnabrueck', 'Германия', 'Нижняя Саксония', 'Оснабрюк', '52.2799112', '8.0471788', 166462),
 	(1998, 'Germany', 'Lower Saxony', 'Oldenburg', 'Германия', 'Нижняя Саксония', 'Ольденбург', '53.1434501', '8.2145521', 159218),
 	(1999, 'Germany', 'Baden-Wuerttemberg', 'Offenburg', 'Германия', 'Баден-Вюртемберг', 'Оффенбург', '48.473451', '7.9498017', 59238),
-	(2000, 'Germany', 'Hesse', 'Offenbach', 'Германия', 'Гессен', 'Оффенбах', '50.0956362', '8.7760843', 119192),
+	(2000, 'Germany', 'Hesse', 'Offenbach', 'Германия', 'Гессен', 'Оффенбах', '50.0956362', '8.7760843', 119192);
+	GO
+
+INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region], [city], [lat], [lng], [population]) VALUES
 	(2001, 'Germany', 'North Rhine-Westphalia', 'Oberhausen', 'Германия', 'Северный Рейн-Вестфалия', 'Оберхаузен', '51.4963341', '6.8637765', 219176),
 	(2002, 'Germany', 'Bavaria', 'Nuernberg', 'Германия', 'Бавария', 'Нюрнберг', '49.45203', '11.07675', 499237),
 	(2003, 'Germany', 'Lower Saxony', 'Nordhorn', 'Германия', 'Нижняя Саксония', 'Нордхорн', '52.4295801', '7.0685708', 52803),
@@ -3015,7 +3021,10 @@ INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region]
 	(2997, 'Honduras', 'Yoro', 'El Progreso', 'Гондурас', 'Йоро', 'Эль-Прогресо', '15.3843415', '-87.8058402', 100810),
 	(2998, 'Honduras', 'Comayagua', 'Comayagua', 'Гондурас', 'Камаягуа', 'Комаягуа', '14.4490149', '-87.6482474', 58784),
 	(2999, 'Honduras', 'Choluteca', 'Ciudad Choluteca', 'Гондурас', 'Чолутека', 'Чолутека', '13.3198572', '-87.1622344', 75872),
-	(3000, 'Honduras', 'Cortes', 'Choloma', 'Гондурас', 'Кортес', 'Чолома', '15.596502', '-87.9432837', 139100),
+	(3000, 'Honduras', 'Cortes', 'Choloma', 'Гондурас', 'Кортес', 'Чолома', '15.596502', '-87.9432837', 139100);
+	GO
+
+INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region], [city], [lat], [lng], [population]) VALUES
 	(3001, 'Croatia', 'Grad Zagreb', 'Zagreb', 'Хорватия', 'Загреб Сити', 'Загреб', '45.8150108', '15.981919', 698966),
 	(3002, 'Croatia', 'Zadarska', 'Zadar', 'Хорватия', 'Задарский округ', 'Задар', '44.119371', '15.2313648', 71258),
 	(3003, 'Croatia', 'Splitsko-Dalmatinska', 'Split', 'Хорватия', 'Сплитско-Далматинская', 'Сплит', '43.5081323', '16.4401935', 176314),
@@ -4015,7 +4024,10 @@ INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region]
 	(3997, 'India', 'Andhra Pradesh', 'Bobbili', 'Индия', 'Андхра Прадеш', 'Боббили', '18.5735047', '83.3583654', 52843),
 	(3998, 'India', 'Uttar Pradesh', 'Biswan', 'Индия', 'Уттар Прадеш', 'Бисуон', '27.4937578', '80.9964806', 52516),
 	(3999, 'India', 'West Bengal', 'Bishnupur', 'Индия', 'West Bengal', 'Bishnupur', '23.0738', '87.31991', 64041),
-	(4000, 'India', 'Uttar Pradesh', 'Bisalpur', 'Индия', 'Уттар Прадеш', 'Бисалпер', '28.2937839', '79.804459', 68355),
+	(4000, 'India', 'Uttar Pradesh', 'Bisalpur', 'Индия', 'Уттар Прадеш', 'Бисалпер', '28.2937839', '79.804459', 68355);
+	GO
+
+INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region], [city], [lat], [lng], [population]) VALUES
 	(4001, 'India', 'Madhya Pradesh', 'Etawa', 'Индия', 'Мадхья-Прадеш', 'Этава', '24.2155069', '78.2105857', 55185),
 	(4002, 'India', 'Gujarat', 'Bilimora', 'Индия', 'Гуджарат', 'Билимора', '20.7690264', '72.9777738', 510879),
 	(4003, 'India', 'Chhattisgarh', 'Bilaspur', 'Индия', 'Чхаттисгарх', 'Биласпур', '22.0796251', '82.1391412', 282705),
@@ -5015,7 +5027,10 @@ INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region]
 	(4997, 'Kazakhstan', 'East Kazakhstan', 'Ust-Kamenogorsk', 'Казахстан', 'Восточно-Казахстанская область', 'Усть-Каменогорск', '49.9749295', '82.6017244', 319067),
 	(4998, 'Kazakhstan', 'Bayqongyr Qalasy', 'Baykonyr', 'Казахстан', 'Bayqongyr Qalasy', 'Байконур', '45.6232258', '63.3139829', 70000),
 	(4999, 'Kazakhstan', 'East Kazakhstan', 'Ridder', 'Казахстан', 'Восточно-Казахстанская область', 'Риддер', '50.3382214', '83.5062548', 52664),
-	(5000, 'Kazakhstan', 'Aqmola', 'Kokshetau', 'Казахстан', 'Акмолинская область', 'Кокшетау', '53.2948229', '69.4047872', 124444),
+	(5000, 'Kazakhstan', 'Aqmola', 'Kokshetau', 'Казахстан', 'Акмолинская область', 'Кокшетау', '53.2948229', '69.4047872', 124444);
+	GO
+
+INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region], [city], [lat], [lng], [population]) VALUES
 	(5001, 'Kazakhstan', 'Ongtustik Qazaqstan', 'Kentau', 'Казахстан', 'Южно-Казахстанская область', 'Кентау', '43.5161759', '68.5090257', 57408),
 	(5002, 'Kazakhstan', 'Pavlodar', 'Ekibastuz', 'Казахстан', 'Павлодарская область', 'Экибастуз', '51.725198', '75.3150684', 121470),
 	(5003, 'Kazakhstan', 'Qaraghandy', 'Balqash', 'Казахстан', 'Карагандинская область', 'Балхаш', '46.8435126', '74.9809805', 81364),
@@ -6015,7 +6030,10 @@ INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region]
 	(5997, 'Philippines', 'Central Luzon', 'Arayat', 'Филиппины', 'Центральный Лусон', 'Арайят', '15.1649828', '120.780348', 87987),
 	(5998, 'Philippines', 'Central Luzon', 'Apalit', 'Филиппины', 'Central Luzon', 'Apalit', '14.9601027', '120.792458', 77418),
 	(5999, 'Philippines', 'Calabarzon', 'Antipolo', 'Филиппины', 'КАЛАБАРСОН', 'Антиполо', '14.6254827', '121.1244847', 549543),
-	(6000, 'Philippines', 'Calabarzon', 'Angono', 'Филиппины', 'КАЛАБАРСОН', 'Ангоно', '14.5457372', '121.1767658', 87199),
+	(6000, 'Philippines', 'Calabarzon', 'Angono', 'Филиппины', 'КАЛАБАРСОН', 'Ангоно', '14.5457372', '121.1767658', 87199);
+	GO
+
+INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region], [city], [lat], [lng], [population]) VALUES
 	(6001, 'Philippines', 'Central Luzon', 'Angeles City', 'Филиппины', 'Центральный Лусон', 'Анхелес', '15.1449853', '120.5887029', 299391),
 	(6002, 'Philippines', 'Soccsksargen', 'Malingao', 'Филиппины', 'Soccsksargen', 'Malingao', '7.16083', '124.475', 1121974),
 	(6003, 'Philippines', 'Metro Manila', 'Pasig City', 'Филиппины', 'Столичный регион', 'Пасиг', '14.5763768', '121.0851097', 617301),
@@ -7015,7 +7033,10 @@ INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region]
 	(6997, 'Turkey', 'Diyarbakir', 'Silvan', 'Турция', 'Diyarbakır', 'Silvan', '38.141225', '41.012807', 65956),
 	(6998, 'Turkey', 'Sirnak', 'Silopi', 'Турция', 'Şırnak', 'Silopi', '37.2487', '42.4713', 74798),
 	(6999, 'Turkey', 'Mersin', 'Silifke', 'Турция', 'Mersin', 'Silifke', '36.37633', '33.925311', 75315),
-	(7000, 'Turkey', 'Siirt', 'Siirt', 'Турция', 'Siirt', 'Siirt', '37.927404', '41.941978', 114034),
+	(7000, 'Turkey', 'Siirt', 'Siirt', 'Турция', 'Siirt', 'Siirt', '37.927404', '41.941978', 114034);
+	GO
+
+INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region], [city], [lat], [lng], [population]) VALUES
 	(7001, 'Turkey', 'Konya', 'Seydisehir', 'Турция', 'Konya', 'Seydişehir', '37.41926', '31.848216', 51089),
 	(7002, 'Turkey', 'Manisa', 'Salihli', 'Турция', 'Manisa', 'Salihli', '38.487074', '28.138052', 88906),
 	(7003, 'Turkey', 'Hatay', 'Reyhanli', 'Турция', 'Hatay', 'Reyhanlı', '36.268523', '36.567593', 56995),
@@ -8015,7 +8036,10 @@ INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region]
 	(7997, 'United States', 'California', 'Santa Clara', 'Соединенные Штаты Америки', 'Калифорния', 'Санта-Клара', '37.3541079', '-121.9552356', 116468),
 	(7998, 'United States', 'California', 'Santa Clarita', 'Соединенные Штаты Америки', 'Калифорния', 'Санта-Кларита', '34.3916641', '-118.542586', 176320),
 	(7999, 'United States', 'California', 'Santa Cruz', 'Соединенные Штаты Америки', 'Калифорния', 'Санта-Круз', '36.9741171', '-122.0307963', 59946),
-	(8000, 'United States', 'California', 'Santa Maria', 'Соединенные Штаты Америки', 'Калифорния', 'Санта-Мария', '34.9530337', '-120.4357191', 99553),
+	(8000, 'United States', 'California', 'Santa Maria', 'Соединенные Штаты Америки', 'Калифорния', 'Санта-Мария', '34.9530337', '-120.4357191', 99553);
+	GO
+
+INSERT INTO [geo] (id, [country_en], [region_en], [city_en], [country], [region], [city], [lat], [lng], [population]) VALUES
 	(8001, 'United States', 'California', 'Santa Monica', 'Соединенные Штаты Америки', 'Калифорния', 'Санта-Моника', '34.0194543', '-118.4911912', 89736),
 	(8002, 'United States', 'California', 'Santa Rosa', 'Соединенные Штаты Америки', 'Калифорния', 'Санта-Роза', '38.440429', '-122.7140548', 167815),
 	(8003, 'United States', 'California', 'Santee', 'Соединенные Штаты Америки', 'Калифорния', 'Санти', '32.8383828', '-116.9739167', 53413),

@@ -120,7 +120,7 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DBWork.cs" />
-    <Content Include="Models\db\3 - Insert test data.sql" />
+    <Content Include="Models\db\3 - Insert test user.sql" />
     <Compile Include="Models\db\Extensions.cs" />
     <Compile Include="Models\Model1.Context.cs">
       <AutoGen>True</AutoGen>
