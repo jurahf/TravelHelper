@@ -68,9 +68,11 @@ namespace Server.Classes
                     break;
                 case "name":
                     addrInfo.Name = field.Value.Value<string>();
+                    addrInfo.Name = addrInfo.Name.Replace(Environment.NewLine, " ").Replace("\n", " ");
                     break;
                 case "description":
                     addrInfo.Description = field.Value.Value<string>();
+                    addrInfo.Description = addrInfo.Description.Replace(Environment.NewLine, " ").Replace("\n", " ");
                     break;
                 case "image":
                     if (string.IsNullOrEmpty(addrInfo.Picture))

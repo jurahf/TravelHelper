@@ -375,7 +375,8 @@
     var tripSetted = false;
     var tempCity = {};
 
-    @{
+    try {
+        @{
         Travel selectedTravel = ViewBag.SelectedTravel as Travel;
         DateTime tempDate = schedule?.Date.Date ?? DateTime.Today;
         if (selectedTravel?.Schedules != null)
@@ -385,27 +386,27 @@
             foreach (var p in selectedTravel?.Schedules.SelectMany(s => s.PlacePoint).OrderBy(x => x.Time))
             {
                 @:var point@(i) = {};
-                    @:point@(i).Lat = @(p.NaviAddressInfo?.Latitude.ToString().Replace(',', '.'));
-                    @:point@(i).Lng = @(p.NaviAddressInfo?.Longitude.ToString().Replace(',', '.'));
-                    @:point@(i).Category = '@(p.NaviAddressInfo?.Category?.Name)';
-                    @:point@(i).Caption = '@(p.CustomName)';
-                    @:point@(i).Name = '@(p.NaviAddressInfo?.Name)';
-                    @:point@(i).Description = '@(p.NaviAddressInfo?.Description)';
-                    @:point@(i).Today = @( p.Time.Date == tempDate ? "true" : "false" );
-                    @:point@(i).Picture = '@( p.NaviAddressInfo.Picture )';
-                    @:pointsArr.push(point@(i));
-
+                                    @:point@(i).Lat = @(p.NaviAddressInfo?.Latitude.ToString().Replace(',', '.'));
+                                    @:point@(i).Lng = @(p.NaviAddressInfo?.Longitude.ToString().Replace(',', '.'));
+                                    @:point@(i).Category = '@(p.NaviAddressInfo?.Category?.Name)';
+                                    @:point@(i).Caption = '@(p.CustomName)';
+                                    @:point@(i).Name = '@(p.NaviAddressInfo?.Name)';
+                                    @:point@(i).Description = '@(p.NaviAddressInfo?.Description)';
+                                    @:point@(i).Today = @( p.Time.Date == tempDate ? "true" : "false" );
+                                    @:point@(i).Picture = '@( p.NaviAddressInfo.Picture )';
+                                    @:pointsArr.push(point@(i));
+                
                 if (p.Time.Date == tempDate && schedule.TempPoint == p.Order)
                 {
                     @:tempPointIndex = @(i);
-                        @:minPointIndex = @(i);
-                    }
+                                        @:minPointIndex = @(i);
+                                    }
 
                 if (p.Time.Date > tempDate && !findMax)
                 {
                     findMax = true;
                     @:maxPointIndex = @(i - 1);
-                }
+                                }
 
                 i++;
             }
@@ -419,6 +420,11 @@
             @:tempCity.Country = '@(selectedTravel.City.Country)';
         }
 }
+    }
+    catch (err)
+    {
+        console.error(`ERROR(${err.code}): ${err.message}`);
+    }
 
     function InitMapWithParams() {
         getGeolocationAndInitMap(pointsArr, tempCity);

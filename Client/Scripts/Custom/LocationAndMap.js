@@ -248,13 +248,13 @@ function createMarkerMessage(marker, point) {
             '<h3 id="firstHeading" class="firstHeading">' + point.Name + '</h3>' +
             '<div id="bodyContent">' +
                 '<img src="' + point.Picture + '" alt="' + point.Name + '" class="cardImage" />' +
-                '<p>' + point.Description + '</p>' +
+                '<p class="cardText">' + point.Description + '</p>' +
             '</div>' +
         '</div>';
 
     var infowindow = new google.maps.InfoWindow({
-        content: contentString
-        //, maxWidth:
+        content: contentString,
+        maxWidth: 370
     });
 
     //google.maps.event.addDomListener(document.getElementById('map'), 'click', function () { alert(infowindow); infowindow.close(); });

@@ -39,10 +39,21 @@ textarea {
     top: 0;
 }*/
 
+td {
+    max-width: 350px;
+}
+
 img.cardImage {
     max-width: 350px !important;
     min-width: 350px;
     max-height: 350px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 10px;
+}
+
+.cardText {
+    text-align: justify;
 }
 
 html, body {
