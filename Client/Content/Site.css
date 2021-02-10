@@ -1,4 +1,10 @@
-﻿/* Set padding to keep content from hitting the edges */
+﻿.mapboxgl-ctrl-geocoder--input {
+    padding-right: 10px !important;
+    padding-left: 40px !important;
+}
+
+
+/* Set padding to keep content from hitting the edges */
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
@@ -39,22 +45,6 @@ textarea {
     top: 0;
 }*/
 
-td {
-    max-width: 350px;
-}
-
-img.cardImage {
-    max-width: 350px !important;
-    min-width: 350px;
-    max-height: 350px;
-    padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 10px;
-}
-
-.cardText {
-    text-align: justify;
-}
 
 html, body {
     height: 100%;

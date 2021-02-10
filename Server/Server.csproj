@@ -23,6 +23,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -102,10 +103,25 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Classes\Args\AddressSearchArgs.cs" />
+    <Compile Include="Classes\Args\AddressSearchNearArgs.cs" />
+    <Compile Include="Classes\Args\CityFilterAndOrder.cs" />
+    <Compile Include="Classes\Args\PreSaveTravelArgs.cs" />
+    <Compile Include="Classes\Args\PreSaveTravelParsedArgs.cs" />
+    <Compile Include="Classes\Args\SaveScheduleArgs.cs" />
+    <Compile Include="Classes\Args\SaveScheduleParsedArgs.cs" />
+    <Compile Include="Classes\Args\SaveTravelArgs.cs" />
+    <Compile Include="Classes\Args\SaveTravelParsedArgs.cs" />
     <Compile Include="Classes\CommonParseHelper.cs" />
+    <Compile Include="Classes\Dtos\PlaceDto.cs" />
+    <Compile Include="Classes\Dtos\ScheduleDto.cs" />
     <Compile Include="Classes\NaviAddressParser.cs" />
     <Compile Include="Classes\NaviLoadHelper.cs" />
+    <Compile Include="Classes\Results\PreSaveTravelResult.cs" />
+    <Compile Include="Classes\Results\SaveScheduleResult.cs" />
+    <Compile Include="Classes\Results\SaveTravelResult.cs" />
     <Compile Include="Classes\ScheduleSaveHelper.cs" />
+    <Compile Include="Classes\ServiceFactory.cs" />
     <Compile Include="Classes\TravelCreateHelper.cs" />
     <Compile Include="Controllers\AddressesController.cs" />
     <Compile Include="Controllers\TestController.cs" />
@@ -113,6 +129,8 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Interfaces\IAddressesService.cs" />
+    <Compile Include="Interfaces\ITravelService.cs" />
     <Compile Include="Models\Category.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -120,7 +138,9 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DBWork.cs" />
-    <Content Include="Models\db\3 - Insert test user.sql" />
+    <Compile Include="Services\DatabaseTravelService.cs" />
+    <Compile Include="Services\NaviAddressesService.cs" />
+    <Content Include="Models\db\3 - Insert test data.sql" />
     <Compile Include="Models\db\Extensions.cs" />
     <Compile Include="Models\Model1.Context.cs">
       <AutoGen>True</AutoGen>
@@ -162,6 +182,10 @@
     <Content Include="index.html" />
     <Content Include="Models\db\1 - Insert categories.sql" />
     <Content Include="Models\db\2 - Insert cities.sql" />
+    <Content Include="Models\db\TravelHelperDatabase.mdf" />
+    <Content Include="Models\db\TravelHelperDatabase_log.ldf">
+      <DependentUpon>TravelHelperDatabase.mdf</DependentUpon>
+    </Content>
     <Content Include="Models\Model1.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Model1.Context.cs</LastGenOutput>

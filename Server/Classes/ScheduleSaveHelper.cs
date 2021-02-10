@@ -1,4 +1,8 @@
-﻿using Server.Controllers;
+﻿using Server.Classes.Args;
+using Server.Classes.Dtos;
+using Server.Classes.Results;
+using Server.Controllers;
+using Server.Interfaces;
 using Server.Models;
 using System;
 using System.Collections.Generic;
@@ -17,8 +21,8 @@ namespace Server.Classes
         {
             this.data = data;
             // TODO: в фабрику
-            var addressController = new AddressesController();
-            var naviLoadHelper = new NaviLoadHelper(data, addressController);
+            IAddressesService addressService = new ServiceFactory().GetAddressesService();
+            var naviLoadHelper = new NaviLoadHelper(data, addressService);
             parseHelper = new CommonParseHelper(data, naviLoadHelper);
         }
 
@@ -70,34 +74,11 @@ namespace Server.Classes
         }
     }
 
-    public class SaveScheduleArgs
-    {
-        public int? ScheduleId { get; set; }
 
-        public string UserLogin { get; set; }
 
-        public List<ScheduleDto> ScheduleRows { get; set; }
-    }
 
-    public class SaveScheduleParsedArgs
-    {
-        public int? ScheduleId { get; set; }
 
-        public User User { get; set; }
 
-        public Schedule Schedule { get; set; }
-
-        public SaveScheduleResult Result { get; set; }
-    }
-
-    public class SaveScheduleResult
-    {
-        public bool Valid { get; set; }
-
-        public string ErrorMessage { get; set; }
-
-        public int? ScheduleId { get; set; }
-    }
 
 
 }

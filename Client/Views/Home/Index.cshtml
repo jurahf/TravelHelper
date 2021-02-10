@@ -11,7 +11,7 @@
 
 @section tempTravel{
     <a>
-        @{ 
+        @{
             Travel selectedTravel = ViewBag.SelectedTravel as Travel;
             if (selectedTravel == null)
             {
@@ -44,17 +44,17 @@
     <a onclick="nextPoint();">Следующая точка</a>
 
     @*<div class="btn-toolbar hidden-hover" role="toolbar" aria-label="">
-        <div class="btn-group mr-2" role="group" aria-label="Обновить">
-            <button type="button" class="btn btn-success">
-                <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
-            </button>
-        </div>
-        <div class="btn-group" role="group" aria-label="Скрыть">
-            <button type="button" class="btn btn-info">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-            </button>
-        </div>
-    </div>*@
+            <div class="btn-group mr-2" role="group" aria-label="Обновить">
+                <button type="button" class="btn btn-success">
+                    <span class="glyphicon glyphicon-refresh" aria-hidden="true"></span>
+                </button>
+            </div>
+            <div class="btn-group" role="group" aria-label="Скрыть">
+                <button type="button" class="btn btn-info">
+                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                </button>
+            </div>
+        </div>*@
 }
 
 @section scheduleButton {
@@ -63,20 +63,20 @@
 
 @section anotherTravels {
     <ul class="dropdown-menu">
-    @{
-        List<Travel> travelList = (List<Travel>)ViewBag.Travels;
-        if (travelList?.Any() == true)
-        {
-            foreach (var travel in travelList.OrderBy(x => x.StartDate))
+        @{
+            List<Travel> travelList = (List<Travel>)ViewBag.Travels;
+            if (travelList?.Any() == true)
             {
-                <li><a onclick="selectTravel('@(((User)ViewBag.User).Login)', @(travel.Id));">@travel.Name</a></li>
+                foreach (var travel in travelList.OrderBy(x => x.StartDate))
+                {
+                    <li><a onclick="selectTravel('@(((User)ViewBag.User).Login)', @(travel.Id));">@travel.Name</a></li>
+                }
+            }
+            else
+            {
+                <li><a href="#">Путешествия не добавлены</a></li>
             }
         }
-        else
-        {
-            <li><a href="#">Путешествия не добавлены</a></li>
-        }
-    }
     </ul>
 }
 
@@ -100,41 +100,41 @@
                 <table id="tableTempSchedule" class="table table-hover" value="@(schedule?.Id ?? 0)">
                     <tbody>
                         @{
-                        if (schedule?.PlacePoint?.Any() == true)
-                        {
-                            foreach (var point in schedule.PlacePoint.OrderBy(x => x.Order))
+                            if (schedule?.PlacePoint?.Any() == true)
                             {
-                    @:
-                        <tr id="rowTempShedule@(point.Id)" value="@(point.NaviAddressInfo == null ? "" : $"[{point.NaviAddressInfo.ContainerAddress}]{point.NaviAddressInfo.SelfAddress}")">
-                            <td class="marker-cell">
-                                @{
-                                    if (schedule.TempPoint == point.Order)
-                                    {
-                                        @: <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
-                                    }
-                                }
-                            </td>
-                            <td class="name-cell" value="@(point.CustomName)">@point.ToString()</td>
-                            <td class="time-cell" value="@(point.Time.ToString("yyyy-MM-ddTHH:mm:ss"))">@point.Time.ToString("HH:mm")</td>
-                            <td class="buttons-cell">
-                                <div class="btn-group" role="group">
-                                    <button type="button" onclick="rowUp('#tableTempSchedule', '#rowTempShedule@(point.Id)');" class="btn btn-default @(point.Order == 0 ? "disabled" : "")">
-                                        <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
-                                    </button>
-                                    <button type="button" onclick="rowDown('#tableTempSchedule', '#rowTempShedule@(point.Id)');" class="btn btn-default @(point.Order == schedule.PlacePoint.Count - 1 ? "disabled" : "")">
-                                        <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
-                                    </button>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button type="button" onclick="rowDelete('#tableTempSchedule', '#rowTempShedule@(point.Id)');" class="btn btn-default">
-                                        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
-                                    </button>
-                                </div>
-                            </td>
-                        </tr>
+                                foreach (var point in schedule.PlacePoint.OrderBy(x => x.Order))
+                                {
+                                    @:
+                                    <tr id="rowTempShedule@(point.Id)" value="@(point.NaviAddressInfo == null ? "" : $"[{point.NaviAddressInfo.ContainerAddress}]{point.NaviAddressInfo.SelfAddress}")">
+                                        <td class="marker-cell">
+                                            @{
+                                                if (schedule.TempPoint == point.Order)
+                                                {
+                                                    @: <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                                                }
                                             }
-                                        }
-                                    }
+                                        </td>
+                                        <td class="name-cell" value="@(point.CustomName)">@point.ToString()</td>
+                                        <td class="time-cell" value="@(point.Time.ToString("yyyy-MM-ddTHH:mm:ss"))">@point.Time.ToString("HH:mm")</td>
+                                        <td class="buttons-cell">
+                                            <div class="btn-group" role="group">
+                                                <button type="button" onclick="rowUp('#tableTempSchedule', '#rowTempShedule@(point.Id)');" class="btn btn-default @(point.Order == 0 ? "disabled" : "")">
+                                                    <span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></span>
+                                                </button>
+                                                <button type="button" onclick="rowDown('#tableTempSchedule', '#rowTempShedule@(point.Id)');" class="btn btn-default @(point.Order == schedule.PlacePoint.Count - 1 ? "disabled" : "")">
+                                                    <span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></span>
+                                                </button>
+                                            </div>
+                                            <div class="btn-group" role="group">
+                                                <button type="button" onclick="rowDelete('#tableTempSchedule', '#rowTempShedule@(point.Id)');" class="btn btn-default">
+                                                    <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
                     </tbody>
                     <tfoot>
                         <tr>
@@ -164,7 +164,7 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
 
 <!-- Модальное окно "Новое путешествие" -->
 <div id="new-travel-modal" class="modal fade" role="dialog">
@@ -184,7 +184,7 @@
                             <div class="col-lg-10 col-lg-offset-1">
                                 <!-- безболезненно заменить на label не получилось -->
                                 <!--
-                        -->
+                                -->
                                 <div class="autocomplete" id="city-container">
                                     <span id="city-validation" class="glyphicon form-control-feedback"></span>
                                     <input id="tbCity" type="text" name="tbCity" class="form-control" placeholder="Город">
@@ -244,7 +244,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                                    }
+                                            }
                                         }
                                     </div>
                                 </div>
@@ -299,18 +299,17 @@
                         <!-- расписания по дням -->
                         <table class="table table-hover" id="generated-schedule">
                             <tbody>
-
                             </tbody>
                             <tfoot>
                                 @*<tr>
-                                    <td colspan="4">
-                                        <div class="btn-group" role="group">
-                                            <button type="button" class="btn btn-success">
-                                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>*@
+                                        <td colspan="4">
+                                            <div class="btn-group" role="group">
+                                                <button type="button" class="btn btn-success">
+                                                    <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>*@
                             </tfoot>
                         </table>
                     </div>
@@ -332,27 +331,24 @@
             </div>
         </div>
     </div>
-</div>  
+</div>
 <!-- конец модального окна "новое путешествие" -->
 
 
 
 @section scripts {
 
-<!-- google.maps -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBu5nZKbeK-WHQ70oqOWo-_4VmwOwKP9YQ"></script>
-<!-- яндекс.карты -->
-<!--<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>-->
+    <!--<script src="~/Scripts/Custom/GoogleYandexLocationAndMap.js"></script>-->
+    <script src="~/Scripts/Custom/MapboxLocationAndMap.js"></script>
+    <script src="~/Scripts/Custom/Autocomplete.js"></script>
+    <script src="~/Scripts/Custom/MagicForTravelEditModal.js"></script>
+    <script type="text/javascript">
 
-<script src="~/Scripts/Custom/ServerApiConfig.js"></script>
-<script src="~/Scripts/Custom/LocationAndMap.js"></script>
-<script src="~/Scripts/Custom/Autocomplete.js"></script>
-<script src="~/Scripts/Custom/MagicForTravelEditModal.js"></script>
-<script type="text/javascript">
-    /*******************************************************************************************/
+/*******************************************************************************************/
     function selectTravel(login, travelId) {
+        // todo: адрес из конфига
         var xmlHttp = new XMLHttpRequest(); // вообще-то json
-        xmlHttp.open("GET", selectTravelActionAddress + "?login=" + login + "&id=" + travelId, true); // false for synchronous request
+        xmlHttp.open("GET", "http://localhost:62012/api/Travel/SelectTravel?login=" + login + "&id=" + travelId, true); // false for synchronous request
         xmlHttp.onload = function () {
                 window.location.replace(currUrl);
         }
@@ -375,8 +371,9 @@
     var tripSetted = false;
     var tempCity = {};
 
-    try {
-        @{
+    @{
+        // находим все точки текущего выбранного путешествия, чтобы поставить маркеры
+
         Travel selectedTravel = ViewBag.SelectedTravel as Travel;
         DateTime tempDate = schedule?.Date.Date ?? DateTime.Today;
         if (selectedTravel?.Schedules != null)
@@ -386,27 +383,25 @@
             foreach (var p in selectedTravel?.Schedules.SelectMany(s => s.PlacePoint).OrderBy(x => x.Time))
             {
                 @:var point@(i) = {};
-                                    @:point@(i).Lat = @(p.NaviAddressInfo?.Latitude.ToString().Replace(',', '.'));
-                                    @:point@(i).Lng = @(p.NaviAddressInfo?.Longitude.ToString().Replace(',', '.'));
-                                    @:point@(i).Category = '@(p.NaviAddressInfo?.Category?.Name)';
-                                    @:point@(i).Caption = '@(p.CustomName)';
-                                    @:point@(i).Name = '@(p.NaviAddressInfo?.Name)';
-                                    @:point@(i).Description = '@(p.NaviAddressInfo?.Description)';
-                                    @:point@(i).Today = @( p.Time.Date == tempDate ? "true" : "false" );
-                                    @:point@(i).Picture = '@( p.NaviAddressInfo.Picture )';
-                                    @:pointsArr.push(point@(i));
-                
+                    @:point@(i).Lat = @(p.NaviAddressInfo?.Latitude.ToString().Replace(',', '.'));
+                    @:point@(i).Lng = @(p.NaviAddressInfo?.Longitude.ToString().Replace(',', '.'));
+                    @:point@(i).Category = '@(p.NaviAddressInfo?.Category?.Name)';
+                    @:point@(i).Caption = '@(p.CustomName)';
+                    @:point@(i).Description = '@(p.NaviAddressInfo?.Description)';
+                    @:point@(i).Today = @( p.Time.Date == tempDate ? "true" : "false" );
+                    @:pointsArr.push(point@(i));
+
                 if (p.Time.Date == tempDate && schedule.TempPoint == p.Order)
                 {
                     @:tempPointIndex = @(i);
-                                        @:minPointIndex = @(i);
-                                    }
+                        @:minPointIndex = @(i);
+                    }
 
                 if (p.Time.Date > tempDate && !findMax)
                 {
                     findMax = true;
                     @:maxPointIndex = @(i - 1);
-                                }
+                }
 
                 i++;
             }
@@ -420,14 +415,9 @@
             @:tempCity.Country = '@(selectedTravel.City.Country)';
         }
 }
-    }
-    catch (err)
-    {
-        console.error(`ERROR(${err.code}): ${err.message}`);
-    }
 
     function InitMapWithParams() {
-        getGeolocationAndInitMap(pointsArr, tempCity);
+        getGeolocationAndInitMap(pointsArr, tempCity, 'map');
     }
 
     function nextPoint() {
@@ -469,16 +459,11 @@
     }
 
 
-     google.maps.event.addDomListener(window, 'load', InitMapWithParams);
-    //ymaps.ready(InitMapWithParams);
-
     var currUrl = '@(Url.Action("Index", "Home", null, Request.Url.Scheme))';
 
     /************************* Контролы ***************************************************************/
     $(document).ready(function () {
         $(function () {
-
-
 
             initSettings(currUrl);
 
@@ -502,9 +487,11 @@
                 //    autoclose: false,
                 //    language: 'ru',
                 //});
+
+            InitMapWithParams();
             });
         });
 
-</script>
+    </script>
 
 }

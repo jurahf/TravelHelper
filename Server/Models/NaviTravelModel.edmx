@@ -119,7 +119,6 @@
     <Property Name="Longitude" Type="decimal" Nullable="false" Scale="10" />
     <Property Name="Picture" Type="nvarchar(max)" Nullable="true" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="true" />
-    <Property Name="Name" Type="nvarchar(max)" Nullable="true" />
     <Property Name="Category_Id" Type="int" Nullable="true" />
     <Property Name="City_Id" Type="int" Nullable="true" />
   </EntityType>
@@ -399,7 +398,6 @@
           <NavigationProperty Name="PlacePoint" Relationship="NaviTravelModel.NaviAddressInfoPlacePoint" FromRole="NaviAddressInfo" ToRole="PlacePoint" />
           <NavigationProperty Name="Category" Relationship="NaviTravelModel.CategoryNaviAddressInfo" FromRole="NaviAddressInfo" ToRole="Category" />
           <NavigationProperty Name="City" Relationship="NaviTravelModel.CityNaviAddressInfo" FromRole="NaviAddressInfo" ToRole="City" />
-          <Property Name="Name" Type="String" Nullable="true" />
         </EntityType>
         <Association Name="UserTravel">
           <End Type="NaviTravelModel.User" Role="User" Multiplicity="1" />
@@ -520,7 +518,6 @@
           <ScalarProperty Name="Longitude" ColumnName="Longitude" />
           <ScalarProperty Name="Picture" ColumnName="Picture" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="Name" ColumnName="Name" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

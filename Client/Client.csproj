@@ -27,6 +27,7 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <TypeScriptToolsVersion>1.8</TypeScriptToolsVersion>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -177,9 +178,10 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Custom\Autocomplete.js" />
-    <Content Include="Scripts\Custom\LocationAndMap.js" />
+    <Content Include="Scripts\Custom\GoogleYandexLocationAndMap.js" />
     <Content Include="Scripts\Custom\MagicForTravelEditModal.js" />
-    <Content Include="Scripts\Custom\ServerApiConfig.js" />
+    <Content Include="Scripts\Custom\MapboxLocationAndMap.js" />
+    <Content Include="Scripts\Custom\Методы карты для реализации в JS.txt" />
     <Content Include="Scripts\jquery-3.0.0.js" />
     <Content Include="Scripts\jquery-3.0.0.min.js" />
     <Content Include="Scripts\jquery-3.0.0.slim.js" />

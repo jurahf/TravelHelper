@@ -1,4 +1,5 @@
 ﻿using Server.Controllers;
+using Server.Interfaces;
 using Server.Models;
 using System;
 using System.Collections.Generic;
@@ -11,13 +12,12 @@ namespace Server.Classes
     public class NaviLoadHelper
     {
         private readonly DBWork data;
-        private readonly AddressesController addressController;
-        private readonly CommonParseHelper parseHelper;
+        private readonly IAddressesService addressService;
 
-        public NaviLoadHelper(DBWork data, AddressesController addressController)
+        public NaviLoadHelper(DBWork data, IAddressesService addressService)
         {
             this.data = data;
-            this.addressController = addressController;
+            this.addressService = addressService;
         }
 
         public List<NaviAddressInfo> LoadAdditionalInfoParallel(List<NaviAddressInfo> addressesList)
@@ -51,7 +51,7 @@ namespace Server.Classes
                     //additionalInfo = data.GetFromDatabase<NaviAddressInfo>(x => x.ContainerAddress == address.ContainerAddress && x.SelfAddress == address.SelfAddress).FirstOrDefault();
 
                     if (additionalInfo == null)
-                        additionalInfo = addressController.GetAddressInfo(address.ContainerAddress, address.SelfAddress);
+                        additionalInfo = addressService.GetAddressInfo(address.ContainerAddress, address.SelfAddress);
                 }
                 catch
                 {
@@ -72,7 +72,7 @@ namespace Server.Classes
                 additionalInfo = data.GetFromDatabase<NaviAddressInfo>(x => x.ContainerAddress == address.ContainerAddress && x.SelfAddress == address.SelfAddress).FirstOrDefault();
 
                 if (additionalInfo == null)
-                    additionalInfo = addressController.GetAddressInfo(address.ContainerAddress, address.SelfAddress);
+                    additionalInfo = addressService.GetAddressInfo(address.ContainerAddress, address.SelfAddress);
             }
             catch
             {

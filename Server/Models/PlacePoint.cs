@@ -19,7 +19,7 @@ namespace Server.Models
         public int Order { get; set; }
         public string CustomName { get; set; }
         public System.DateTime Time { get; set; }
-    
+
         [JsonIgnore]
         public virtual Schedule Schedule { get; set; }
         public virtual NaviAddressInfo NaviAddressInfo { get; set; }

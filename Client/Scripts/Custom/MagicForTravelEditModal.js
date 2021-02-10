@@ -76,8 +76,9 @@ function rowsSave(tableSelector) {
     $('#scheduleProgress').removeClass('hidden');
     var json = JSON.stringify(data);
 
+    // todo: адрес из конфига
     var xmlHttp = new XMLHttpRequest(); // вообще-то json
-    xmlHttp.open("PUT", saveScheduleActionAddress, true); // false for synchronous request
+    xmlHttp.open("PUT", "http://localhost:62012/api/Travel/SaveSchedule", true); // false for synchronous request
     xmlHttp.setRequestHeader('Content-type', 'application/json; charset=utf-8');
     xmlHttp.onload = function () {
         var response = JSON.parse(xmlHttp.responseText);
@@ -205,8 +206,9 @@ function saveTravel() {
         // отправляем на сервер
         var json = JSON.stringify(data);
 
+        // todo: адрес из конфига
         var xmlHttp = new XMLHttpRequest(); // вообще-то json
-        xmlHttp.open("PUT", saveTravelActionAddress, true); // false for synchronous request
+        xmlHttp.open("PUT", "http://localhost:62012/api/Travel/SaveTravel", true); // false for synchronous request
         xmlHttp.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xmlHttp.onload = function () {
             var response = JSON.parse(xmlHttp.responseText);
@@ -245,8 +247,9 @@ function preSaveTravel() {
         // отправляем на сервер
         var json = JSON.stringify(data);
 
+        // todo: адрес из конфига
         var xmlHttp = new XMLHttpRequest(); // вообще-то json
-        xmlHttp.open("PUT", preSaveTravelActionAddress, true); // false for synchronous request
+        xmlHttp.open("PUT", "http://localhost:62012/api/Travel/PreSaveTravel", true); // false for synchronous request
         xmlHttp.setRequestHeader('Content-type', 'application/json; charset=utf-8');
         xmlHttp.onload = function () {
             var response = JSON.parse(xmlHttp.responseText);

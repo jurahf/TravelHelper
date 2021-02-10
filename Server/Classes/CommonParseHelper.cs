@@ -1,4 +1,5 @@
-﻿using Server.Controllers;
+﻿using Server.Classes.Dtos;
+using Server.Controllers;
 using Server.Models;
 using System;
 using System.Collections.Generic;
@@ -129,9 +130,7 @@ namespace Server.Classes
                 }
             }
 
-            return data
-                .GetFromDatabase<City>(x => x.Name == cityName && (string.IsNullOrEmpty(countryName) || x.Country == countryName))
-                .FirstOrDefault();
+            return data.GetFromDatabase<City>(x => x.Name == cityName && x.Country == countryName).FirstOrDefault();
         }
 
 

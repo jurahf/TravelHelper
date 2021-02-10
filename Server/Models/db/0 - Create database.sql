@@ -2,8 +2,8 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 09/29/2018 20:24:14
--- Generated from EDMX file: D:\PROJECTS\Repositories\TravelHelper\Server\Models\NaviTravelModel.edmx
+-- Date Created: 09/26/2018 16:57:54
+-- Generated from EDMX file: D:\PROJECTS\CSharp\TravelHelper\Server\Models\NaviTravelModel.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
@@ -144,7 +144,6 @@ CREATE TABLE [dbo].[NaviAddressInfoSet] (
     [Longitude] decimal(18,10)  NOT NULL,
     [Picture] nvarchar(max)  NULL,
     [Description] nvarchar(max)  NULL,
-    [Name] nvarchar(max)  NULL,
     [Category_Id] int  NULL,
     [City_Id] int  NULL
 );
