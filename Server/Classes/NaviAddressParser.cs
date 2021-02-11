@@ -76,10 +76,10 @@ namespace Server.Classes
                 case "cover":
                     if (string.IsNullOrEmpty(addrInfo.Picture))
                     {
-                        addrInfo.Picture = field.First.First.Children()
+                        addrInfo.Picture = field.First?.First?.Children()
                             .OfType<JProperty>()
                             .FirstOrDefault(t => t.Name.ToLower() == "image")
-                            .Value.Value<string>();
+                            ?.Value?.Value<string>();
                     }
                     break;
                 case "point":    // "point":{"lat":58.001388888,"lng":56.2475}}

@@ -11,7 +11,7 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
     map = new mapboxgl.Map({
         container: elemId,
         style: 'mapbox://styles/mapbox/streets-v11',
-        center: moscow,
+        center: [city.Lng, city.Lat],
         zoom: 12.0
     });
 
@@ -38,9 +38,8 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
             map.off('sourcedata');
 
             arrPoints.forEach(function (point) {
-                addMarker([point.Lng, point.Lat], point.Caption, point.Description, point.Today);
+                addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.Description, point.Today, point.Order);
             });
-
         }
     });
 
@@ -48,8 +47,61 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
 }
 
 
-function addMarker(point, title, description, today) {
-    var marker = new mapboxgl.Marker(today ? { color: 'green' } : { color: '#3FB1CE' })
+
+
+
+function addMarkerAndFullRoute(point, caption, description, today, order) {
+    var markerColor = '#3FB1CE';
+    if (today) {
+        if (order <= tempPointIndex) {
+            markerColor = 'green';
+        }
+        else if (order == tempPointIndex + 1) {
+            markerColor = 'yellow'
+        }
+        else {
+            markerColor = 'gray';
+        }
+    }
+
+    // TODO: цвета маркера и пути для ближайшего, для пройденного, для будущего
+
+    addMarker(point, caption, description, markerColor);
+    if (today == true) {
+        addRoutePoint(point);
+    }
+}
+
+
+
+function nextPoint() {
+    if (pointsArr[tempPointIndex]) {
+        if (tripSetted) { // маршрут уже проложен, по-умолчанию идем к следующей точке
+            moveTempPointIndex();
+            pointWasPassed();
+        }
+        else {
+            tripSetted = true;
+        }
+
+        var point = pointsArr[tempPointIndex];
+
+        while (point.Lat == 0) {    // костыль. вообще нулей быть не должно
+            moveTempPointIndex();
+            point = pointsArr[tempPointIndex];
+        }
+        pointWasPassed();
+
+        ShowTripTo(point.Lat, point.Lng);
+    }
+    // TODO: Как скрыть маршрут? Как обновить текущий маршрут?
+}
+
+
+
+
+function addMarker(point, title, description, color) {
+    var marker = new mapboxgl.Marker({ color: color })
         .setLngLat(point)
         .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
             .setHTML('<h3>' + title + '</h3><p>' + description + '</p>'))
@@ -85,12 +137,22 @@ function setLang(language) {
 }
 
 
+var routs = [];
+function addRoutePoint(point) {
+    routs.push(point);
+
+    if (routs.length > 1)
+        getRoute(routs[routs.length - 2], routs[routs.length - 1], 'walking', 'route-' + (routs.length - 1));
+}
 
 
-function getRoute(start, end, profile) {
+function getRoute(start, end, profile, layerName) {
+
+    if (layerName == undefined)
+        layerName = 'route';
+
     // walking, cycling, driving, driving-traffic
     var url = 'https://api.mapbox.com/directions/v5/mapbox/' + profile + '/' + start[0] + ',' + start[1] + ';' + end[0] + ',' + end[1] + '?steps=true&geometries=geojson&access_token=' + mapboxgl.accessToken;
-
     // make an XHR request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
     var req = new XMLHttpRequest();
     req.open('GET', url, true);
@@ -108,62 +170,62 @@ function getRoute(start, end, profile) {
         };
 
         // if the route already exists on the map, reset it using setData
-        if (map.getSource('route')) {
-            map.getSource('route').setData(geojson);
+        if (map.getSource(layerName)) {
+            map.getSource(layerName).setData(geojson);
         } else { // otherwise, make a new request
 
             // Add starting point to the map
-            map.addLayer({
-                id: 'point-start',
-                type: 'circle',
-                source: {
-                    type: 'geojson',
-                    data: {
-                        type: 'FeatureCollection',
-                        features: [{
-                            type: 'Feature',
-                            properties: {},
-                            geometry: {
-                                type: 'Point',
-                                coordinates: start
-                            }
-                        }
-                        ]
-                    }
-                },
-                paint: {
-                    'circle-radius': 10,
-                    'circle-color': '#3887be'
-                }
-            });
+            //map.addLayer({
+            //    id: 'point-start',
+            //    type: 'circle',
+            //    source: {
+            //        type: 'geojson',
+            //        data: {
+            //            type: 'FeatureCollection',
+            //            features: [{
+            //                type: 'Feature',
+            //                properties: {},
+            //                geometry: {
+            //                    type: 'Point',
+            //                    coordinates: start
+            //                }
+            //            }
+            //            ]
+            //        }
+            //    },
+            //    paint: {
+            //        'circle-radius': 10,
+            //        'circle-color': '#3887be'
+            //    }
+            //});
 
-            map.addLayer({
-                id: 'point-end',
-                type: 'circle',
-                source: {
-                    type: 'geojson',
-                    data: {
-                        type: 'FeatureCollection',
-                        features: [{
-                            type: 'Feature',
-                            properties: {},
-                            geometry: {
-                                type: 'Point',
-                                coordinates: end
-                            }
-                        }
-                        ]
-                    }
-                },
-                paint: {
-                    'circle-radius': 10,
-                    'circle-color': '#38be87'
-                }
-            });
+            //map.addLayer({
+            //    id: 'point-end',
+            //    type: 'circle',
+            //    source: {
+            //        type: 'geojson',
+            //        data: {
+            //            type: 'FeatureCollection',
+            //            features: [{
+            //                type: 'Feature',
+            //                properties: {},
+            //                geometry: {
+            //                    type: 'Point',
+            //                    coordinates: end
+            //                }
+            //            }
+            //            ]
+            //        }
+            //    },
+            //    paint: {
+            //        'circle-radius': 10,
+            //        'circle-color': '#38be87'
+            //    }
+            //});
 
             // add route line
             map.addLayer({
-                id: 'route',
+                id: layerName,
                 type: 'line',
                 source: {
                     type: 'geojson',
@@ -186,7 +248,7 @@ function getRoute(start, end, profile) {
                     'line-opacity': 0.75
                 }
             });
-            map.getSource('route').setData(geojson);
+            map.getSource(layerName).setData(geojson);
         }
         // add turn instructions here at the end
     };

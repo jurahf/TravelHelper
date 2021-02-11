@@ -379,7 +379,6 @@
         if (selectedTravel?.Schedules != null)
         {
             int i = 0;
-            bool findMax = false;
             foreach (var p in selectedTravel?.Schedules.SelectMany(s => s.PlacePoint).OrderBy(x => x.Time))
             {
                 @:var point@(i) = {};
@@ -389,22 +388,19 @@
                     @:point@(i).Caption = '@(p.CustomName)';
                     @:point@(i).Description = '@(p.NaviAddressInfo?.Description)';
                     @:point@(i).Today = @( p.Time.Date == tempDate ? "true" : "false" );
+                    @:point@(i).Order = @( p.Order );
                     @:pointsArr.push(point@(i));
 
                 if (p.Time.Date == tempDate && schedule.TempPoint == p.Order)
                 {
                     @:tempPointIndex = @(i);
-                        @:minPointIndex = @(i);
-                    }
-
-                if (p.Time.Date > tempDate && !findMax)
-                {
-                    findMax = true;
-                    @:maxPointIndex = @(i - 1);
                 }
 
                 i++;
             }
+
+            @:maxPointIndex = @(selectedTravel?.Schedules.SelectMany(s => s.PlacePoint).Where(p => p.Time.Date == tempDate).Max(p => p.Order));
+            @:minPointIndex = @(selectedTravel?.Schedules.SelectMany(s => s.PlacePoint).Where(p => p.Time.Date == tempDate).Min(p => p.Order));
         }
 
         if (selectedTravel?.City != null)
@@ -414,33 +410,10 @@
             @:tempCity.Name = '@(selectedTravel.City.Name)';
             @:tempCity.Country = '@(selectedTravel.City.Country)';
         }
-}
+    }
 
     function InitMapWithParams() {
         getGeolocationAndInitMap(pointsArr, tempCity, 'map');
-    }
-
-    function nextPoint() {
-        if (pointsArr[tempPointIndex]) {
-            if (tripSetted) { // маршрут уже проложен, по-умолчанию идем к следующей точке
-                moveTempPointIndex();
-                pointWasPassed();
-            }
-            else {
-                tripSetted = true;
-            }
-
-            var point = pointsArr[tempPointIndex];
-
-            while (point.Lat == 0) {    // костыль. вообще нулей быть не должно
-                moveTempPointIndex();
-                point = pointsArr[tempPointIndex];
-            }
-            pointWasPassed();
-
-            ShowTripTo(point.Lat, point.Lng);
-        }
-        // TODO: Как скрыть маршрут? Как обновить текущий маршрут?
     }
 
     function moveTempPointIndex() {
