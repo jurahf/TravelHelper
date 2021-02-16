@@ -116,13 +116,14 @@
     <Compile Include="Classes\Dtos\PlaceDto.cs" />
     <Compile Include="Classes\Dtos\ScheduleDto.cs" />
     <Compile Include="Classes\NaviAddressParser.cs" />
-    <Compile Include="Classes\NaviLoadHelper.cs" />
+    <Compile Include="Classes\AddressDetailsLoader.cs" />
     <Compile Include="Classes\Results\PreSaveTravelResult.cs" />
     <Compile Include="Classes\Results\SaveScheduleResult.cs" />
     <Compile Include="Classes\Results\SaveTravelResult.cs" />
+    <Compile Include="Classes\ScheduleCreator.cs" />
     <Compile Include="Classes\ScheduleSaveHelper.cs" />
     <Compile Include="Classes\ServiceFactory.cs" />
-    <Compile Include="Classes\TravelCreateHelper.cs" />
+    <Compile Include="Classes\TravelCreator.cs" />
     <Compile Include="Controllers\AddressesController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\TravelController.cs" />
@@ -139,6 +140,7 @@
     </Compile>
     <Compile Include="Models\DBWork.cs" />
     <Compile Include="Services\DatabaseTravelService.cs" />
+    <Compile Include="Services\MapBoxAddressesService.cs" />
     <Compile Include="Services\NaviAddressesService.cs" />
     <Content Include="Models\db\3 - Insert test data.sql" />
     <Compile Include="Models\db\Extensions.cs" />

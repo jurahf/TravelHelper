@@ -9,12 +9,15 @@ using System.Web;
 
 namespace Server.Classes
 {
-    public class NaviLoadHelper
+    /// <summary>
+    /// Загрузка (из БД или из сервиса адресов) подробной информации о месте (описание, название, картинки и прочее)
+    /// </summary>
+    public class AddressDetailsLoader
     {
         private readonly DBWork data;
         private readonly IAddressesService addressService;
 
-        public NaviLoadHelper(DBWork data, IAddressesService addressService)
+        public AddressDetailsLoader(DBWork data, IAddressesService addressService)
         {
             this.data = data;
             this.addressService = addressService;

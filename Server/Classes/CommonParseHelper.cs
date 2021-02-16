@@ -13,12 +13,12 @@ namespace Server.Classes
     public class CommonParseHelper
     {
         private readonly DBWork data;
-        private readonly NaviLoadHelper naviLoadHelper;
+        private readonly AddressDetailsLoader naviLoadHelper;
         private const string DateTimeFormatFull = "yyyy-MM-ddTHH:mm:ss";
         private const string DateTimeFormatShort = "dd.MM.yyyy";
         private const string TimeFormat = "HH:mm";
 
-        public CommonParseHelper(DBWork data, NaviLoadHelper naviLoadHelper)
+        public CommonParseHelper(DBWork data, AddressDetailsLoader naviLoadHelper)
         {
             this.data = data;
             this.naviLoadHelper = naviLoadHelper;

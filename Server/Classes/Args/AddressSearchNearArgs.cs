@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Server.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,5 +13,7 @@ namespace Server.Classes.Args
         public decimal RadiusLat { get; set; }
         public decimal RadiusLng { get; set; }
         public int? Limit { get; set; }
+
+        public List<Category> Categories { get; set; }
     }
 }

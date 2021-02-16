@@ -1,109 +1,39 @@
 ﻿using Server.Classes.Args;
 using Server.Classes.Results;
-using Server.Controllers;
 using Server.Interfaces;
 using Server.Models;
-using Server.Services;
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace Server.Classes
 {
-    public class TravelCreateHelper
+    public class ScheduleCreator
     {
         private readonly DBWork data;
         private readonly IAddressesService addressService;
+        private readonly AddressDetailsLoader addressDetailsLoader;
         private readonly CommonParseHelper parseHelper;
-        private readonly NaviLoadHelper naviLoadHelper;
 
-        public TravelCreateHelper(DBWork data)
+        private const int placeInDayCount = 5;    // сколько мест мы хотим посещать в день
+        private const int filterCoefficient = 5;  // 1 / доля мест, которые подойдут по категориям
+        private const int defaultLimit = 1000;    // максимум мест по-умолчанию
+        private const decimal radius = 100m;      // радиус поиска в километрах
+        private const int activeHourseCount = 8;  // сколько часов в сутках считаем активными
+
+
+
+        public ScheduleCreator(DBWork data)
         {
             this.data = data;
             // TODO: в фабрику
             addressService = new ServiceFactory().GetAddressesService();
-            naviLoadHelper = new NaviLoadHelper(data, addressService);
-            parseHelper = new CommonParseHelper(data, naviLoadHelper);
+            addressDetailsLoader = new AddressDetailsLoader(data, addressService);
+            parseHelper = new CommonParseHelper(data, addressDetailsLoader);
         }
 
-        public SaveTravelParsedArgs ValidateAndParse(SaveTravelArgs saveArgs)
-        {
-            SaveTravelParsedArgs parsed = new SaveTravelParsedArgs();
-            SaveTravelResult validation = new SaveTravelResult();
-            StringBuilder message = new StringBuilder();
-
-            parsed.Categories = parseHelper.ParseCategotyList(saveArgs.Categories);
-            parsed.City = parseHelper.ParseCity(saveArgs.City);
-            parsed.StartDate = parseHelper.ParseDateShort(saveArgs.StartDate);
-            parsed.EndDate = parseHelper.ParseDateShort(saveArgs.EndDate);
-            parsed.User = parseHelper.ParseUser(saveArgs.UserLogin);
-            parsed.TravelId = saveArgs.TravelId;
-
-
-            parsed.Schedules = new List<Schedule>();
-
-            foreach (var group in saveArgs.Schedules.GroupBy(x => parseHelper.ParseDateFull(x.DateTime).Date))
-            {
-                Schedule sch = new Schedule()
-                {
-                    PlacePoint = new List<PlacePoint>(),
-                    Date = group.Key,
-                    TempPoint = 0
-                };
-
-                parseHelper.ParsePlacePointList(group, saveArgs.AdditionalPlaces, parsed.Categories, sch);
-
-                parsed.Schedules.Add(sch);
-            }
-
-            validation.Valid = string.IsNullOrEmpty(message.ToString());
-            validation.ErrorMessage = message.ToString();
-            parsed.Result = validation;
-
-            return parsed;
-        }
-
-
-
-        public void SaveTravel(SaveTravelParsedArgs parsed)
-        {
-            Travel travel = LoadOCreateTravel(parsed.TravelId);
-
-            travel.StartDate = parsed.StartDate;
-            travel.EndDate = parsed.EndDate;
-            travel.City = parsed.City;
-            travel.Categories = new List<Category>(parsed.Categories);
-            travel.User = parsed.User;
-            travel.Name = $"{parsed.City.Name} с {parsed.StartDate:dd.MM.yyyy}";
-            travel.Schedules = new List<Schedule>(parsed.Schedules);
-            parsed.Schedules.ForEach(s => s.Travel = travel);
-
-            // сохранить в базу
-            data.Insert(travel);
-            
-            // созданное путешествие становится выбранным
-            var user = travel.User;
-            if (user.UserSettings == null)
-                user.UserSettings = new UserSettings();
-            user.UserSettings.SelectedTravelId = travel.Id;
-
-            data.Insert(user.UserSettings);
-
-            parsed.Result.TravelId = travel.Id;
-        }
-
-        private Travel LoadOCreateTravel(int? travelId)
-        {
-            if (travelId == null)
-                return new Travel();
-            else
-                return data.GetFromDatabase<Travel>(x => x.Id == travelId.Value).FirstOrDefault() ?? new Travel();
-        }
 
         public PreSaveTravelParsedArgs ValidateAndParse(PreSaveTravelArgs preSaveArgs)
         {
@@ -124,7 +54,7 @@ namespace Server.Classes
 
             parsed.StartDate = parseHelper.ParseDateShort(preSaveArgs.StartDate);
             parsed.EndDate = parseHelper.ParseDateShort(preSaveArgs.EndDate);
-            
+
             validation.DatesValid = true;
             if (parsed.StartDate > parsed.EndDate)
             {
@@ -145,30 +75,26 @@ namespace Server.Classes
             return parsed;
         }
 
+
+
         /// <summary>
         /// По разобранным аргументам создает расписания и сохраняет в поле Result (в БД не сохраняем)
         /// </summary>
         /// <param name="parsed"></param>
-        public void CreateShedules(PreSaveTravelParsedArgs parsed)
+        public List<Schedule> CreateShedules(PreSaveTravelParsedArgs parsed)
         {
             // TODO: слишком большой метод
 
-            List<string> defaultCategoriesId = new List<string>() { "4", "5", "6" }; // кафе, ресторан, бар
-            int placeInDayCount = 5;    // сколько мест мы хотим посещать в день
-            int filterCoefficient = 5;  // 1 / доля мест, которые подойдут по категориям
-            int defaultLimit = 1000;    // максимум мест по-умолчанию
-            decimal radius = 100m;      // радиус поиска в километрах
-            int activeHourseCount = 8;  // сколько часов в сутках считаем активными
-
             if (parsed?.Result?.Valid != true)
-                return;
+                return new List<Schedule>();
 
             // считаем длину географических градусов для данной широты
             double lat = (double)parsed.City.Lat * Math.PI / 180;
             decimal radiusLat = radius / (decimal)(111.321 * Math.Cos(lat) - 0.094 * Math.Cos(3 * lat));
             decimal radiusLng = radius / (decimal)(111.143 - 0.562 * Math.Cos(2 * lat));
 
-            int daysCount = (parsed.EndDate - parsed.StartDate).Days + 1;            
+            int daysCount = (parsed.EndDate - parsed.StartDate).Days + 1;
+
 
             List<NaviAddressInfo> addrInfoList = addressService
                 .SearchNear(new AddressSearchNearArgs()
@@ -177,27 +103,22 @@ namespace Server.Classes
                     Lng = parsed.City.Lng,
                     RadiusLat = radiusLat,
                     RadiusLng = radiusLng,
-                    Limit = Math.Max(daysCount * placeInDayCount * filterCoefficient, defaultLimit) // мы еще по категориям отсеим. Но вообще, должно зависеть от количества дней
+                    Categories = GetCategories(parsed),
+                    Limit = Math.Max(daysCount * placeInDayCount * filterCoefficient, defaultLimit)
                 });
 
-            List<NaviAddressInfo> filteredAddresses = new List<NaviAddressInfo>(addrInfoList);
-            // берем выбранные категории + точки питания
-            var catIdList = parsed.Categories.Select(c => c.NaviId);
-            catIdList = catIdList.Union(defaultCategoriesId).Distinct();      // добавляем точки питания. TODO: Возможно, это надо делать позже
-            filteredAddresses = addrInfoList.Where(x => x.Category != null && catIdList.ToList().Contains(x.Category.NaviId)).ToList();
-
             int neededPlacesCount = daysCount * placeInDayCount;  // сколько мест надо выбрать
-            filteredAddresses = filteredAddresses.OrderBy(x => CalcDistance(x, parsed.City)).Take(neededPlacesCount).ToList();            
-            if (filteredAddresses.Count() < neededPlacesCount) // TODO: на случай, если мест не хватило - добавляем из других категорий ???
-                filteredAddresses = filteredAddresses.Concat(addrInfoList).Take(neededPlacesCount).ToList();
+            addrInfoList = addrInfoList.OrderBy(x => CalcDistance(x, parsed.City)).Take(neededPlacesCount).ToList();
+            if (addrInfoList.Count() < neededPlacesCount) // TODO: на случай, если мест не хватило - добавляем из других категорий ???
+                addrInfoList = addrInfoList.Concat(addrInfoList).Take(neededPlacesCount).ToList();
 
             // получаем дополнительную информацию по адресам
-            filteredAddresses = naviLoadHelper.LoadAdditionalInfoParallel(filteredAddresses);
+            addrInfoList = addressDetailsLoader.LoadAdditionalInfoParallel(addrInfoList);
 
             // мест может быть найдено меньше, поэтому перевычисляем
-            neededPlacesCount = filteredAddresses.Count();
-            placeInDayCount = neededPlacesCount / daysCount;
-            int hoursOnPlace = Math.Max(1, activeHourseCount / placeInDayCount);
+            neededPlacesCount = addrInfoList.Count();
+            int realPlaceInDayCount = neededPlacesCount / daysCount;
+            int hoursOnPlace = Math.Max(1, activeHourseCount / realPlaceInDayCount);
 
             List<Schedule> scheduleList = new List<Schedule>();
             for (DateTime tempDate = parsed.StartDate.Date; tempDate <= parsed.EndDate.Date; tempDate = tempDate.AddDays(1))
@@ -216,13 +137,13 @@ namespace Server.Classes
                 if (tempDate == parsed.StartDate.Date)  // первый день - сначала в гостиницу
                 {
                     tempHour = 10;  // или когда мы там заселяемся?
-                    
+
                     schedule.PlacePoint.Add(GetNonSavedHotel(schedule, tempDate, tempHour, tempOrder++));
                     tempHour += hoursOnPlace;
                 }
 
-                var basePlace = filteredAddresses   // опорная точка на сегодня
-                    //.Where(x => x.Category !=     // может быть стоит исключить места питания?
+                var basePlace = addrInfoList   // опорная точка на сегодня
+                                               //.Where(x => x.Category !=     // может быть стоит исключить места питания?
                     .OrderBy(x => x.Latitude)
                     .FirstOrDefault();
 
@@ -230,18 +151,18 @@ namespace Server.Classes
                 {
                     schedule.PlacePoint.Add(CreatePlacePoint(schedule, tempDate, tempHour, tempOrder++, basePlace));
                     tempHour += hoursOnPlace;
-                    if (!filteredAddresses.Any())
+                    if (!addrInfoList.Any())
                         continue;
-                    filteredAddresses.Remove(basePlace);
+                    addrInfoList.Remove(basePlace);
 
-                    filteredAddresses = filteredAddresses.OrderBy(x => CalcDistance(x, basePlace)).ToList();
-                    for (int i = tempOrder; i <= placeInDayCount; i++)
+                    addrInfoList = addrInfoList.OrderBy(x => CalcDistance(x, basePlace)).ToList();
+                    for (int i = tempOrder; i <= realPlaceInDayCount; i++)
                     {
-                        if (!filteredAddresses.Any())
+                        if (!addrInfoList.Any())
                             break;
-                        schedule.PlacePoint.Add(CreatePlacePoint(schedule, tempDate, tempHour, tempOrder++, filteredAddresses[0]));
+                        schedule.PlacePoint.Add(CreatePlacePoint(schedule, tempDate, tempHour, tempOrder++, addrInfoList[0]));
                         tempHour += hoursOnPlace;
-                        filteredAddresses.RemoveAt(0);
+                        addrInfoList.RemoveAt(0);
                     }
 
                     // TODO: предполагаем, когда что работает, добавляем точки питания
@@ -255,7 +176,19 @@ namespace Server.Classes
                 scheduleList.Add(schedule);
             }
 
-            parsed.Result.Schedules = new List<Schedule>(scheduleList);
+            return scheduleList;
+        }
+
+        /// <summary>
+        /// Собирает выбранные категории и точки питания
+        /// </summary>
+        private List<Category> GetCategories(PreSaveTravelParsedArgs parsed)
+        {
+            // берем выбранные категории + точки питания
+            List<Category> selectedCategories = parsed.Categories.Select(c => c).ToList();
+            List<Category> defaultCategories = data.GetFromDatabase<Category>(x => x.Name.ToLower() == "кафе" || x.Name.ToLower() == "ресторан" || x.Name.ToLower() == "бар");
+            var result = selectedCategories.Union(defaultCategories).Distinct().ToList();
+            return result;
         }
 
         private PlacePoint CreatePlacePoint(Schedule schedule, DateTime tempDate, int hour, int order, NaviAddressInfo address)
@@ -282,6 +215,7 @@ namespace Server.Classes
             };
         }
 
+
         private double CalcDistance(NaviAddressInfo x, City y)
         {
             return Math.Sqrt(Math.Pow((double)(x.Latitude - y.Lat), 2) + Math.Pow((double)(x.Longitude - y.Lng), 2));
@@ -292,7 +226,7 @@ namespace Server.Classes
             return Math.Sqrt(Math.Pow((double)(x.Latitude - y.Latitude), 2) + Math.Pow((double)(x.Longitude - y.Longitude), 2));
         }
 
+
+
     }
-
-
 }

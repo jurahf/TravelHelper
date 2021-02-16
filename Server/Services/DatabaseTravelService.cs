@@ -64,12 +64,12 @@ namespace Server.Services
 
             try
             {
-                TravelCreateHelper helper = new TravelCreateHelper(data);
+                ScheduleCreator helper = new ScheduleCreator(data);
                 var parsed = helper.ValidateAndParse(preSaveArgs);
 
                 if (parsed.Result.Valid)
                 {
-                    helper.CreateShedules(parsed);
+                    parsed.Result.Schedules = helper.CreateShedules(parsed);
                 }
 
                 return parsed.Result;
@@ -95,7 +95,7 @@ namespace Server.Services
 
             try
             {
-                TravelCreateHelper helper = new TravelCreateHelper(data);
+                TravelCreator helper = new TravelCreator(data);
                 var parsed = helper.ValidateAndParse(saveArgs);
 
                 if (parsed.Result.Valid)

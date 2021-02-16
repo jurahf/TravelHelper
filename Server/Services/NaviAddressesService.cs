@@ -64,7 +64,13 @@ namespace Server.Services
             {
                 string responseStr = response.Content.ReadAsStringAsync().Result;
 
-                return new NaviAddressParser().ParseAddressesList(responseStr);
+                var list = new NaviAddressParser().ParseAddressesList(responseStr);
+
+                List<NaviAddressInfo> filteredAddresses = new List<NaviAddressInfo>(list);
+                List<string> ids = args.Categories.Select(x => x.NaviId).ToList();
+                filteredAddresses = list.Where(x => x.Category != null && ids.Contains(x.Category.NaviId)).ToList();
+
+                return filteredAddresses;
             }
             else
                 throw new WebException($"Сервер адресов вернул код {response.StatusCode}");

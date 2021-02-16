@@ -22,7 +22,7 @@ namespace Server.Classes
             this.data = data;
             // TODO: в фабрику
             IAddressesService addressService = new ServiceFactory().GetAddressesService();
-            var naviLoadHelper = new NaviLoadHelper(data, addressService);
+            var naviLoadHelper = new AddressDetailsLoader(data, addressService);
             parseHelper = new CommonParseHelper(data, naviLoadHelper);
         }
 
