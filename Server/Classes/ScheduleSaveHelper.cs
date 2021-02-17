@@ -33,13 +33,8 @@ namespace Server.Classes
 
             parsed.User = parseHelper.ParseUser(saveArgs.UserLogin);
             parsed.ScheduleId = saveArgs.ScheduleId;
+            parsed.Schedule = data.GetFromDatabase<Schedule>(x => x.Id == saveArgs.ScheduleId).FirstOrDefault();
 
-            parsed.Schedule = new Schedule();   // пока с БД не работаем - может еще откатывать надо будет
-            parsed.Schedule.Date = saveArgs.ScheduleRows.Select(x => parseHelper.ParseDateFull(x.DateTime).Date).First();
-            parsed.Schedule.PlacePoint = new List<PlacePoint>();
-            parseHelper.ParsePlacePointList(saveArgs.ScheduleRows, Enumerable.Empty<PlaceDto>(), null, parsed.Schedule);
-            //parsed.Schedule.Travel  // TODO: если новое расписание, то это надо знать
-            
             validation.Valid = string.IsNullOrEmpty(message.ToString());
             validation.ErrorMessage = message.ToString();
             parsed.Result = validation;
@@ -71,6 +66,43 @@ namespace Server.Classes
 
             parsed.Result.ScheduleId = forSave.Id;
         }
+
+        public void UpdateRows(SaveScheduleParsedArgs parsed, SaveScheduleArgs saveArgs)
+        {
+            // учитываются только перестановки, удаление и добавление не учитывается
+
+            if (parsed.Schedule == null)
+                throw new ArgumentException("Не найдено расписание");
+
+            int order = 0;
+            foreach (var updatedRow in saveArgs.ScheduleRows.OrderBy(x => x.DateTime))
+            {
+                if (updatedRow.PlacePointId == null)
+                {
+                    // TODO: содаем новую точку
+                }
+                else
+                {
+                    var oldRow = parsed.Schedule.PlacePoint.FirstOrDefault(x => x.Id == updatedRow.PlacePointId);
+
+                    if (oldRow != null)
+                    {
+                        // меняем время
+                        oldRow.Time = parseHelper.ParseDateFull(updatedRow.DateTime);
+                        oldRow.Order = order;
+                    }
+                }
+
+                order++;
+            }
+
+            // удаляем
+            var forDel = parsed.Schedule.PlacePoint.Where(x => !saveArgs.ScheduleRows.Any(y => y.PlacePointId == x.Id)).ToList();
+            for (int i = 0; i < forDel.Count(); i++)
+                parsed.Schedule.PlacePoint.Remove(forDel[i]);
+        }
+
+
     }
 
 

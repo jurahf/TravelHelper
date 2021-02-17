@@ -105,7 +105,7 @@
                                 foreach (var point in schedule.PlacePoint.OrderBy(x => x.Order))
                                 {
                                     @:
-                                    <tr id="rowTempShedule@(point.Id)" value="@(point.NaviAddressInfo == null ? "" : $"[{point.NaviAddressInfo.ContainerAddress}]{point.NaviAddressInfo.SelfAddress}")">
+                                    <tr id="rowTempShedule@(point.Id)" value="@(point.Id)">
                                         <td class="marker-cell">
                                             @{
                                                 if (schedule.TempPoint == point.Order)

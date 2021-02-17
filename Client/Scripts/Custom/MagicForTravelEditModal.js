@@ -55,14 +55,15 @@ function rowsSave(tableSelector) {
     var id = $('#tableTempSchedule').attr('value');
 
     $('#tableTempSchedule tbody tr').each(function () {
-        var address = $(this).attr('value');
+        var placePointId = $(this).attr('value');
         var time = $(this).find('.time-cell').attr('value');
         var name = $(this).find('.name-cell').attr('value');
 
         var sch = {};
         sch.DateTime = time;
-        sch.Address = address;
+        //sch.Address = address;
         sch.Name = name;
+        sch.PlacePointId = placePointId;
         schedules.push(sch);
     });
     
@@ -162,8 +163,9 @@ function ValidAndGetTravelDataSecondTab() {
 
             var sch = {};
             sch.DateTime = tempDate + 'T' + time + ':00';
-            sch.Address = rowValue;
+            //sch.Address = rowValue;
             sch.Name = name;
+            sch.AddressInfo = addressesData[rowValue];
             schedules.push(sch);
         }
     });
@@ -269,7 +271,11 @@ function preSaveTravel() {
     }
 }
 
+
+
+var addressesData = [];
 function GenerateScheduleTable(json) {
+    addressesData = [];
     var schedules = json['Schedules'];
 
     for (var i = 0; i < schedules.length; i++) {
@@ -280,10 +286,13 @@ function GenerateScheduleTable(json) {
         for (var j = 0; j < schedules[i]['PlacePoint'].length; j++) {
             var point = schedules[i]['PlacePoint'][j];
 
+            if (point['NaviAddressInfo'])
+                addressesData.push(point['NaviAddressInfo']);
+
             $('#generated-schedule tbody').append(
                 '<tr id="gen-row-' + i + '_' + j + '" class="generated-schedule-row" value="' +
-                                (point['NaviAddressInfo']
-                                ? '[' + point['NaviAddressInfo']['ContainerAddress'] + ']' + point['NaviAddressInfo']['SelfAddress']
+                            (point['NaviAddressInfo']
+                                ? addressesData.length - 1
                                 : '')
                                 + '">' +
                     '<td>' +

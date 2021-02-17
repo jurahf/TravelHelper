@@ -113,8 +113,10 @@
     <Compile Include="Classes\Args\SaveTravelArgs.cs" />
     <Compile Include="Classes\Args\SaveTravelParsedArgs.cs" />
     <Compile Include="Classes\CommonParseHelper.cs" />
+    <Compile Include="Classes\Dtos\AddressInfoDto.cs" />
     <Compile Include="Classes\Dtos\PlaceDto.cs" />
     <Compile Include="Classes\Dtos\ScheduleDto.cs" />
+    <Compile Include="Classes\MapboxAddressParser.cs" />
     <Compile Include="Classes\NaviAddressParser.cs" />
     <Compile Include="Classes\Results\PreSaveTravelResult.cs" />
     <Compile Include="Classes\Results\SaveScheduleResult.cs" />

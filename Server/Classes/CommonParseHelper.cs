@@ -1,4 +1,5 @@
-﻿using Server.Classes.Dtos;
+﻿using Newtonsoft.Json;
+using Server.Classes.Dtos;
 using Server.Controllers;
 using Server.Models;
 using System;
@@ -35,9 +36,12 @@ namespace Server.Classes
             IEnumerable<ScheduleDto> dtoList,
             IEnumerable<PlaceDto> additionalPlaces,
             List<Category> existedCategories,
-            Schedule sch)
+            Schedule sch,
+            City city)
         {
             int tempOrder = 0;
+
+
             foreach (var dto in dtoList.OrderBy(x => x.DateTime))
             {
                 PlacePoint place = new PlacePoint();
@@ -57,15 +61,32 @@ namespace Server.Classes
                     // если и там нет - поискать просто по имени ?
                 }
 
-                var addrInfo = new NaviAddressInfo();
+                // TODO: тут начинаются всякие дикие вещи
 
-                if (!string.IsNullOrEmpty(address))
+                NaviAddressInfo addrInfo = new NaviAddressInfo();
+
+                if (dto.AddressInfo != null)
+                {
+                    addrInfo = new NaviAddressInfo()
+                    {
+                        Description = dto.AddressInfo.Description,
+                        ContainerAddress = dto.AddressInfo.ContainerAddress,
+                        SelfAddress = dto.AddressInfo.SelfAddress,
+                        Latitude = dto.AddressInfo.Latitude,
+                        Longitude = dto.AddressInfo.Longitude,
+                        Picture = dto.AddressInfo.Picture,
+                        Category = existedCategories.FirstOrDefault(x => x.Id == dto.AddressInfo.Category?.Id),
+                        City = city
+                    };
+                }
+                else if (!string.IsNullOrEmpty(address))
                 {
                     Regex regex = new Regex(@"\[(?<container>\d*)\](?<self>\d*)");
                     var regexGroups = regex.Match(address).Groups;
 
                     if (regexGroups.Count > 0)
                     {
+                        addrInfo = new NaviAddressInfo();
                         addrInfo.ContainerAddress = regexGroups["container"].Value;
                         addrInfo.SelfAddress = regexGroups["self"].Value;
 

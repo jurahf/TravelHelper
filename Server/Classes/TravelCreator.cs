@@ -54,7 +54,7 @@ namespace Server.Classes
                     TempPoint = 0
                 };
 
-                parseHelper.ParsePlacePointList(group, saveArgs.AdditionalPlaces, parsed.Categories, sch);
+                parseHelper.ParsePlacePointList(group, saveArgs.AdditionalPlaces, parsed.Categories, sch, parsed.City);
 
                 parsed.Schedules.Add(sch);
             }

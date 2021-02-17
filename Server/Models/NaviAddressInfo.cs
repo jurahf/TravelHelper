@@ -29,6 +29,9 @@ namespace Server.Models
         public string Picture { get; set; }
         public string Description { get; set; }
 
+        /// <summary>
+        /// Место в расписании
+        /// </summary>
         [JsonIgnore]
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<PlacePoint> PlacePoint { get; set; }

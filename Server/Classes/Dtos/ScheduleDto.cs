@@ -7,8 +7,10 @@ namespace Server.Classes.Dtos
 {
     public class ScheduleDto
     {
+        public int? PlacePointId { get; set; }
         public string DateTime { get; set; }
         public string Address { get; set; }
         public string Name { get; set; }
+        public AddressInfoDto AddressInfo { get; set; }
     }
 }
