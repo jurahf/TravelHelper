@@ -21,9 +21,11 @@ namespace Server.Controllers
     public class AddressesController : ApiController
     {
         private readonly IAddressesService addressesService;
+        private readonly DBWork data;
 
         public AddressesController()
         {
+            data = new DBWork();
             addressesService = new ServiceFactory().GetAddressesService();
         }
 
@@ -37,7 +39,7 @@ namespace Server.Controllers
         [HttpGet]
         public List<City> SearchCity([FromUri] CityFilterAndOrder args)
         {
-            return addressesService.SearchCity(args);
+            return data.GetCities(args);
         }
 
 
@@ -46,14 +48,6 @@ namespace Server.Controllers
         {
             return addressesService.SearchNear(args);
         }
-
-
-
-
-
-
-
-
 
 
     }

@@ -14,10 +14,6 @@ namespace Server.Interfaces
     {
         List<NaviAddressInfo> SearchAddresses(AddressSearchArgs args);
 
-        List<City> SearchCity(CityFilterAndOrder args);
-
         List<NaviAddressInfo> SearchNear(AddressSearchNearArgs args);
-
-        NaviAddressInfo GetAddressInfo(string containerAddress, string selfAddress);
     }
 }

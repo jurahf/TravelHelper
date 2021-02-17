@@ -116,7 +116,6 @@
     <Compile Include="Classes\Dtos\PlaceDto.cs" />
     <Compile Include="Classes\Dtos\ScheduleDto.cs" />
     <Compile Include="Classes\NaviAddressParser.cs" />
-    <Compile Include="Classes\AddressDetailsLoader.cs" />
     <Compile Include="Classes\Results\PreSaveTravelResult.cs" />
     <Compile Include="Classes\Results\SaveScheduleResult.cs" />
     <Compile Include="Classes\Results\SaveTravelResult.cs" />

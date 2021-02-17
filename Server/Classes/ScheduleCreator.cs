@@ -14,7 +14,6 @@ namespace Server.Classes
     {
         private readonly DBWork data;
         private readonly IAddressesService addressService;
-        private readonly AddressDetailsLoader addressDetailsLoader;
         private readonly CommonParseHelper parseHelper;
 
         private const int placeInDayCount = 5;    // сколько мест мы хотим посещать в день
@@ -30,8 +29,7 @@ namespace Server.Classes
             this.data = data;
             // TODO: в фабрику
             addressService = new ServiceFactory().GetAddressesService();
-            addressDetailsLoader = new AddressDetailsLoader(data, addressService);
-            parseHelper = new CommonParseHelper(data, addressDetailsLoader);
+            parseHelper = new CommonParseHelper(data);
         }
 
 
@@ -103,20 +101,15 @@ namespace Server.Classes
                     Lng = parsed.City.Lng,
                     RadiusLat = radiusLat,
                     RadiusLng = radiusLng,
-                    Categories = GetCategories(parsed),
-                    Limit = Math.Max(daysCount * placeInDayCount * filterCoefficient, defaultLimit)
+                    Categories = GetCategories(parsed),     // тут добавляются точки питания
+                    Limit = Math.Max(daysCount * placeInDayCount * filterCoefficient, defaultLimit),
+                    NeededPlacesCount = daysCount * placeInDayCount,  // сколько мест надо выбрать
+                    City = parsed.City
                 });
 
-            int neededPlacesCount = daysCount * placeInDayCount;  // сколько мест надо выбрать
-            addrInfoList = addrInfoList.OrderBy(x => CalcDistance(x, parsed.City)).Take(neededPlacesCount).ToList();
-            if (addrInfoList.Count() < neededPlacesCount) // TODO: на случай, если мест не хватило - добавляем из других категорий ???
-                addrInfoList = addrInfoList.Concat(addrInfoList).Take(neededPlacesCount).ToList();
-
-            // получаем дополнительную информацию по адресам
-            addrInfoList = addressDetailsLoader.LoadAdditionalInfoParallel(addrInfoList);
 
             // мест может быть найдено меньше, поэтому перевычисляем
-            neededPlacesCount = addrInfoList.Count();
+            int neededPlacesCount = addrInfoList.Count();
             int realPlaceInDayCount = neededPlacesCount / daysCount;
             int hoursOnPlace = Math.Max(1, activeHourseCount / realPlaceInDayCount);
 
@@ -215,11 +208,6 @@ namespace Server.Classes
             };
         }
 
-
-        private double CalcDistance(NaviAddressInfo x, City y)
-        {
-            return Math.Sqrt(Math.Pow((double)(x.Latitude - y.Lat), 2) + Math.Pow((double)(x.Longitude - y.Lng), 2));
-        }
 
         private double CalcDistance(NaviAddressInfo x, NaviAddressInfo y)
         {

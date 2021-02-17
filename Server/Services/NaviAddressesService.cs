@@ -7,13 +7,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace Server.Services
 {
     public class NaviAddressesService : IAddressesService
     {
-        private DBWork data = new DBWork();
         // TODO: из конфига
         private string serviceUrl = "https://api.naviaddress.com/api/v1.5/";  // вроде там был еще какой-то тестовый
 
@@ -36,11 +36,6 @@ namespace Server.Services
                 throw new WebException($"Сервер адресов вернул код {response.StatusCode}");
         }
 
-
-        public List<City> SearchCity(CityFilterAndOrder args)
-        {
-            return data.GetCities(args);
-        }
 
         public List<NaviAddressInfo> SearchNear(AddressSearchNearArgs args)
         {
@@ -70,6 +65,13 @@ namespace Server.Services
                 List<string> ids = args.Categories.Select(x => x.NaviId).ToList();
                 filteredAddresses = list.Where(x => x.Category != null && ids.Contains(x.Category.NaviId)).ToList();
 
+                filteredAddresses = filteredAddresses.OrderBy(x => CalcDistance(x, args.City)).Take(args.NeededPlacesCount).ToList();
+                if (filteredAddresses.Count() < args.NeededPlacesCount) // TODO: на случай, если мест не хватило - добавляем из других категорий ???
+                    filteredAddresses = filteredAddresses.Concat(filteredAddresses).Take(args.NeededPlacesCount).ToList();
+
+                // получаем дополнительную информацию по адресам
+                filteredAddresses = LoadAdditionalInfoParallel(filteredAddresses);
+
                 return filteredAddresses;
             }
             else
@@ -93,6 +95,57 @@ namespace Server.Services
             }
             else
                 throw new WebException($"Сервер адресов вернул код {response.StatusCode}");
+        }
+
+
+        private List<NaviAddressInfo> LoadAdditionalInfoParallel(List<NaviAddressInfo> addressesList)
+        {
+            int degreeOfParallelism = 10;
+            int addrPerTask = Math.Max(addressesList.Count / degreeOfParallelism, 1);
+            List<Task<List<NaviAddressInfo>>> taskList = new List<Task<List<NaviAddressInfo>>>();
+
+            for (int i = 0; i < degreeOfParallelism; i++)
+            {
+                var innerList = addressesList.Skip(addrPerTask * i).Take(addrPerTask).ToList();
+                taskList.Add(Task.Factory.StartNew(
+                    () => LoadAdditionalInfoInner(innerList))
+                );
+            }
+
+            Task.WaitAll(taskList.ToArray());
+            return taskList.SelectMany(t => t.Result).ToList();
+        }
+
+
+        private List<NaviAddressInfo> LoadAdditionalInfoInner(List<NaviAddressInfo> addressesList)
+        {
+            List<NaviAddressInfo> resultList = new List<NaviAddressInfo>();
+
+            foreach (var address in addressesList)
+            {
+                NaviAddressInfo additionalInfo = null;
+                try
+                {
+                    // пробуем поискать сначала по базе, может сохраняли уже такой адрес
+                    //additionalInfo = data.GetFromDatabase<NaviAddressInfo>(x => x.ContainerAddress == address.ContainerAddress && x.SelfAddress == address.SelfAddress).FirstOrDefault();
+
+                    if (additionalInfo == null)
+                        additionalInfo = GetAddressInfo(address.ContainerAddress, address.SelfAddress);
+                }
+                catch
+                {
+                }
+
+                resultList.Add(additionalInfo ?? address);
+            }
+
+            return resultList;
+        }
+
+
+        private double CalcDistance(NaviAddressInfo x, City y)
+        {
+            return Math.Sqrt(Math.Pow((double)(x.Latitude - y.Lat), 2) + Math.Pow((double)(x.Longitude - y.Lng), 2));
         }
 
 

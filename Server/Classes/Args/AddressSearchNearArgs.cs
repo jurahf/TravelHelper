@@ -14,6 +14,10 @@ namespace Server.Classes.Args
         public decimal RadiusLng { get; set; }
         public int? Limit { get; set; }
 
+        public int NeededPlacesCount { get; set; }
+
+        public City City { get; set; }
+
         public List<Category> Categories { get; set; }
     }
 }

@@ -26,8 +26,7 @@ namespace Server.Classes
             this.data = data;
             // TODO: в фабрику
             addressService = new ServiceFactory().GetAddressesService();
-            var addressDetailsLoader = new AddressDetailsLoader(data, addressService);
-            parseHelper = new CommonParseHelper(data, addressDetailsLoader);
+            parseHelper = new CommonParseHelper(data);
         }
 
         public SaveTravelParsedArgs ValidateAndParse(SaveTravelArgs saveArgs)

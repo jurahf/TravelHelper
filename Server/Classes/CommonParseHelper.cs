@@ -13,15 +13,13 @@ namespace Server.Classes
     public class CommonParseHelper
     {
         private readonly DBWork data;
-        private readonly AddressDetailsLoader naviLoadHelper;
         private const string DateTimeFormatFull = "yyyy-MM-ddTHH:mm:ss";
         private const string DateTimeFormatShort = "dd.MM.yyyy";
         private const string TimeFormat = "HH:mm";
 
-        public CommonParseHelper(DBWork data, AddressDetailsLoader naviLoadHelper)
+        public CommonParseHelper(DBWork data)
         {
             this.data = data;
-            this.naviLoadHelper = naviLoadHelper;
         }
 
 
@@ -72,7 +70,7 @@ namespace Server.Classes
                         addrInfo.SelfAddress = regexGroups["self"].Value;
 
                         // TODO - загрузить все адреса заранее и параллельно
-                        addrInfo = naviLoadHelper.LoadAdditionalInfoSingle(addrInfo);
+                        //addrInfo = naviLoadHelper.LoadAdditionalInfoSingle(addrInfo);
 
                         // TODO: перенести в загрузчик или оставить только загрузку из БД (и убрать из параметров existedCategories)
                         if (addrInfo?.Category != null && addrInfo.Category.Id == 0)
