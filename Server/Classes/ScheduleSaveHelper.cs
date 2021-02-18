@@ -42,34 +42,9 @@ namespace Server.Classes
             return parsed;
         }
 
-        public void SaveSchedule(SaveScheduleParsedArgs parsed)
-        {
-            Schedule forSave = null;
-            List<PlacePoint> forDelete = new List<PlacePoint>();
-            if (parsed.ScheduleId == null || parsed.ScheduleId.Value == 0)
-            {
-                forSave = parsed.Schedule;
-            }
-            else
-            {
-                forSave = data.GetFromDatabase<Schedule>(x => x.Id == parsed.ScheduleId.Value).FirstOrDefault() ?? new Schedule();
-                forDelete = new List<PlacePoint>(forSave.PlacePoint);
-
-                forSave.Date = parsed.Schedule.Date;
-                forSave.PlacePoint = new List<PlacePoint>(parsed.Schedule.PlacePoint);
-                //forSave.Travel
-                //forSave.TempPoint
-            }
-
-            data.Insert(forSave);
-            data.DeleteObject(forDelete);
-
-            parsed.Result.ScheduleId = forSave.Id;
-        }
-
         public void UpdateRows(SaveScheduleParsedArgs parsed, SaveScheduleArgs saveArgs)
         {
-            // учитываются только перестановки, удаление и добавление не учитывается
+            // добавление не учитывается
 
             if (parsed.Schedule == null)
                 throw new ArgumentException("Не найдено расписание");

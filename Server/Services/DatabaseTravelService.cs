@@ -132,7 +132,7 @@ namespace Server.Services
                 if (parsed.Result.Valid)
                 {
                     helper.UpdateRows(parsed, saveArgs);
-                    helper.SaveSchedule(parsed);
+                    data.Update(parsed.Schedule);
                 }
 
                 return parsed.Result;
