@@ -1,7 +1,9 @@
 ﻿@{
     ViewBag.Title = "Домашняя";
 }
+
 @using Client.Models;
+@using System.Configuration;
 
 
 <div>
@@ -325,8 +327,8 @@
                     <div class="progress-bar progress-bar-success progress-bar-striped active" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
                     </div>
                 </div>
-                <button id="btnTravelForward" type="button" class="btn btn-default" onclick="preSaveTravel();">Далее</button>
-                <button id="btnTravelSave" type="button" class="btn btn-success disabled" onclick="saveTravel();">Сохранить</button>
+                <button id="btnTravelForward" type="button" class="btn btn-default" onclick="preSaveTravel(travelHelperServerUrl);">Далее</button>
+                <button id="btnTravelSave" type="button" class="btn btn-success disabled" onclick="saveTravel(travelHelperServerUrl);">Сохранить</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Отменить</button>
             </div>
         </div>
@@ -346,9 +348,8 @@
 
 /*******************************************************************************************/
     function selectTravel(login, travelId) {
-        // todo: адрес из конфига
         var xmlHttp = new XMLHttpRequest(); // вообще-то json
-        xmlHttp.open("GET", "http://localhost:62012/api/Travel/SelectTravel?login=" + login + "&id=" + travelId, true); // false for synchronous request
+        xmlHttp.open("GET", travelHelperServerUrl + "/api/Travel/SelectTravel?login=" + login + "&id=" + travelId, true); // false for synchronous request
         xmlHttp.onload = function () {
                 window.location.replace(currUrl);
         }
@@ -370,6 +371,7 @@
     var maxPointIndex = 0;
     var tripSetted = false;
     var tempCity = {};
+    var travelHelperServerUrl = '@ConfigurationManager.AppSettings["TravelHelperServerUrl"]';
 
     @{
         // находим все точки текущего выбранного путешествия, чтобы поставить маркеры
@@ -414,21 +416,6 @@
 
     function InitMapWithParams() {
         getGeolocationAndInitMap(pointsArr, tempCity, 'map');
-    }
-
-    function moveTempPointIndex() {
-        tempPointIndex++;
-
-        if (tempPointIndex > maxPointIndex) {
-            tempPointIndex = minPointIndex;
-        }
-    }
-
-    function pointWasPassed() {
-        // TODO: отправить запрос на сервер - надо отметить, что точка посещена
-        // данные брать из:
-        //var pointsArr = [];   // точки для отображения на карте
-        //var tempPointIndex = 0;
     }
 
 

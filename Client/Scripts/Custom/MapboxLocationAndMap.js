@@ -30,7 +30,6 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
     'top-left'
     );
     */
-
     map.on('sourcedata', (e) => {
         if (map.isStyleLoaded() && init == false) {
             init = true;
@@ -64,11 +63,15 @@ function addMarkerAndFullRoute(point, caption, description, today, order) {
         }
     }
 
-    // TODO: цвета маркера и пути для ближайшего, для пройденного, для будущего
-
     addMarker(point, caption, description, markerColor);
+
+
     if (today == true) {
-        addRoutePoint(point);
+        var routeColor = '#3FB1CE';
+        if (order == tempPointIndex + 1)
+            routeColor = '#be3887'
+
+        addRoutePoint(point, routeColor);
     }
 }
 
@@ -92,20 +95,55 @@ function nextPoint() {
         }
         pointWasPassed();
 
-        ShowTripTo(point.Lat, point.Lng);
+        clearMarkersAndRouts();
+        pointsArr.forEach(function (point) {
+            addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.Description, point.Today, point.Order);
+        });
     }
-    // TODO: Как скрыть маршрут? Как обновить текущий маршрут?
+}
+
+
+function clearMarkersAndRouts() {
+    //routs = [];
+
+    for (var i = 0; i < layerNames.length; i++)
+        map.removeLayer(layerNames[i]);
+
+    layerNames = [];
+
+    for (var i = 0; i < allMarkers.length; i++)
+        allMarkers[i].remove();
+
+    allMarkers = [];
+}
+
+
+function moveTempPointIndex() {
+    tempPointIndex++;
+
+    if (tempPointIndex > maxPointIndex) {
+        tempPointIndex = minPointIndex;
+    }
+}
+
+
+function pointWasPassed() {
+    // TODO: отправить запрос на сервер - надо отметить, что точка посещена
+    // данные брать из:
+    //var pointsArr = [];   // точки для отображения на карте
+    //var tempPointIndex = 0;
 }
 
 
 
-
+var allMarkers = [];
 function addMarker(point, title, description, color) {
     var marker = new mapboxgl.Marker({ color: color })
         .setLngLat(point)
         .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
             .setHTML('<h3>' + title + '</h3><p>' + description + '</p>'))
         .addTo(map);
+    allMarkers.push(marker);
 }
 
 
@@ -138,15 +176,16 @@ function setLang(language) {
 
 
 var routs = [];
-function addRoutePoint(point) {
+function addRoutePoint(point, color) {
     routs.push(point);
 
-    if (routs.length > 1)
-        getRoute(routs[routs.length - 2], routs[routs.length - 1], 'walking', 'route-' + (routs.length - 1));
+    if (routs.length > 1) {
+        getRoute(routs[routs.length - 2], routs[routs.length - 1], 'walking', 'route-' + (routs.length - 1), color);
+    }
 }
 
-
-function getRoute(start, end, profile, layerName) {
+var layerNames = [];
+function getRoute(start, end, profile, layerName, color) {
 
     if (layerName == undefined)
         layerName = 'route';
@@ -224,6 +263,7 @@ function getRoute(start, end, profile, layerName) {
             //});
 
             // add route line
+            layerNames.push(layerName);
             map.addLayer({
                 id: layerName,
                 type: 'line',
@@ -243,7 +283,7 @@ function getRoute(start, end, profile, layerName) {
                     'line-cap': 'round'
                 },
                 paint: {
-                    'line-color': '#be3887',
+                    'line-color': color,
                     'line-width': 5,
                     'line-opacity': 0.75
                 }

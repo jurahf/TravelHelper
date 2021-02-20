@@ -12,8 +12,6 @@ using Server.Services;
 
 namespace Server.Controllers
 {
-    // TODO: адрес клиента из конфига
-    [EnableCors(origins: "http://localhost:2168", headers: "*", methods: "*")]
     public class TravelController : ApiController
     {
         private readonly ITravelService travelSrvice;

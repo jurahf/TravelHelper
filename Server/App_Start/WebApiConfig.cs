@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http.Headers;
 using System.Web.Http;
+using System.Web.Http.Cors;
 
 namespace Server
 {
@@ -12,7 +13,8 @@ namespace Server
         {
             // Конфигурация и службы веб-API
 
-            config.EnableCors();
+            var cors = new EnableCorsAttribute("*", "*", "*"); // http://localhost:2168 ?
+            config.EnableCors(cors);
 
             // Маршруты веб-API
             config.MapHttpAttributeRoutes();

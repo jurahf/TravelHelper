@@ -16,8 +16,6 @@ using System.Web.Http.Cors;
 
 namespace Server.Controllers
 {
-    // TODO: адрес клиента из конфига
-    [EnableCors(origins: "http://localhost:2168", headers: "*", methods: "*")]
     public class AddressesController : ApiController
     {
         private readonly IAddressesService addressesService;
