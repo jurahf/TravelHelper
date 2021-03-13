@@ -23,6 +23,17 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
 
     map.addControl(geocoder);
 
+    var geoLocate = new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true,
+            showUserLocation: true
+    })
+
+    map.addControl(geoLocate);
+
+
     /*
     map.addControl(new MapboxDirections({
         accessToken: mapboxgl.accessToken
@@ -39,7 +50,11 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
             arrPoints.forEach(function (point) {
                 addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.Description, point.Today, point.Order);
             });
-        }
+        } 
+    });
+
+    map.on('load', function () {
+        alert(geoLocate.trigger());
     });
 
     canvas = map.getCanvasContainer();
@@ -319,4 +334,10 @@ function setOnClickHandler() {
         };
         req.send();
     });
+}
+
+
+
+function ShowTripTo() {
+    // TODO
 }
