@@ -54,7 +54,7 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
     });
 
     map.on('load', function () {
-        alert(geoLocate.trigger());
+        geoLocate.trigger();
     });
 
     canvas = map.getCanvasContainer();
@@ -156,7 +156,7 @@ function addMarker(point, title, description, color) {
     var marker = new mapboxgl.Marker({ color: color })
         .setLngLat(point)
         .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-            .setHTML('<h3>' + title + '</h3><p>' + description + '</p>'))
+            .setHTML('<h5>' + title + '</h5><p>' + description + '</p>'))
         .addTo(map);
     allMarkers.push(marker);
 }

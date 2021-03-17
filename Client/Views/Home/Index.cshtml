@@ -43,7 +43,7 @@
 }
 
 @section nextPointButton {
-    <a onclick="nextPoint();">Следующая точка</a>
+    <a onclick="nextPoint();" href="#">Следующая точка</a>
 
     @*<div class="btn-toolbar hidden-hover" role="toolbar" aria-label="">
             <div class="btn-group mr-2" role="group" aria-label="Обновить">
@@ -60,7 +60,23 @@
 }
 
 @section scheduleButton {
-    <a data-toggle="modal" data-target="#schedule-modal">@ViewBag.ScheduleTitle</a>
+
+    @{
+        <h6>Расписание по дням:</h6>
+        Travel selectedTravel = ViewBag.SelectedTravel as Travel;
+        int i = 1;
+        foreach (var sch in selectedTravel?.Schedules.OrderBy(x => x.Date))
+        {
+            <div class="btn-group" role="group" aria-label="Удалить">
+                <button type="button" class="btn btn-primary @(sch.Id == ViewBag.SelectedScheduleID ? "border-select" : "")" onclick="location.href='@Url.Action("SelectNextSchedule", "Home", new { scheduleId = sch.Id })'" >
+                    <span aria-hidden="true">@i</span>
+                </button>
+            </div>
+            i++;
+        }
+    }
+
+    <a data-toggle="modal" data-target="#schedule-modal" href="#">Подробно</a>
 }
 
 @section anotherTravels {
@@ -83,7 +99,7 @@
 }
 
 @section newTravelButton {
-    <a data-toggle="modal" data-target="#new-travel-modal">Новое путешествие</a>
+    <a data-toggle="modal" data-target="#new-travel-modal" href="#">Новое путешествие</a>
 }
 
 <!-- модальное окно расписание на сегодня -->
@@ -378,27 +394,31 @@
 
         Travel selectedTravel = ViewBag.SelectedTravel as Travel;
         DateTime tempDate = schedule?.Date.Date ?? DateTime.Today;
+        int selectedSheduleID = ViewBag.SelectedScheduleID;
         if (selectedTravel?.Schedules != null)
         {
             int i = 0;
-            foreach (var p in selectedTravel?.Schedules.SelectMany(s => s.PlacePoint).OrderBy(x => x.Time))
+            foreach (var sch in selectedTravel?.Schedules)
             {
-                @:var point@(i) = {};
+                foreach (var p in sch.PlacePoint.OrderBy(x => x.Time))
+                {
+                    @:var point@(i) = {};
                     @:point@(i).Lat = @(p.NaviAddressInfo?.Latitude.ToString().Replace(',', '.'));
                     @:point@(i).Lng = @(p.NaviAddressInfo?.Longitude.ToString().Replace(',', '.'));
                     @:point@(i).Category = '@(p.NaviAddressInfo?.Category?.Name)';
                     @:point@(i).Caption = '@(p.CustomName)';
                     @:point@(i).Description = '@(p.NaviAddressInfo?.Description)';
-                    @:point@(i).Today = @( p.Time.Date == tempDate ? "true" : "false" );
+                    @:point@(i).Today = @( sch.Id == selectedSheduleID ? "true" : "false" );
                     @:point@(i).Order = @( p.Order );
                     @:pointsArr.push(point@(i));
 
-                if (p.Time.Date == tempDate && schedule.TempPoint == p.Order)
-                {
-                    @:tempPointIndex = @(i);
-                }
+                    if (p.Time.Date == tempDate && schedule.TempPoint == p.Order)
+                    {
+                        @:tempPointIndex = @(i);
+                    }
 
-                i++;
+                    i++;
+                }
             }
 
             @:maxPointIndex = @(selectedTravel?.Schedules.SelectMany(s => s.PlacePoint).Where(p => p.Time.Date == tempDate).Max(p => p.Order));

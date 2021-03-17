@@ -3,6 +3,9 @@
     padding-left: 40px !important;
 }
 
+.border-select {
+    border: solid 2px blue;
+}
 
 /* Set padding to keep content from hitting the edges */
 .body-content {

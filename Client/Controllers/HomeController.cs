@@ -41,15 +41,51 @@ namespace Client.Controllers
                     .OrderBy(x => Math.Abs((x.Date - DateTime.Today).Days)) // ближайшее к сегодня расписание
                     .FirstOrDefault();
 
+                int order = selectedTravel.Schedules.OrderBy(x => x.Date).ToList().IndexOf(tempSchedule);
+                ViewBag.SelectedScheduleID = tempSchedule.Id;
                 ViewBag.Schedule = tempSchedule;
-                ViewBag.ScheduleTitle = $"Расписание на {tempSchedule.Date:dd.MM.yyyy}";
+                ViewBag.ScheduleTitle = $"Расписание на {order + 1}-й день";
             }
             else
             {
-                ViewBag.ScheduleTitle = $"Расписание на {DateTime.Today:dd.MM.yyyy}";
+                ViewBag.ScheduleTitle = $"Нет расписания";
             }
 
             return View();
         }
+
+
+        public ActionResult SelectNextSchedule(int scheduleId)
+        {
+            TravelRemoteService trs = new TravelRemoteService(HttpQueryHelper.CreateHttpClient());
+            categories = trs.GetCategories();
+
+            travels = trs.GetTravelsList(currentUser);
+            int? selectedTravel_Id = trs.GetSelectedTravelId(currentUser);
+            if (selectedTravel_Id != null)
+                selectedTravel = travels.FirstOrDefault(t => t.Id == selectedTravel_Id);
+
+            ViewBag.User = currentUser;
+            ViewBag.Categories = categories;
+            ViewBag.Travels = travels;
+            ViewBag.SelectedTravel = selectedTravel;
+
+            if (selectedTravel != null && selectedTravel.Schedules?.Any() == true)
+            {
+                var tempSchedule = selectedTravel.Schedules.FirstOrDefault(x => x.Id == scheduleId);
+                int order = selectedTravel.Schedules.OrderBy(x => x.Date).ToList().IndexOf(tempSchedule);
+
+                ViewBag.SelectedScheduleID = tempSchedule.Id;
+                ViewBag.Schedule = tempSchedule;
+                ViewBag.ScheduleTitle = $"Расписание на {order + 1}-й день"; 
+            }
+            else
+            {
+                ViewBag.ScheduleTitle = $"Нет расписания";
+            }
+
+            return View("Index");
+        }
+
     }
 }
