@@ -5,6 +5,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title – Travel helper</title>
+
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2196f3" />
+
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
@@ -88,5 +92,13 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker
+                .register('/serviceworker.js')
+                .then(function () { console.log('Service Worker Registered'); });
+        }
+    </script>
 </body>
 </html>
