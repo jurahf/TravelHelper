@@ -27,6 +27,19 @@ textarea {
     max-width: 280px;
 }
 
+.small-img {
+    margin-top: 10px;
+    width: 100%;
+    /* height: 300px; */
+   /* object-fit: scale-down;*/
+}
+
+.big-img {
+    width: 100%;
+    /*object-fit: scale-down;*/
+}
+
+
 .nav li {
     text-transform: uppercase;
 }

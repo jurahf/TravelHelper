@@ -15,6 +15,7 @@ namespace Client.Helpers
         {
             HttpClient client = new HttpClient();
             client.BaseAddress = new Uri(serviceUrl);
+            client.Timeout = TimeSpan.FromSeconds(60);
             // TODO: auth info
             return client;
         }

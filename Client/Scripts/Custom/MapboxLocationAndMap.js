@@ -48,13 +48,13 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
             map.off('sourcedata');
 
             arrPoints.forEach(function (point) {
-                addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.Description, point.Today, point.Order);
+                addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.ShortDescription, point.Description, point.ImageLink, point.Today, point.Order);
             });
         } 
     });
 
     map.on('load', function () {
-        geoLocate.trigger();
+        //geoLocate.trigger();
     });
 
     canvas = map.getCanvasContainer();
@@ -64,7 +64,7 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
 
 
 
-function addMarkerAndFullRoute(point, caption, description, today, order) {
+function addMarkerAndFullRoute(point, caption, shortDescription, description, imageLink, today, order) {
     var markerColor = '#3FB1CE';
     if (today) {
         if (order <= tempPointIndex) {
@@ -78,7 +78,7 @@ function addMarkerAndFullRoute(point, caption, description, today, order) {
         }
     }
 
-    addMarker(point, caption, description, markerColor);
+    addMarker(point, caption, shortDescription, description, imageLink, markerColor);
 
 
     if (today == true) {
@@ -152,13 +152,23 @@ function pointWasPassed() {
 
 
 var allMarkers = [];
-function addMarker(point, title, description, color) {
+function addMarker(point, title, shortDescription, description, imageLink, color) {
+
+    var link = '';
+    if (shortDescription != description)
+        link = '<a href="#" onclick="ShowInfo(\'' + title + '\', \'' + description + '\', \'' + imageLink + '\'); ">Подробно...</a>';
+
+    var img = '';
+    if (imageLink)
+        img = '<div> <img src="' + imageLink + '" class="small-img" /> </div>';
+
     var marker = new mapboxgl.Marker({ color: color })
         .setLngLat(point)
         .setPopup(new mapboxgl.Popup({ offset: 25 }) // add popups
-            .setHTML('<h5>' + title + '</h5><p>' + description + '</p>'))
+            .setHTML(img + '<h5>' + title + '</h5><p>' + shortDescription + '</p> ' + link))
         .addTo(map);
     allMarkers.push(marker);
+
 }
 
 

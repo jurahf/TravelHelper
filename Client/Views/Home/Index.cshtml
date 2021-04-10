@@ -2,8 +2,8 @@
     ViewBag.Title = "Домашняя";
 }
 
-@using Client.Models;
 @using System.Configuration;
+@using Client.Models;
 
 
 <div>
@@ -68,7 +68,7 @@
         foreach (var sch in selectedTravel?.Schedules.OrderBy(x => x.Date))
         {
             <div class="btn-group" role="group" aria-label="Удалить">
-                <button type="button" class="btn btn-primary @(sch.Id == ViewBag.SelectedScheduleID ? "border-select" : "")" onclick="location.href='@Url.Action("SelectNextSchedule", "Home", new { scheduleId = sch.Id })'" >
+                <button type="button" class="btn btn-primary @(sch.Id == ViewBag.SelectedScheduleID ? "border-select" : "")" onclick="location.href='@Url.Action("SelectNextSchedule", "Home", new { scheduleId = sch.Id })'">
                     <span aria-hidden="true">@i</span>
                 </button>
             </div>
@@ -354,6 +354,31 @@
 
 
 
+<!-- модальное окно информация -->
+<div id="info-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+        
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <div class="modal-title"><h4 id="modal_info_title"></h4></div>
+        </div>
+
+        <div class="modal-body form-group has-feedback">
+            <div>
+                <img id="modal_info_img" src="" class="big-img" />
+            </div>
+            <p id="modal_info_description"></p>
+        </div>
+
+        </div>
+    </div>
+</div>
+<!-- конец модального окно информация -->
+
+
+
 @section scripts {
 
     <!--<script src="~/Scripts/Custom/GoogleYandexLocationAndMap.js"></script>-->
@@ -361,6 +386,17 @@
     <script src="~/Scripts/Custom/Autocomplete.js"></script>
     <script src="~/Scripts/Custom/MagicForTravelEditModal.js"></script>
     <script type="text/javascript">
+
+
+
+    function ShowInfo(title, info, imageLink) {
+        $('#modal_info_title').text(title);
+        $('#modal_info_description').text(info);
+        $('#modal_info_img').attr("src", imageLink);
+
+        $('#info-modal').modal('show');
+    }
+
 
 /*******************************************************************************************/
     function selectTravel(login, travelId) {
@@ -407,7 +443,9 @@
                     @:point@(i).Lng = @(p.NaviAddressInfo?.Longitude.ToString().Replace(',', '.'));
                     @:point@(i).Category = '@(p.NaviAddressInfo?.Category?.Name)';
                     @:point@(i).Caption = '@(p.CustomName)';
-                    @:point@(i).Description = '@(p.NaviAddressInfo?.Description)';
+                    @:point@(i).ShortDescription = '@(p.NaviAddressInfo?.ЗатравочкаОписания?.Replace(Environment.NewLine, " "))';
+                    @:point@(i).Description = '@(p.NaviAddressInfo?.Description?.Replace(Environment.NewLine, " "))';
+                    @:point@(i).ImageLink = ' @( string.IsNullOrEmpty(p.NaviAddressInfo?.Picture) ? "" : "images/places/" + p.NaviAddressInfo?.Picture ) ';
                     @:point@(i).Today = @( sch.Id == selectedSheduleID ? "true" : "false" );
                     @:point@(i).Order = @( p.Order );
                     @:pointsArr.push(point@(i));
