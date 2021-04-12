@@ -156,7 +156,7 @@ function addMarker(point, title, shortDescription, description, imageLink, color
 
     var link = '';
     if (shortDescription != description)
-        link = '<a href="#" onclick="ShowInfo(\'' + title + '\', \'' + description + '\', \'' + imageLink + '\'); ">Подробно...</a>';
+        link = '<a href="#" onclick="ShowInfo(\'' + title + '\', \'' + description + '\', \'' + imageLink + '\'); ">подробно...</a>';
 
     var img = '';
     if (imageLink)

@@ -10,16 +10,38 @@ namespace Client.Models
     {
         private const int shortDescriptionLen = 200;
         private const int maxLondDescriptionLen = 210;
-        
-        
+        private const string basePicturePath = "/images/places/";
+
+
         public string ContainerAddress { get; set; }
         public string SelfAddress { get; set; }
         public decimal Latitude { get; set; }
         public decimal Longitude { get; set; }
         public string Picture { get; set; }
-        public string Description { get; set; }
+
+        private string description;
+        public string Description 
+        {
+            get { return description; }
+            set { description = value?.Replace(Environment.NewLine, " "); }
+        }
+
         public Category Category { get; set; }
 
+
+        public string SafePictureUrl
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Picture))
+                    return "";
+
+                if (Picture.ToLower().StartsWith("http"))
+                    return Picture;
+                else
+                    return "/images/places/" + Picture.Trim(new char[] { '/' } );
+            }
+        }
 
 
         public string ЗатравочкаОписания

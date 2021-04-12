@@ -16,6 +16,10 @@ function initSettings(_currUrl) {
 
 /******************************* Schedule modal *******************************************/
 function exchangeScheduleRows(x, y) {
+    var firstImg = x.children('td.img-cell').first().children('img').first().attr('src');
+    x.children('td.img-cell').first().children('img').first().attr('src', y.children('td.img-cell').first().children('img').first().attr('src'))
+    y.children('td.img-cell').first().children('img').first().attr('src', firstImg);
+
     var firstText = x.children('td.name-cell').first().text();
     x.children('td.name-cell').first().text(y.children('td.name-cell').first().text());
     y.children('td.name-cell').first().text(firstText);

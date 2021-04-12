@@ -132,7 +132,8 @@
                                                 }
                                             }
                                         </td>
-                                        <td class="name-cell" value="@(point.CustomName)">@point.ToString()</td>
+                                        <td class="img-cell"><img src="@(point.NaviAddressInfo?.SafePictureUrl)" class="small-img" /></td>
+                                        <td class="name-cell" value="@(point.CustomName)">@(point.NaviAddressInfo?.ЗатравочкаОписания) <a href="#" onclick="ShowInfo('@(point.CustomName)', '@(point.NaviAddressInfo?.Description)', '@(point.NaviAddressInfo?.SafePictureUrl)')">подробно...</a></td>
                                         <td class="time-cell" value="@(point.Time.ToString("yyyy-MM-ddTHH:mm:ss"))">@point.Time.ToString("HH:mm")</td>
                                         <td class="buttons-cell">
                                             <div class="btn-group" role="group">
@@ -183,6 +184,9 @@
         </div>
     </div>
 </div>
+
+<!-- конец модального окна расписание на сегодня -->
+
 
 <!-- Модальное окно "Новое путешествие" -->
 <div id="new-travel-modal" class="modal fade" role="dialog">
@@ -444,8 +448,8 @@
                     @:point@(i).Category = '@(p.NaviAddressInfo?.Category?.Name)';
                     @:point@(i).Caption = '@(p.CustomName)';
                     @:point@(i).ShortDescription = '@(p.NaviAddressInfo?.ЗатравочкаОписания?.Replace(Environment.NewLine, " "))';
-                    @:point@(i).Description = '@(p.NaviAddressInfo?.Description?.Replace(Environment.NewLine, " "))';
-                    @:point@(i).ImageLink = ' @( string.IsNullOrEmpty(p.NaviAddressInfo?.Picture) ? "" : "images/places/" + p.NaviAddressInfo?.Picture ) ';
+                    @:point@(i).Description = '@(p.NaviAddressInfo?.Description)';
+                    @:point@(i).ImageLink = '@( p.NaviAddressInfo?.SafePictureUrl )';
                     @:point@(i).Today = @( sch.Id == selectedSheduleID ? "true" : "false" );
                     @:point@(i).Order = @( p.Order );
                     @:pointsArr.push(point@(i));
