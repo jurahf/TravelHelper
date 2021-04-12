@@ -20,9 +20,9 @@ function exchangeScheduleRows(x, y) {
     x.children('td.img-cell').first().children('img').first().attr('src', y.children('td.img-cell').first().children('img').first().attr('src'))
     y.children('td.img-cell').first().children('img').first().attr('src', firstImg);
 
-    var firstText = x.children('td.name-cell').first().text();
-    x.children('td.name-cell').first().text(y.children('td.name-cell').first().text());
-    y.children('td.name-cell').first().text(firstText);
+    var firstText = x.children('td.name-cell').first().html();
+    x.children('td.name-cell').first().html(y.children('td.name-cell').first().html());
+    y.children('td.name-cell').first().html(firstText);
 
     var firstValue = x.children('td.name-cell').first().attr('value');
     x.children('td.name-cell').first().attr('value', y.children('td.name-cell').first().attr('value'));
