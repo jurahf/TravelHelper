@@ -8,7 +8,6 @@
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{9C0E05FF-48F1-4376-92EA-A78F02F89459}</ProjectGuid>
-    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Server</RootNamespace>
@@ -98,41 +97,15 @@
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="App_Start\WebApiConfig.cs" />
-    <Compile Include="Classes\Args\AddressSearchArgs.cs" />
-    <Compile Include="Classes\Args\AddressSearchNearArgs.cs" />
-    <Compile Include="Classes\Args\CityFilterAndOrder.cs" />
-    <Compile Include="Classes\Args\PreSaveTravelArgs.cs" />
-    <Compile Include="Classes\Args\PreSaveTravelParsedArgs.cs" />
-    <Compile Include="Classes\Args\SaveScheduleArgs.cs" />
-    <Compile Include="Classes\Args\SaveScheduleParsedArgs.cs" />
-    <Compile Include="Classes\Args\SaveTravelArgs.cs" />
-    <Compile Include="Classes\Args\SaveTravelParsedArgs.cs" />
-    <Compile Include="Classes\CommonParseHelper.cs" />
-    <Compile Include="Classes\Dtos\AddressInfoDto.cs" />
-    <Compile Include="Classes\Dtos\PlaceDto.cs" />
-    <Compile Include="Classes\Dtos\ScheduleDto.cs" />
+    <Compile Include="Services\DatabaseTravelService\CommonParseHelper.cs" />
     <Compile Include="Classes\MapboxAddressParser.cs" />
     <Compile Include="Classes\NaviAddressParser.cs" />
-    <Compile Include="Classes\Results\PreSaveTravelResult.cs" />
-    <Compile Include="Classes\Results\SaveScheduleResult.cs" />
-    <Compile Include="Classes\Results\SaveTravelResult.cs" />
     <Compile Include="Classes\ScheduleCreator.cs" />
     <Compile Include="Classes\ScheduleSaveHelper.cs" />
     <Compile Include="Classes\ServiceFactory.cs" />
     <Compile Include="Classes\TravelCreator.cs" />
-    <Compile Include="Controllers\AddressesController.cs" />
-    <Compile Include="Controllers\TestController.cs" />
-    <Compile Include="Controllers\TravelController.cs" />
-    <Compile Include="Global.asax.cs">
-      <DependentUpon>Global.asax</DependentUpon>
-    </Compile>
-    <Compile Include="Interfaces\IAddressesService.cs" />
-    <Compile Include="Interfaces\ITravelService.cs" />
     <Compile Include="Models\Category.cs">
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
@@ -140,7 +113,7 @@
       <DependentUpon>Model1.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DBWork.cs" />
-    <Compile Include="Services\DatabaseTravelService.cs" />
+    <Compile Include="Services\DatabaseTravelService\DatabaseTravelService.cs" />
     <Compile Include="Services\MapBoxAddressesService.cs" />
     <Compile Include="Services\NaviAddressesService.cs" />
     <Content Include="Models\db\3 - Insert test data.sql" />
@@ -181,8 +154,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Global.asax" />
-    <Content Include="index.html" />
     <Content Include="Models\db\1 - Insert categories.sql" />
     <Content Include="Models\db\2 - Insert cities.sql" />
     <Content Include="Models\Model1.Context.tt">
@@ -197,14 +168,14 @@
     </Content>
     <Content Include="Models\db\0 - Create database.sql" />
     <Content Include="Models\NaviTravelModel.edmx.sql" />
-    <Content Include="Web.config">
+    <Content Include="app.config">
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Web.Debug.config">
-      <DependentUpon>Web.config</DependentUpon>
+      <DependentUpon>app.config</DependentUpon>
     </Content>
     <Content Include="Web.Release.config">
-      <DependentUpon>Web.config</DependentUpon>
+      <DependentUpon>app.config</DependentUpon>
     </Content>
   </ItemGroup>
   <ItemGroup>
@@ -219,6 +190,12 @@
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Implementation\Implementation.csproj">
+      <Project>{b7eb85c5-c917-411e-b5b3-234d14eeb0bb}</Project>
+      <Name>Implementation</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -229,24 +206,7 @@
   <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
     <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
   </Target>
-  <ProjectExtensions>
-    <VisualStudio>
-      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
-        <WebProjectProperties>
-          <UseIIS>True</UseIIS>
-          <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>62012</DevelopmentServerPort>
-          <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:62012/</IISUrl>
-          <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
-          <CustomServerUrl>
-          </CustomServerUrl>
-          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
-        </WebProjectProperties>
-      </FlavorProperties>
-    </VisualStudio>
-  </ProjectExtensions>
+  <ProjectExtensions />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

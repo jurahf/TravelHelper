@@ -1,4 +1,4 @@
-﻿using Client.Models;
+﻿using Implementation.Model;
 using Client.RemoteServices;
 using System;
 using System.Collections.Generic;
