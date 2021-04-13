@@ -20,7 +20,7 @@ namespace Server.Models
                 NaviId = category.NaviId,
                 Name = category.Name,
                 Parent = ConvertToVm(category.Parent),
-                // Childs - TODO: сейчас заполняется где-то на клиенте (TravelRemoteService)
+                // Childs - заполняется в месте вызова при необходимости, потому что там есть все категории
             };
         }
 

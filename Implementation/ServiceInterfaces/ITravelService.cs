@@ -15,11 +15,11 @@ namespace Implementation.ServiceInterfaces
     {
         List<VMCategory> GetAllCategories();
 
-        List<VMTravel> GetTravelsList(string login);
+        List<VMTravel> GetTravelsList(VMUser user);
 
-        int? GetSelectedTravelId(string login);
+        int? GetSelectedTravelId(VMUser user);
 
-        int SelectTravel(string login, int id);
+        int SelectTravel(VMUser user, int id);
 
         /// <summary>
         /// Создаются сущности, но не сохраняются

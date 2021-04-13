@@ -4,14 +4,16 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Client.Helpers;
-using Client.RemoteServices;
 using Implementation.Model;
+using Implementation.ServiceInterfaces;
 
 namespace Client.Controllers
 {
     public class HomeController : Controller
     {
         protected VMUser currentUser = UserProvider.GetCurrentUser();
+        protected readonly ITravelService travelService = ServiceFactory.GetTravelService();
+
         protected List<VMCategory> categories = new List<VMCategory>();
         protected List<VMTravel> travels = new List<VMTravel>();
         protected VMTravel selectedTravel = null;
@@ -22,11 +24,10 @@ namespace Client.Controllers
             // Подробности по текущему путешествию
             // Если надо - меняем местоположение
 
-            TravelRemoteService trs = new TravelRemoteService(HttpQueryHelper.CreateHttpClient());
-            categories = trs.GetCategories();
+            categories = travelService.GetAllCategories();
 
-            travels = trs.GetTravelsList(currentUser);
-            int? selectedTravel_Id = trs.GetSelectedTravelId(currentUser);
+            travels = travelService.GetTravelsList(currentUser);
+            int? selectedTravel_Id = travelService.GetSelectedTravelId(currentUser);
             if (selectedTravel_Id != null)
                 selectedTravel = travels.FirstOrDefault(t => t.Id == selectedTravel_Id);
 
@@ -57,11 +58,10 @@ namespace Client.Controllers
 
         public ActionResult SelectNextSchedule(int scheduleId)
         {
-            TravelRemoteService trs = new TravelRemoteService(HttpQueryHelper.CreateHttpClient());
-            categories = trs.GetCategories();
+            categories = travelService.GetAllCategories();
 
-            travels = trs.GetTravelsList(currentUser);
-            int? selectedTravel_Id = trs.GetSelectedTravelId(currentUser);
+            travels = travelService.GetTravelsList(currentUser);
+            int? selectedTravel_Id = travelService.GetSelectedTravelId(currentUser);
             if (selectedTravel_Id != null)
                 selectedTravel = travels.FirstOrDefault(t => t.Id == selectedTravel_Id);
 

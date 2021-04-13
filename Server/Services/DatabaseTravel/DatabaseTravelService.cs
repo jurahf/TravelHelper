@@ -15,38 +15,57 @@ namespace Server.Services.DatabaseTravel
 
         public List<VMCategory> GetAllCategories()
         {
-            List<Category> result = data.GetFromDatabase<Category>();
+            List<Category> fromDb = data.GetFromDatabase<Category>();
+
+            List<VMCategory> result = fromDb.Select(x => x.ConvertToVm()).ToList();
+
+            foreach (var cat in result)
+            {
+                if (cat.Parent != null)
+                {
+                    var parent = result
+                        .FirstOrDefault(x => x.Id == cat.Parent.Id);
+
+                    if (parent != null)
+                    {
+                        if (parent.Childs == null)
+                            parent.Childs = new List<VMCategory>();
+                        parent.Childs.Add(cat);
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public List<VMTravel> GetTravelsList(VMUser user)
+        {
+            List<Travel> result = data.GetFromDatabase<Travel>(t => t.User.Login.ToLower() == user.Login.ToLower());
             return result.Select(x => x.ConvertToVm()).ToList();
         }
 
-        public List<VMTravel> GetTravelsList(string login)
+        public int? GetSelectedTravelId(VMUser user)
         {
-            List<Travel> result = data.GetFromDatabase<Travel>(t => t.User.Login.ToLower() == login.ToLower());
-            return result.Select(x => x.ConvertToVm()).ToList();
+            var userFromDb = data.GetFromDatabase<User>(u => u.Login.ToLower() == user.Login.ToLower()).FirstOrDefault();
+            return userFromDb?.UserSettings?.SelectedTravelId;
         }
 
-        public int? GetSelectedTravelId(string login)
+        public int SelectTravel(VMUser user, int id)
         {
-            var user = data.GetFromDatabase<User>(u => u.Login.ToLower() == login.ToLower()).FirstOrDefault();
-            return user?.UserSettings?.SelectedTravelId;
-        }
+            var userFromDb = data.GetFromDatabase<User>(u => u.Login.ToLower() == user.Login.ToLower()).FirstOrDefault();
 
-        public int SelectTravel(string login, int id)
-        {
-            var user = data.GetFromDatabase<User>(u => u.Login.ToLower() == login.ToLower()).FirstOrDefault();
-
-            if (user == null)
+            if (userFromDb == null)
                 throw new ArgumentException("Пользователь не найден");
             else
             {
-                if (user.UserSettings == null)
-                    user.UserSettings = new UserSettings();
-                user.UserSettings.SelectedTravelId = id;
+                if (userFromDb.UserSettings == null)
+                    userFromDb.UserSettings = new UserSettings();
+                userFromDb.UserSettings.SelectedTravelId = id;
 
-                data.Insert(user.UserSettings);
+                data.Insert(userFromDb.UserSettings);
             }
 
-            return user.UserSettings.SelectedTravelId.Value;
+            return userFromDb.UserSettings.SelectedTravelId.Value;
         }
 
 

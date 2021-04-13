@@ -14,7 +14,7 @@
 @section tempTravel{
     <a>
         @{
-            Travel selectedTravel = ViewBag.SelectedTravel as Travel;
+            VMTravel selectedTravel = ViewBag.SelectedTravel as VMTravel;
             if (selectedTravel == null)
             {
                 @:Путешествие не выбрано
@@ -30,7 +30,7 @@
 @section actionsLiElementClass {
 
     @{
-        Travel selectedTravel = ViewBag.SelectedTravel as Travel;
+        VMTravel selectedTravel = ViewBag.SelectedTravel as VMTravel;
         if (selectedTravel == null)
         {
             @:action-disabled
@@ -63,7 +63,7 @@
 
     @{
         <h6>Расписание по дням:</h6>
-        Travel selectedTravel = ViewBag.SelectedTravel as Travel;
+        VMTravel selectedTravel = ViewBag.SelectedTravel as VMTravel;
         int i = 1;
         foreach (var sch in selectedTravel?.Schedules.OrderBy(x => x.Date))
         {
@@ -82,12 +82,12 @@
 @section anotherTravels {
     <ul class="dropdown-menu">
         @{
-            List<Travel> travelList = (List<Travel>)ViewBag.Travels;
+            List<VMTravel> travelList = (List<VMTravel>)ViewBag.Travels;
             if (travelList?.Any() == true)
             {
                 foreach (var travel in travelList.OrderBy(x => x.StartDate))
                 {
-                    <li><a onclick="selectTravel('@(((User)ViewBag.User).Login)', @(travel.Id));">@travel.Name</a></li>
+                    <li><a onclick="selectTravel('@(((VMUser)ViewBag.User).Login)', @(travel.Id));">@travel.Name</a></li>
                 }
             }
             else
@@ -113,7 +113,7 @@
             </div>
 
             <div class="modal-body">
-                @{ Schedule schedule = (Schedule)ViewBag.Schedule; }
+                @{ VMSchedule schedule = (VMSchedule)ViewBag.Schedule; }
 
                 <table id="tableTempSchedule" class="table table-hover" value="@(schedule?.Id ?? 0)">
                     <tbody>
@@ -132,8 +132,8 @@
                                                 }
                                             }
                                         </td>
-                                        <td class="img-cell"><img src="@(point.NaviAddressInfo?.SafePictureUrl)" class="small-img" /></td>
-                                        <td class="name-cell" value="@(point.CustomName)">@(point.NaviAddressInfo?.ЗатравочкаОписания) <a href="#" onclick="ShowInfo('@(point.CustomName)', '@(point.NaviAddressInfo?.Description)', '@(point.NaviAddressInfo?.SafePictureUrl)')">подробно...</a></td>
+                                        <td class="img-cell"><img src="@(point.AddressInfo?.SafePictureUrl)" class="small-img" /></td>
+                                        <td class="name-cell" value="@(point.CustomName)">@(point.AddressInfo?.ЗатравочкаОписания) <a href="#" onclick="ShowInfo('@(point.CustomName)', '@(point.AddressInfo?.Description)', '@(point.AddressInfo?.SafePictureUrl)')">подробно...</a></td>
                                         <td class="time-cell" value="@(point.Time.ToString("yyyy-MM-ddTHH:mm:ss"))">@point.Time.ToString("HH:mm")</td>
                                         <td class="buttons-cell">
                                             <div class="btn-group" role="group">
@@ -239,7 +239,7 @@
                                     <div class="card-body">
                                         <h5 class="card-title">Хочу посетить</h5>
                                         @{
-                                            List<Category> categories = ViewBag.Categories;
+                                            List<VMCategory> categories = ViewBag.Categories;
                                             foreach (var bigCategory in categories.Where(x => x.Childs?.Any() == true).OrderBy(x => x.Id))
                                             {
                                                 @:
@@ -432,7 +432,7 @@
     @{
         // находим все точки текущего выбранного путешествия, чтобы поставить маркеры
 
-        Travel selectedTravel = ViewBag.SelectedTravel as Travel;
+        VMTravel selectedTravel = ViewBag.SelectedTravel as VMTravel;
         DateTime tempDate = schedule?.Date.Date ?? DateTime.Today;
         int selectedSheduleID = ViewBag.SelectedScheduleID;
         if (selectedTravel?.Schedules != null)
@@ -443,13 +443,13 @@
                 foreach (var p in sch.PlacePoint.OrderBy(x => x.Time))
                 {
                     @:var point@(i) = {};
-                    @:point@(i).Lat = @(p.NaviAddressInfo?.Latitude.ToString().Replace(',', '.'));
-                    @:point@(i).Lng = @(p.NaviAddressInfo?.Longitude.ToString().Replace(',', '.'));
-                    @:point@(i).Category = '@(p.NaviAddressInfo?.Category?.Name)';
+                    @:point@(i).Lat = @(p.AddressInfo?.Latitude.ToString().Replace(',', '.'));
+                    @:point@(i).Lng = @(p.AddressInfo?.Longitude.ToString().Replace(',', '.'));
+                    @:point@(i).Category = '@(p.AddressInfo?.Category?.Name)';
                     @:point@(i).Caption = '@(p.CustomName)';
-                    @:point@(i).ShortDescription = '@(p.NaviAddressInfo?.ЗатравочкаОписания?.Replace(Environment.NewLine, " "))';
-                    @:point@(i).Description = '@(p.NaviAddressInfo?.Description)';
-                    @:point@(i).ImageLink = '@( p.NaviAddressInfo?.SafePictureUrl )';
+                    @:point@(i).ShortDescription = '@(p.AddressInfo?.ЗатравочкаОписания?.Replace(Environment.NewLine, " "))';
+                    @:point@(i).Description = '@(p.AddressInfo?.Description)';
+                    @:point@(i).ImageLink = '@( p.AddressInfo?.SafePictureUrl )';
                     @:point@(i).Today = @( sch.Id == selectedSheduleID ? "true" : "false" );
                     @:point@(i).Order = @( p.Order );
                     @:pointsArr.push(point@(i));
