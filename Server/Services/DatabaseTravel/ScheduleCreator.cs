@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Implementation.Args;
+using Implementation.Model;
 using Implementation.Results;
 using Implementation.ServiceInterfaces;
 using Server.Models;
+using Server.ParsedArgs;
 
-namespace Server.Classes
+namespace Server.Services.DatabaseTravel
 {
     public class ScheduleCreator
     {
@@ -93,17 +95,17 @@ namespace Server.Classes
             int daysCount = (parsed.EndDate - parsed.StartDate).Days + 1;
 
 
-            List<NaviAddressInfo> addrInfoList = addressService
+            List<VMAddressInfo> addrInfoList = addressService
                 .SearchNear(new AddressSearchNearArgs()
                 {
                     Lat = parsed.City.Lat,
                     Lng = parsed.City.Lng,
                     RadiusLat = radiusLat,
                     RadiusLng = radiusLng,
-                    Categories = GetCategories(parsed),     // тут добавляются точки питания
+                    Categories = GetCategories(parsed).Select(x => x.ConvertToVm()).ToList(),     // тут добавляются точки питания
                     Limit = Math.Max(daysCount * placeInDayCount * filterCoefficient, defaultLimit),
                     NeededPlacesCount = daysCount * placeInDayCount,  // сколько мест надо выбрать
-                    City = parsed.City
+                    City = parsed.City.ConvertToVm()
                 });
 
 
@@ -135,13 +137,15 @@ namespace Server.Classes
                 }
 
                 var basePlace = addrInfoList   // опорная точка на сегодня
-                                               //.Where(x => x.Category !=     // может быть стоит исключить места питания?
+                    //.Where(x => x.Category !=     // может быть стоит исключить места питания?
                     .OrderBy(x => x.Latitude)
                     .FirstOrDefault();
 
-                if (basePlace != null)
+                NaviAddressInfo basePlaceInDb = basePlace == null ? null : data.GetFromDatabase<NaviAddressInfo>(x => x.Id == basePlace.Id).FirstOrDefault();
+
+                if (basePlaceInDb != null)
                 {
-                    schedule.PlacePoint.Add(CreatePlacePoint(schedule, tempDate, tempHour, tempOrder++, basePlace));
+                    schedule.PlacePoint.Add(CreatePlacePoint(schedule, tempDate, tempHour, tempOrder++, basePlaceInDb));
                     tempHour += hoursOnPlace;
                     if (!addrInfoList.Any())
                         continue;
@@ -152,7 +156,10 @@ namespace Server.Classes
                     {
                         if (!addrInfoList.Any())
                             break;
-                        schedule.PlacePoint.Add(CreatePlacePoint(schedule, tempDate, tempHour, tempOrder++, addrInfoList[0]));
+
+                        NaviAddressInfo fromDb = data.GetFromDatabase<NaviAddressInfo>(x => x.Id == addrInfoList[0].Id).FirstOrDefault();
+
+                        schedule.PlacePoint.Add(CreatePlacePoint(schedule, tempDate, tempHour, tempOrder++, fromDb));
                         tempHour += hoursOnPlace;
                         addrInfoList.RemoveAt(0);
                     }
@@ -209,6 +216,12 @@ namespace Server.Classes
 
 
         private double CalcDistance(NaviAddressInfo x, NaviAddressInfo y)
+        {
+            return Math.Sqrt(Math.Pow((double)(x.Latitude - y.Latitude), 2) + Math.Pow((double)(x.Longitude - y.Longitude), 2));
+        }
+
+
+        private double CalcDistance(VMAddressInfo x, VMAddressInfo y)
         {
             return Math.Sqrt(Math.Pow((double)(x.Latitude - y.Latitude), 2) + Math.Pow((double)(x.Longitude - y.Longitude), 2));
         }

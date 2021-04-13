@@ -13,8 +13,8 @@ namespace Implementation.ServiceInterfaces
     /// </summary>
     public interface IAddressesService
     {
-        List<AddressInfo> SearchAddresses(AddressSearchArgs args);
+        List<VMAddressInfo> SearchAddresses(AddressSearchArgs args);
 
-        List<AddressInfo> SearchNear(AddressSearchNearArgs args);
+        List<VMAddressInfo> SearchNear(AddressSearchNearArgs args);
     }
 }

@@ -5,12 +5,12 @@ using System.Web;
 
 namespace Implementation.Model
 {
-    public class Category : Entity
+    public class VMCategory : Entity
     {
         public string Name { get; set; }
         public string NaviId { get; set; }
-        public Category Parent { get; set; }
-        public List<Category> Childs { get; set; }
+        public VMCategory Parent { get; set; }
+        public List<VMCategory> Childs { get; set; }
 
         public override string ToString()
         {

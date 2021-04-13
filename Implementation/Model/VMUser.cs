@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Implementation.Model
 {
-    public class User : Entity
+    public class VMUser : Entity
     {
         public string Login { get; set; }
     }

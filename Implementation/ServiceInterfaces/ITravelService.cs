@@ -13,16 +13,22 @@ namespace Implementation.ServiceInterfaces
     /// </summary>
     public interface ITravelService
     {
-        List<Category> GetAllCategories();
+        List<VMCategory> GetAllCategories();
 
-        List<Travel> GetTravelsList(string login);
+        List<VMTravel> GetTravelsList(string login);
 
         int? GetSelectedTravelId(string login);
 
         int SelectTravel(string login, int id);
 
+        /// <summary>
+        /// Создаются сущности, но не сохраняются
+        /// </summary>
         PreSaveTravelResult PreSaveTravel(PreSaveTravelArgs preSaveArgs);
 
+        /// <summary>
+        /// Сущности должны сохраниться
+        /// </summary>
         SaveTravelResult SaveTravel(SaveTravelArgs saveArgs);
 
         SaveScheduleResult SaveSchedule(SaveScheduleArgs saveArgs);

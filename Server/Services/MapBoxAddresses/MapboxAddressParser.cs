@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace Server.Classes
+namespace Server.Services.MapBoxAddresses
 {
     public class MapboxAddressParser
     {

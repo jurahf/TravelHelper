@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Implementation.Model;
 using Implementation.Results;
+using Server.Models;
 
-namespace Implementation.Args
+namespace Server.ParsedArgs
 {
     public class PreSaveTravelParsedArgs
     {

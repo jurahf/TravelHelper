@@ -1,20 +1,20 @@
-﻿using Client.Helpers;
-using Implementation.Model;
-using Client.RemoteServices;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Client.Helpers;
+using Client.RemoteServices;
+using Implementation.Model;
 
 namespace Client.Controllers
 {
     public class HomeController : Controller
     {
-        protected User currentUser = UserProvider.GetCurrentUser();
-        protected List<Category> categories = new List<Category>();
-        protected List<Travel> travels = new List<Travel>();
-        protected Travel selectedTravel = null;
+        protected VMUser currentUser = UserProvider.GetCurrentUser();
+        protected List<VMCategory> categories = new List<VMCategory>();
+        protected List<VMTravel> travels = new List<VMTravel>();
+        protected VMTravel selectedTravel = null;
 
         public ActionResult Index()
         {

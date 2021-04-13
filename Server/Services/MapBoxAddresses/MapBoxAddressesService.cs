@@ -5,13 +5,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
-using Server.Classes;
 using Implementation.Args;
 using Implementation.ServiceInterfaces;
+using Implementation.Model;
 using Server.Models;
 
-namespace Server.Services
+namespace Server.Services.MapBoxAddresses
 {
     public class MapBoxAddressesService : IAddressesService
     {
@@ -28,7 +27,7 @@ namespace Server.Services
             this.allExistedCategories = allExistedCategories;
         }
 
-        public List<NaviAddressInfo> SearchAddresses(AddressSearchArgs args)
+        public List<VMAddressInfo> SearchAddresses(AddressSearchArgs args)
         {
             int limit = args.limit ?? 100;
             string query = ($"geocoding/v5/mapbox.places/{args.querystr}.json?" +
@@ -45,7 +44,10 @@ namespace Server.Services
                 {
                     string responseStr = response.Content.ReadAsStringAsync().Result;
 
-                    return new MapboxAddressParser().ParseAddressesList(responseStr, allExistedCategories);
+                    return new MapboxAddressParser()
+                        .ParseAddressesList(responseStr, allExistedCategories)
+                        .Select(x => x.ConvertToVm())
+                        .ToList();
                 }
                 else
                     throw new WebException($"Сервер адресов вернул код {response.StatusCode}");
@@ -53,7 +55,7 @@ namespace Server.Services
         }
 
 
-        public List<NaviAddressInfo> SearchNear(AddressSearchNearArgs args)
+        public List<VMAddressInfo> SearchNear(AddressSearchNearArgs args)
         {
             int limit = args.Limit ?? 1000;
 
@@ -85,7 +87,7 @@ namespace Server.Services
                 list = list.Concat(list).Take(args.NeededPlacesCount).ToList(); // не хватило - добавляем по нескольку раз ???
             list = list.OrderBy(x => CalcDistance(x, args.City)).Take(args.NeededPlacesCount).ToList();
 
-            return list;
+            return list.Select(x => x.ConvertToVm()).ToList();
         }
 
 
@@ -108,7 +110,7 @@ namespace Server.Services
         }
 
 
-        private double CalcDistance(NaviAddressInfo x, City y)
+        private double CalcDistance(NaviAddressInfo x, VMCity y)
         {
             return Math.Sqrt(Math.Pow((double)(x.Latitude - y.Lat), 2) + Math.Pow((double)(x.Longitude - y.Lng), 2));
         }

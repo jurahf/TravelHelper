@@ -5,19 +5,19 @@ using System.Web;
 
 namespace Implementation.Model
 {
-    public class PlacePoint : Entity
+    public class VMPlacePoint : Entity
     {
         public int Order { get; set; }
         public DateTime Time { get; set; }
         public string CustomName { get; set; }
-        public AddressInfo NaviAddressInfo { get; set; }
+        public VMAddressInfo AddressInfo { get; set; }
 
         public override string ToString()
         {
-            string result = string.IsNullOrEmpty(CustomName) ? NaviAddressInfo?.Description : CustomName;
-            if (NaviAddressInfo != null)
+            string result = string.IsNullOrEmpty(CustomName) ? AddressInfo?.Description : CustomName;
+            if (AddressInfo != null)
             {
-                result += $" [{NaviAddressInfo.ContainerAddress}]{NaviAddressInfo.SelfAddress}";
+                result += $" [{AddressInfo.ContainerAddress}]{AddressInfo.SelfAddress}";
             }
             return result;
         }

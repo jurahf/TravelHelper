@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+using Implementation.Model;
 
 namespace Implementation.Results
 {
@@ -14,6 +14,6 @@ namespace Implementation.Results
 
         public string ErrorMessage { get; set; }
 
-        public List<Schedule> Schedules { get; set; }
+        public List<VMSchedule> Schedules { get; set; }
     }
 }

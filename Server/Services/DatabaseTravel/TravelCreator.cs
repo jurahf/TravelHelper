@@ -1,19 +1,15 @@
-﻿using Implementation.Args;
-using Implementation.Results;
-using Server.Controllers;
-using Implementation.ServiceInterfaces;
-using Server.Models;
-using Server.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Web;
+using Implementation.Args;
+using Implementation.Results;
+using Implementation.ServiceInterfaces;
+using Server.Models;
+using Server.ParsedArgs;
 
-namespace Server.Classes
+namespace Server.Services.DatabaseTravel
 {
     public class TravelCreator
     {

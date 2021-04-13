@@ -15,8 +15,8 @@ namespace Implementation.Args
 
         public int NeededPlacesCount { get; set; }
 
-        public City City { get; set; }
+        public VMCity City { get; set; }
 
-        public List<Category> Categories { get; set; }
+        public List<VMCategory> Categories { get; set; }
     }
 }

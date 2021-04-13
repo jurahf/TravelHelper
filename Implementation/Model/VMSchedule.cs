@@ -5,10 +5,10 @@ using System.Web;
 
 namespace Implementation.Model
 {
-    public class Schedule : Entity
+    public class VMSchedule : Entity
     {
         public DateTime Date { get; set; }
-        public List<PlacePoint> PlacePoint { get; set; }
+        public List<VMPlacePoint> PlacePoint { get; set; }
         public int TempPoint { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Implementation.Dtos;
+using Implementation.Model;
 
 namespace Server.Services.DatabaseTravel
 {

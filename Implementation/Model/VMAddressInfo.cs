@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
-using System.Web;
 
 namespace Implementation.Model
 {
-    public class AddressInfo : Entity
+    public class VMAddressInfo : Entity
     {
         private const int shortDescriptionLen = 200;
         private const int maxLondDescriptionLen = 210;
@@ -26,7 +24,7 @@ namespace Implementation.Model
             set { description = value?.Replace(Environment.NewLine, " "); }
         }
 
-        public Category Category { get; set; }
+        public VMCategory Category { get; set; }
 
 
         public string SafePictureUrl

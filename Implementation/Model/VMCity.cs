@@ -5,7 +5,7 @@ using System.Web;
 
 namespace Implementation.Model
 {
-    public class City : Entity
+    public class VMCity : Entity
     {
         public string Name { get; set; }
         public string Country { get; set; }

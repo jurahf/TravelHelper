@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using Server.Classes;
+using Server.Models;
 using Implementation.Args;
 using Implementation.Results;
 using Implementation.ServiceInterfaces;
-using Server.Models;
+using Implementation.Model;
 
 namespace Server.Services.DatabaseTravel
 {
@@ -14,16 +13,16 @@ namespace Server.Services.DatabaseTravel
     {
         private DBWork data = new DBWork();
 
-        public List<Category> GetAllCategories()
+        public List<VMCategory> GetAllCategories()
         {
-            var result = data.GetFromDatabase<Category>().ToList();
-            return result;
+            List<Category> result = data.GetFromDatabase<Category>();
+            return result.Select(x => x.ConvertToVm()).ToList();
         }
 
-        public List<Travel> GetTravelsList(string login)
+        public List<VMTravel> GetTravelsList(string login)
         {
-            var result = data.GetFromDatabase<Travel>(t => t.User.Login.ToLower() == login.ToLower());
-            return result;
+            List<Travel> result = data.GetFromDatabase<Travel>(t => t.User.Login.ToLower() == login.ToLower());
+            return result.Select(x => x.ConvertToVm()).ToList();
         }
 
         public int? GetSelectedTravelId(string login)
@@ -69,7 +68,7 @@ namespace Server.Services.DatabaseTravel
 
                 if (parsed.Result.Valid)
                 {
-                    parsed.Result.Schedules = helper.CreateShedules(parsed);
+                    parsed.Result.Schedules = helper.CreateShedules(parsed).Select(x => x.ConvertToVm()).ToList();
                 }
 
                 return parsed.Result;

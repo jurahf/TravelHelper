@@ -1,8 +1,8 @@
-﻿using Implementation.Model;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Implementation.Model;
 
 namespace Client.Helpers
 {
@@ -11,9 +11,9 @@ namespace Client.Helpers
 
     public static class UserProvider
     {
-        private static User currUser = new User() { Login = "TestUser" };
+        private static VMUser currUser = new VMUser() { Login = "TestUser" };
 
-        public static User GetCurrentUser()
+        public static VMUser GetCurrentUser()
         {
             return currUser;
         }
