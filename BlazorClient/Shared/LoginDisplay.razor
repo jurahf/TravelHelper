@@ -1,0 +1,48 @@
+﻿@using System.Security.Claims;
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+
+<AuthorizeView>
+    <Authorized>
+        @userEmail
+        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Выйти</button>
+    </Authorized>
+    <NotAuthorized>
+        <a href="authentication/login">Войти с помощью Google</a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code{
+
+    private const string emailClaimName = "email";
+    private string userEmail;
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        ClaimsPrincipal user = authState?.User;
+
+        if (user.Identity.IsAuthenticated == true)
+        {
+            if (user.HasClaim(x => x.Type == emailClaimName))
+            {
+                userEmail = user.Claims.First(x => x.Type == emailClaimName).Value;
+            }
+        }
+    }
+
+
+
+    private async Task BeginSignOut(MouseEventArgs args)
+    {
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("authentication/logout");
+    }
+}

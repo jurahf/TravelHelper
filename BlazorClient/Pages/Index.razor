@@ -1,0 +1,26 @@
+﻿@page "/"
+
+
+@inject IJSRuntime JS;
+
+
+<div>
+    <div id="map"></div>
+</div>
+
+
+
+
+@code {
+
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        // вызываем инициализацию карты: массив точек, стартовый город, id контейнера карты
+        await JS.InvokeVoidAsync("getGeolocationAndInitMap", null, null, "map");
+    }
+
+
+}
+
+
