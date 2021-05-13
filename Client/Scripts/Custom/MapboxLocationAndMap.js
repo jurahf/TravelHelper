@@ -92,8 +92,8 @@ function addMarkerAndFullRoute(point, caption, shortDescription, description, im
 
 
 
-function nextPoint() {
-    if (pointsArr[tempPointIndex]) {
+function nextPoint(arrPoints) {
+    if (arrPoints[tempPointIndex]) {
         if (tripSetted) { // маршрут уже проложен, по-умолчанию идем к следующей точке
             moveTempPointIndex();
             pointWasPassed();
@@ -102,17 +102,17 @@ function nextPoint() {
             tripSetted = true;
         }
 
-        var point = pointsArr[tempPointIndex];
+        var point = arrPoints[tempPointIndex];
 
         while (point.Lat == 0) {    // костыль. вообще нулей быть не должно
             moveTempPointIndex();
-            point = pointsArr[tempPointIndex];
+            point = arrPoints[tempPointIndex];
         }
         pointWasPassed();
 
         clearMarkersAndRouts();
-        pointsArr.forEach(function (point) {
-            addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.Description, point.Today, point.Order);
+        arrPoints.forEach(function (point) {
+            addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.ShortDescription, point.Description, point.ImageLink, point.Today, point.Order);
         });
     }
 }
