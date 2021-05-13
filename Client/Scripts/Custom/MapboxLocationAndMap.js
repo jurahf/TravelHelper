@@ -54,7 +54,7 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
     });
 
     map.on('load', function () {
-        //geoLocate.trigger();
+        geoLocate.trigger();
     });
 
     canvas = map.getCanvasContainer();

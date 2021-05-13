@@ -1,11 +1,13 @@
 ﻿@using System.Security.Claims;
-@using Microsoft.AspNetCore.Components.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Microsoft.AspNetCore.Components.Authorization;
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+@using Microsoft.Extensions.Configuration;
 
-@inject NavigationManager Navigation
-@inject SignOutSessionStateManager SignOutManager
-@inject AuthenticationStateProvider AuthenticationStateProvider
 
+@inject NavigationManager Navigation;
+@inject SignOutSessionStateManager SignOutManager;
+@inject AuthenticationStateProvider AuthenticationStateProvider;
+@inject IConfiguration Configuration;
 
 
 <AuthorizeView>
@@ -44,5 +46,9 @@
     {
         await SignOutManager.SetSignOutState();
         Navigation.NavigateTo("authentication/logout");
+
+        //Navigation.NavigateTo("");
+
+        //Navigation.NavigateTo("https://accounts.google.com/" + "/o/oauth2/v2/logout?client_id=" + "31043685866-nf7k1dl81uhk84c9sntq27a4ljj37eh7.apps.googleusercontent.com" + "&returnTo=" + "https://localhost:44338/authentication/logout-callback");
     }
 }
