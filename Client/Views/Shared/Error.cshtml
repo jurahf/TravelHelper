@@ -7,8 +7,15 @@
 </head>
 <body>
     <hgroup>
-        <h1>Ошибка.</h1>
-        <h2>При обработке запроса произошла ошибка.</h2>
+        <h2>Привет! Обнови страницу, и здесь появится карта с маршрутом ;)</h2>
     </hgroup>
+
+    @Scripts.Render("~/bundles/jquery")
+
+    <script>
+        $(document).ready(function () {
+            location.href = "/home/index";
+        });
+    </script>
 </body>
 </html>
