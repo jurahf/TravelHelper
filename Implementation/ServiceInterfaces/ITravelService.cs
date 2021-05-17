@@ -17,12 +17,12 @@ namespace Implementation.ServiceInterfaces
 
         List<VMTravel> GetTravelsList(VMUser user);
 
-        int? GetSelectedTravelId(VMUser user);
+        int? GetSelectedTravel(VMUser user);
 
         int SelectTravel(VMUser user, int id);
 
         /// <summary>
-        /// Создаются сущности, но не сохраняются
+        /// Создаются сущности, но не сохраняются. Здесь и генерируется расписание, а потом предлагается его отредактировать и сохранить
         /// </summary>
         PreSaveTravelResult PreSaveTravel(PreSaveTravelArgs preSaveArgs);
 

@@ -99,83 +99,15 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
-    <Compile Include="Models\ToVmConverter.cs" />
-    <Compile Include="ParsedArgs\PreSaveTravelParsedArgs.cs" />
-    <Compile Include="ParsedArgs\SaveScheduleParsedArgs.cs" />
-    <Compile Include="ParsedArgs\SaveTravelParsedArgs.cs" />
     <Compile Include="Services\DatabaseTravel\CommonParseHelper.cs" />
     <Compile Include="Services\MapBoxAddresses\MapboxAddressParser.cs" />
     <Compile Include="Services\DatabaseTravel\ScheduleCreator.cs" />
     <Compile Include="Services\DatabaseTravel\ScheduleSaveHelper.cs" />
     <Compile Include="ServiceFactory.cs" />
     <Compile Include="Services\DatabaseTravel\TravelCreator.cs" />
-    <Compile Include="Models\Category.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\City.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\DBWork.cs" />
     <Compile Include="Services\DatabaseTravel\DatabaseTravelService.cs" />
     <Compile Include="Services\MapBoxAddresses\MapBoxAddressesService.cs" />
-    <Content Include="Models\db\3 - Insert test data.sql" />
-    <Compile Include="Models\db\Extensions.cs" />
-    <Compile Include="Models\Model1.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Model1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NaviAddressInfo.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\NaviTravelModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>NaviTravelModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\PlacePoint.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Schedule.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\Travel.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\User.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UserSettings.cs">
-      <DependentUpon>Model1.tt</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Models\db\1 - Insert categories.sql" />
-    <Content Include="Models\db\2 - Insert cities.sql" />
-    <Content Include="Models\Model1.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Model1.Context.cs</LastGenOutput>
-      <DependentUpon>NaviTravelModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="Models\Model1.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>Model1.cs</LastGenOutput>
-      <DependentUpon>NaviTravelModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="Models\db\0 - Create database.sql" />
-    <Content Include="Models\NaviTravelModel.edmx.sql" />
-  </ItemGroup>
-  <ItemGroup>
-    <EntityDeploy Include="Models\NaviTravelModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>NaviTravelModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -187,6 +119,10 @@
     <ProjectReference Include="..\Implementation\Implementation.csproj">
       <Project>{b7eb85c5-c917-411e-b5b3-234d14eeb0bb}</Project>
       <Name>Implementation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TravelHelperDb\TravelHelperDb.csproj">
+      <Project>{6563b5f3-3655-4022-8a09-221797bf4187}</Project>
+      <Name>TravelHelperDb</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

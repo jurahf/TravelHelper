@@ -1,0 +1,20 @@
+﻿Генерация классов по БД:
+Scaffold-DbContext "data source=(local);initial catalog=TravelHelperDatabase;integrated security=True;MultipleActiveResultSets=True;" Microsoft.EntityFrameworkCore.SqlServer
+Параметры:
+-table Artist,Album
+-UseDatabaseNames
+-DataAnnotations  
+-project
+-force 
+
+Все вместе:
+Scaffold-DbContext "data source=(local);initial catalog=TravelHelperDatabase;integrated security=True;MultipleActiveResultSets=True;" Microsoft.EntityFrameworkCore.SqlServer -project TravelHelperDb
+
+Создание миграции:
+Add-Migration CreateCustomSchema -project TravelHelperDb
+
+Приминение миграции:	
+Update-Database
+
+Накатить/откатить до миграции:
+Update-Database -Migration MigrationName

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Implementation.Model;
+using CoreImplementation.Model;
 
 namespace Client.Helpers
 {

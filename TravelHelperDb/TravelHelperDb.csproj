@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Scripts\0 - Create database.sql" />
+    <None Remove="Scripts\1 - Insert categories.sql" />
+    <None Remove="Scripts\2 - Insert cities.sql" />
+    <None Remove="Scripts\3 - Insert test data.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Scripts\0 - Create database.sql" />
+    <Content Include="Scripts\1 - Insert categories.sql" />
+    <Content Include="Scripts\2 - Insert cities.sql" />
+    <Content Include="Scripts\3 - Insert test data.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="3.1.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+</Project>

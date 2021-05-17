@@ -1,4 +1,10 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿@using Implementation.ServiceInterfaces;
+@using Implementation.Model;
+
+@inject ITravelService travelService
+
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href=""><span class="glyphicon glyphicon-globe"></span> Travel Helper</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -15,6 +21,15 @@
 
             <LoginDisplay></LoginDisplay>
 
+
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <button @onclick="BtnClick">Click me</button>
+                <span class="oi oi-home" aria-hidden="true"></span> @(travel?.Name ?? "Путешествие не выбрано")
+            </NavLink>
+
+
+
+
         </li>
     </ul>
 </div>
@@ -24,6 +39,9 @@
 
 
 @code {
+
+    private VMTravel travel { get; set; }
+
     private bool collapseNavMenu = true;
 
     private string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
@@ -31,5 +49,24 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected void BtnClick()
+    {
+        try
+        {
+            // TODO: для отладки
+            travel = travelService.GetTravelsList(new VMUser() { Id = 1, Login = "1" }).FirstOrDefault();
+        }
+        catch (Exception ex)
+        {
+            travel = new VMTravel() { Name = ex.Message };
+        }
+    }
+
+
+    protected override Task OnInitializedAsync()
+    {
+        return base.OnInitializedAsync();
     }
 }

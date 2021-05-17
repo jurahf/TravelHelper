@@ -4,8 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Client.Helpers;
-using Implementation.Model;
-using Implementation.ServiceInterfaces;
+using CoreImplementation.Model;
+using CoreImplementation.ServiceInterfaces;
 
 namespace Client.Controllers
 {

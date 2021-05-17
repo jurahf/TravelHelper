@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Implementation.ServiceInterfaces;
+using CoreImplementation.ServiceInterfaces;
 using Server.Services.DatabaseTravel;
 
 namespace Client.Helpers
