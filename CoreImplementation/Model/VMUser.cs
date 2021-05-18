@@ -7,6 +7,10 @@ namespace CoreImplementation.Model
 {
     public class VMUser : Entity
     {
-        public string Login { get; set; }
+        public string Name { get; set; }
+
+        public string Email { get; set; }
+
+        public string AvatarUrl { get; set; }
     }
 }

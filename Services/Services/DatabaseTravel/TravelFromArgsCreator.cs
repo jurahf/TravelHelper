@@ -11,12 +11,12 @@ using TravelHelperDb;
 
 namespace Services.Services.DatabaseTravel
 {
-    public class TravelCreator
+    public class TravelFromArgsCreator
     {
         private readonly TravelHelperDatabaseContext data;
         private readonly CommonParseHelper parseHelper;
 
-        public TravelCreator(TravelHelperDatabaseContext data)
+        public TravelFromArgsCreator(TravelHelperDatabaseContext data)
         {
             this.data = data;
 
@@ -64,7 +64,7 @@ namespace Services.Services.DatabaseTravel
 
         public void SaveTravel(SaveTravelParsedArgs parsed)
         {
-            TravelSet travel = LoadOCreateTravel(parsed.TravelId);
+            TravelSet travel = LoadOrCreateTravel(parsed.TravelId);
 
             travel.StartDate = parsed.StartDate;
             travel.EndDate = parsed.EndDate;
@@ -89,7 +89,7 @@ namespace Services.Services.DatabaseTravel
             parsed.Result.TravelId = travel.Id;
         }
 
-        private TravelSet LoadOCreateTravel(int? travelId)
+        private TravelSet LoadOrCreateTravel(int? travelId)
         {
             if (travelId == null)
                 return new TravelSet();

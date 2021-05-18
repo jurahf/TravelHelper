@@ -1,16 +1,18 @@
 ﻿@using System.Security.Claims
 @using Microsoft.AspNetCore.Http
+@using CoreImplementation.ServiceInterfaces;
+@using CoreImplementation.Model;
+
 @inject IHttpContextAccessor httpContextAccessor
-@inject HttpClient Http
+@inject IUserService userService
 
 
-@if (user.Identity.Name != null)
+@if (!string.IsNullOrEmpty(principal?.Identity?.Name))
 {
 <div class="ml-md-auto">
     <div class="padding-around">
-        <img class="avatar-img" src="@avatar" alt="avatar" />
-        @*<b>@name @surname (@email)</b>*@
-        <b class="ml-auto">@name</b>
+        <img class="avatar-img" src="@user.AvatarUrl" alt="avatar" />
+        <b class="ml-auto">@user.Name</b>
     </div>
 
     <div>
@@ -26,11 +28,8 @@ else
 
 
 @code {
-    private ClaimsPrincipal user;
-    private string name;
-    private string surname;
-    private string avatar;
-    private string email;
+    private ClaimsPrincipal principal;
+    private VMUser user;
 
 
     protected override void OnInitialized()
@@ -38,22 +37,12 @@ else
         base.OnInitialized();
         try
         {
-            // Set the user to determine if they are logged in
-            user = httpContextAccessor.HttpContext.User;
+            principal = httpContextAccessor.HttpContext.User;
 
-            var nameObj = user.FindFirst(ClaimTypes.GivenName);
-            name = nameObj?.Value ?? user.Identity.Name;
-
-            var surnameObj = user.FindFirst(ClaimTypes.Surname);
-            surname = surnameObj?.Value ?? "";
-
-            var avatarObj = user.FindFirst("urn:google:image");
-            avatar = avatarObj?.Value ?? "";
-
-            var emailObj = user.FindFirst(ClaimTypes.Email);
-            email = emailObj?.Value ?? "";
-
+            user = userService.ExtractUserData(principal);
         }
-        catch { }
+        catch
+        {
+        }
     }
 }

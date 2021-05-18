@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 // Code scaffolded by EF Core assumes nullable reference types (NRTs) are not used or disabled.
 // If you have enabled NRTs for your project, then un-comment the following line:
@@ -15,6 +17,7 @@ namespace TravelHelperDb
             TravelCategory = new HashSet<TravelCategory>();
         }
 
+        [Key]
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
@@ -22,9 +25,19 @@ namespace TravelHelperDb
         public int UserId { get; set; }
         public int CityId { get; set; }
 
+
+        [ForeignKey(nameof(CityId))]
+        [InverseProperty(nameof(TravelHelperDb.CitySet.TravelSet))]
         public virtual CitySet City { get; set; }
+
+        [ForeignKey(nameof(UserId))]
+        [InverseProperty(nameof(TravelHelperDb.UserSet.TravelSet))]
         public virtual UserSet User { get; set; }
+
+        [InverseProperty(nameof(TravelHelperDb.ScheduleSet.Travel))]
         public virtual ICollection<ScheduleSet> ScheduleSet { get; set; }
+
+        [InverseProperty(nameof(TravelHelperDb.TravelCategory.TravelCategoryCategory))]
         public virtual ICollection<TravelCategory> TravelCategory { get; set; }
     }
 }

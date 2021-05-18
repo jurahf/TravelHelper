@@ -12,6 +12,7 @@ using Services.Services.DatabaseTravel;
 using Services.Services.MapBoxAddresses;
 using CoreImplementation.ServiceInterfaces;
 using TravelHelperDb;
+using Services.Services.User;
 
 namespace BSSClient
 {
@@ -59,6 +60,7 @@ namespace BSSClient
 
             services.AddScoped<ITravelService, DatabaseTravelService>();
             services.AddScoped<IAddressesService, MapBoxAddressesService>();
+            services.AddScoped<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

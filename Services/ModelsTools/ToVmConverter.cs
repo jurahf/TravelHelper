@@ -69,7 +69,7 @@ namespace Services.ModelsTools
             return new VMUser()
             {
                 Id = user.Id,
-                Login = user.Login
+                Email = user.Login
             };
         }
 

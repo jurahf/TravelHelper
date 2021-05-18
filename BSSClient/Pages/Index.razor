@@ -1,14 +1,18 @@
 ﻿@page "/"
 
+@using System.Security.Claims;
+@using Microsoft.AspNetCore.Http;
 @using CoreImplementation.ServiceInterfaces;
 @using CoreImplementation.Model;
 
+@inject IHttpContextAccessor httpContextAccessor
+@inject IJSRuntime JS
 @inject ITravelService travelService
-@inject IJSRuntime JS;
+@inject IUserService userService
 
 
 <div class="sidebar">
-    <NavMenu />
+    <NavMenu Travel="travel" />
 </div>
 
 <div class="main">
@@ -22,12 +26,42 @@
 
 @code {
 
+    private VMTravel travel;
+
 
     protected override void OnInitialized()
     {
-        List<VMCategory> categories = travelService.GetAllCategories();
+        ClaimsPrincipal principal = httpContextAccessor.HttpContext.User;
+
+        if (!string.IsNullOrEmpty(principal?.Identity?.Name))
+        {
+            GetAndFillUserData(principal);
+        }
 
         base.OnInitialized();
+    }
+
+
+    private void GetAndFillUserData(ClaimsPrincipal principal)
+    {
+        VMUser user = userService.ExtractUserData(principal);
+
+        if (user == null)
+            return;
+
+
+        List<VMTravel> travelList = travelService.GetTravelsList(user);
+
+        if (travelList == null || !travelList.Any())
+        {
+            travelService.CreateDefaultDataForUser(user);
+            travelList = travelService.GetTravelsList(user); // второй раз
+        }
+
+        int? selectedId = travelService.GetSelectedTravelId(user); // почему сразу не получить путешествие?
+
+        if (selectedId != null)
+            travel = travelList.FirstOrDefault(x => x.Id == selectedId.Value);
     }
 
 

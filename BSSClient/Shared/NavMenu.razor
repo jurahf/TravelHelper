@@ -1,7 +1,4 @@
-﻿@using CoreImplementation.ServiceInterfaces;
-@using CoreImplementation.Model;
-
-@inject ITravelService travelService
+﻿@using CoreImplementation.Model;
 
 
 <div class="top-row pl-4 navbar navbar-dark">
@@ -19,7 +16,7 @@
             </NavLink>
 
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                @(travel?.Name ?? "Путешествие не выбрано")
+                @(Travel?.Name ?? "Путешествие не выбрано")
             </NavLink>
         </li>
     </ul>
@@ -40,7 +37,9 @@
 
 @code {
 
-    private VMTravel travel { get; set; }
+    
+    [Parameter]
+    public VMTravel Travel { get; set; }
 
     private bool collapseNavMenu = true;
 

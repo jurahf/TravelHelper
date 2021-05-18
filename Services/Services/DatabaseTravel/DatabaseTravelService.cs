@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
 using TravelHelperDb;
 using CoreImplementation.Args;
 using CoreImplementation.Results;
@@ -23,7 +24,9 @@ namespace Services.Services.DatabaseTravel
 
         private UserSet GetUserFromDb(VMUser user)
         {
-            return data.UserSet.FirstOrDefault(u => u.Login.ToLower() == user.Login.ToLower());
+            return data.UserSet
+                .Include(x => x.UserSettings)
+                .FirstOrDefault(u => u.Login.ToLower() == user.Email.ToLower());
         }
 
         public List<VMCategory> GetAllCategories()
@@ -53,7 +56,7 @@ namespace Services.Services.DatabaseTravel
 
         public List<VMTravel> GetTravelsList(VMUser user)
         {
-            List<TravelSet> result = data.TravelSet.Where(t => t.User.Login.ToLower() == user.Login.ToLower()).ToList();
+            List<TravelSet> result = data.TravelSet.Where(t => t.User.Login.ToLower() == user.Email.ToLower()).ToList();
             return result.Select(x => x.ConvertToVm()).ToList();
         }
 
@@ -62,6 +65,22 @@ namespace Services.Services.DatabaseTravel
             var userFromDb = GetUserFromDb(user);
             return userFromDb?.UserSettings?.SelectedTravelId;
         }
+
+
+        #region Создание данных по-умолчанию
+
+        public void CreateDefaultDataForUser(VMUser user)
+        {
+            DefaultDataCreator creator = new DefaultDataCreator(data);
+            creator.CreateDataForUser(user);
+        }
+
+
+
+
+
+
+
 
         public int SelectTravel(VMUser user, int id)
         {
@@ -126,7 +145,7 @@ namespace Services.Services.DatabaseTravel
 
             try
             {
-                TravelCreator helper = new TravelCreator(data);
+                TravelFromArgsCreator helper = new TravelFromArgsCreator(data);
                 var parsed = helper.ValidateAndParse(saveArgs);
 
                 if (parsed.Result.Valid)
