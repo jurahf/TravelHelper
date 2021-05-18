@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using CoreImplementation.Model;
 using TravelHelperDb;
+using Services.ModelsTools;
 
 namespace Services.Services.DatabaseTravel
 {
@@ -49,12 +50,7 @@ namespace Services.Services.DatabaseTravel
         private TravelSet LoadSystemTravel()
         {
             return data.TravelSet
-                .Include(x => x.City)
-                .Include(x => x.TravelCategory)
-                .ThenInclude(y => y.Categories)
-                .Include(x => x.ScheduleSet)
-                .ThenInclude(y => y.PlacePointSet)
-                .ThenInclude(z => z.NaviAddressInfo)
+                .Fetch()
                 .FirstOrDefault(x => x.User.Login == systemUserLogin);
         }
 

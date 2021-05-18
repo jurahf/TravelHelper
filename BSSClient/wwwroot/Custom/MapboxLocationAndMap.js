@@ -2,6 +2,7 @@
 var map;
 var canvas;
 var init = false;
+var tempPointIndex = 0;
 
 const moscow = [37.6170, 55.7545];
 const perm = [56.25107070278494, 58.00412682942334];
@@ -10,15 +11,15 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
 
     if (!city) {
         city = {};
-        city.Lng = moscow[0];
-        city.Lat = moscow[1];
+        city.lng = moscow[0];
+        city.lat = moscow[1];
     }
 
     // сама карта
     map = new mapboxgl.Map({
         container: elemId,
         style: 'mapbox://styles/mapbox/streets-v11',
-        center: [city.Lng, city.Lat],
+        center: [city.lng, city.lat],
         zoom: 12.0
     });
 
@@ -51,9 +52,9 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
             setLang('ru');
             map.off('sourcedata');
 
-            //arrPoints.forEach(function (point) {
-            //    addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.ShortDescription, point.Description, point.ImageLink, point.Today, point.Order);
-            //});
+            arrPoints.forEach(function (point) {
+                addMarkerAndFullRoute([point.lng, point.lat], point.caption, point.shortDescription, point.description, point.imageLink, point.today, point.order);
+            });
         }
     });
 

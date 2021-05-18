@@ -57,6 +57,10 @@ app {
     margin-left: 20px !important;
 }
 
+.small-img {
+    max-width: 215px;
+}
+
 
 .main {
     flex: 1;

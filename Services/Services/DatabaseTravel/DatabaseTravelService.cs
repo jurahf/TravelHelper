@@ -56,7 +56,10 @@ namespace Services.Services.DatabaseTravel
 
         public List<VMTravel> GetTravelsList(VMUser user)
         {
-            List<TravelSet> result = data.TravelSet.Where(t => t.User.Login.ToLower() == user.Email.ToLower()).ToList();
+            List<TravelSet> result = data.TravelSet
+                .Fetch()
+                .Where(t => t.User.Login.ToLower() == user.Email.ToLower()).ToList();
+
             return result.Select(x => x.ConvertToVm()).ToList();
         }
 
@@ -66,8 +69,6 @@ namespace Services.Services.DatabaseTravel
             return userFromDb?.UserSettings?.SelectedTravelId;
         }
 
-
-        #region Создание данных по-умолчанию
 
         public void CreateDefaultDataForUser(VMUser user)
         {
