@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TravelHelperDb", "TravelHelperDb\TravelHelperDb.csproj", "{6563B5F3-3655-4022-8A09-221797BF4187}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSSClient", "BSSClient\BSSClient.csproj", "{CC5C5D96-2669-4ED4-8C11-E38CB00CD307}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BSSClient", "BSSClient\BSSClient.csproj", "{CC5C5D96-2669-4ED4-8C11-E38CB00CD307}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{081E5B31-25AF-44E2-AF2C-5FC8F82D72CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Services", "Services\Services.csproj", "{081E5B31-25AF-44E2-AF2C-5FC8F82D72CF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CoreImplementation", "CoreImplementation\CoreImplementation.csproj", "{90679633-1F99-4B33-987F-112CB9C18816}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CoreImplementation", "CoreImplementation\CoreImplementation.csproj", "{90679633-1F99-4B33-987F-112CB9C18816}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
