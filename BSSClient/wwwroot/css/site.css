@@ -10,7 +10,7 @@ html, body {
     padding: 0;
 }
 
-.content-container, .content-container > div, .content-container > div #map {
+app, .content-container, .content-container > div, .content-container > div #map {
     height: 100%;
 }
 
@@ -21,10 +21,13 @@ a, .btn-link {
     color: #0366d6;
 }
 
+
+.sidebar .nav-item a.btn-primary,
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
     border-color: #1861ac;
+    justify-content: center;
 }
 
 app {
@@ -39,6 +42,10 @@ app {
     align-items: center;
 }
 
+.padding-around {
+    padding: 10px;
+}
+
 
 .avatar-img {
     border-radius: 50%;
@@ -46,6 +53,9 @@ app {
     width: 32px;
 }
 
+.mapboxgl-ctrl-geocoder--input {
+    margin-left: 20px !important;
+}
 
 
 .main {
@@ -68,12 +78,10 @@ app {
     text-overflow: ellipsis;
 }
 
-.sidebar {
-    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
-}
+
 
     .sidebar .top-row {
-        background-color: rgba(0,0,0,0.4);
+        background-color: rgba(100, 150, 255, 1);
     }
 
     .sidebar .navbar-brand {
@@ -100,24 +108,22 @@ app {
             padding-bottom: 1rem;
         }
 
-        .sidebar .nav-item a {
-            color: #d7d7d7;
-            border-radius: 4px;
-            height: 3rem;
-            display: flex;
-            align-items: center;
-            line-height: 3rem;
-        }
+.sidebar .nav-item a {
+    color: #070707;
+    border-radius: 4px;
+    height: 3rem;
+    display: flex;
+    align-items: center;
+    line-height: 1rem;
+}
 
-            .sidebar .nav-item a.active {
-                background-color: rgba(255,255,255,0.25);
-                color: white;
-            }
+.sidebar .nav-link a:hover {
+    color: #0a0a0a;
+}
 
-            .sidebar .nav-item a:hover {
-                background-color: rgba(255,255,255,0.1);
-                color: white;
-            }
+.sidebar .nav-link:hover {
+    background-color: #e7e7e7;
+}
 
 .content {
     padding-top: 1.1rem;
@@ -197,4 +203,14 @@ app {
         /* Never collapse the sidebar for wide screens */
         display: block;
     }
+
+
+    .sidebar-bottom {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+
 }

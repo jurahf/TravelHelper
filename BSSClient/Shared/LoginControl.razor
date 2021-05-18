@@ -6,11 +6,17 @@
 
 @if (user.Identity.Name != null)
 {
-    <div class="ml-md-auto">
+<div class="ml-md-auto">
+    <div class="padding-around">
         <img class="avatar-img" src="@avatar" alt="avatar" />
-        <b>@name @surname (@email)</b>
+        @*<b>@name @surname (@email)</b>*@
+        <b class="ml-auto">@name</b>
+    </div>
+
+    <div>
         <a class="btn btn-primary" href="/Logout" target="_top">Выйти</a>
     </div>
+</div>
 }
 else
 {
