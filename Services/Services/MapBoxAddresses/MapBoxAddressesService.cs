@@ -22,10 +22,10 @@ namespace Services.Services.MapBoxAddresses
         private readonly CultureInfo culture;
         private List<CategorySet> allExistedCategories;
 
-        public MapBoxAddressesService(List<CategorySet> allExistedCategories)
+        public MapBoxAddressesService(TravelHelperDatabaseContext data)
         {
             culture = CultureInfo.InvariantCulture;
-            this.allExistedCategories = allExistedCategories;
+            this.allExistedCategories = data.CategorySet.ToList();
         }
 
         public List<VMAddressInfo> SearchAddresses(AddressSearchArgs args)

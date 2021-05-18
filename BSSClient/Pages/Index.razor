@@ -1,7 +1,28 @@
 ﻿@page "/"
 
+@using CoreImplementation.ServiceInterfaces;
+@using CoreImplementation.Model;
+
+@inject ITravelService travelService
+
+
 <h1>Hello, world!</h1>
 
-Welcome to your new app.
+<p>@allCategories</p>
 
 <SurveyPrompt Title="How is Blazor working for you?" />
+
+
+@code {
+
+    private string allCategories;
+
+    protected override void OnInitialized()
+    {
+        List<VMCategory> categories = travelService.GetAllCategories();
+        allCategories = string.Join(Environment.NewLine, categories.Select(x => x.Name));
+
+        base.OnInitialized();
+    }
+
+}

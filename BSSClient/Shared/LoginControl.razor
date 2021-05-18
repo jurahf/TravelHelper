@@ -1,0 +1,53 @@
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor httpContextAccessor
+@inject HttpClient Http
+
+
+@if (user.Identity.Name != null)
+{
+    <div class="ml-md-auto">
+        <img class="avatar-img" src="@avatar" alt="avatar" />
+        <b>@name @surname (@email)</b>
+        <a class="btn btn-primary" href="/Logout" target="_top">Выйти</a>
+    </div>
+}
+else
+{
+    <a class="ml-md-auto btn btn-primary" href="/Login" target="_top">Войти</a>
+}
+
+
+
+@code {
+    private ClaimsPrincipal user;
+    private string name;
+    private string surname;
+    private string avatar;
+    private string email;
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        try
+        {
+            // Set the user to determine if they are logged in
+            user = httpContextAccessor.HttpContext.User;
+
+            var nameObj = user.FindFirst(ClaimTypes.GivenName);
+            name = nameObj?.Value ?? user.Identity.Name;
+
+            var surnameObj = user.FindFirst(ClaimTypes.Surname);
+            surname = surnameObj?.Value ?? "";
+
+            var avatarObj = user.FindFirst("urn:google:image");
+            avatar = avatarObj?.Value ?? "";
+
+            var emailObj = user.FindFirst(ClaimTypes.Email);
+            email = emailObj?.Value ?? "";
+
+        }
+        catch { }
+    }
+}
