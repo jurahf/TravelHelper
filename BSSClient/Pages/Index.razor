@@ -4,25 +4,39 @@
 @using CoreImplementation.Model;
 
 @inject ITravelService travelService
+@inject IJSRuntime JS;
 
 
-<h1>Hello, world!</h1>
+<div class="sidebar">
+    <NavMenu />
+</div>
 
-<p>@allCategories</p>
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<div class="main">
+    <div class="content-container">
+        <div>
+            <div id="map"></div>
+        </div>
+    </div>
+</div>
 
 
 @code {
 
-    private string allCategories;
 
     protected override void OnInitialized()
     {
         List<VMCategory> categories = travelService.GetAllCategories();
-        allCategories = string.Join(Environment.NewLine, categories.Select(x => x.Name));
 
         base.OnInitialized();
     }
+
+
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        // вызываем инициализацию карты: массив точек, стартовый город, id контейнера карты
+        await JS.InvokeVoidAsync("getGeolocationAndInitMap", null, null, "map");
+    }
+
 
 }

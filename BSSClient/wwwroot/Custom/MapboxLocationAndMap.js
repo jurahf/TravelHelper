@@ -8,6 +8,13 @@ const perm = [56.25107070278494, 58.00412682942334];
 
 function getGeolocationAndInitMap(arrPoints, city, elemId) {
 
+    if (!city) {
+        city = {};
+        city.Lng = moscow[0];
+        city.Lat = moscow[1];
+    }
+
+    // сама карта
     map = new mapboxgl.Map({
         container: elemId,
         style: 'mapbox://styles/mapbox/streets-v11',
@@ -15,6 +22,7 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
         zoom: 12.0
     });
 
+    // геокодирование
     var geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         language: 'ru-RU',
@@ -23,39 +31,36 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
 
     map.addControl(geocoder);
 
+
+    // геолокация
     var geoLocate = new mapboxgl.GeolocateControl({
-            positionOptions: {
-                enableHighAccuracy: true
-            },
-            trackUserLocation: true,
-            showUserLocation: true
+        positionOptions: {
+            enableHighAccuracy: true
+        },
+        trackUserLocation: true,
+        showUserLocation: true
     })
 
     map.addControl(geoLocate);
 
 
-    /*
-    map.addControl(new MapboxDirections({
-        accessToken: mapboxgl.accessToken
-    }),
-    'top-left'
-    );
-    */
+    // установка языка, точек
     map.on('sourcedata', (e) => {
         if (map.isStyleLoaded() && init == false) {
             init = true;
             setLang('ru');
             map.off('sourcedata');
 
-            arrPoints.forEach(function (point) {
-                addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.ShortDescription, point.Description, point.ImageLink, point.Today, point.Order);
-            });
-        } 
+            //arrPoints.forEach(function (point) {
+            //    addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.ShortDescription, point.Description, point.ImageLink, point.Today, point.Order);
+            //});
+        }
     });
 
     map.on('load', function () {
-        geoLocate.trigger();
+        //geoLocate.trigger();
     });
+
 
     canvas = map.getCanvasContainer();
 }
