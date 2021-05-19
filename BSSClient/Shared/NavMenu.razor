@@ -19,9 +19,24 @@
                 @(Travel?.Name ?? "Путешествие не выбрано")
             </NavLink>
 
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="OnNextPointClicked">
-                Следующая точка
-            </NavLink>
+            @if (Travel != null)
+            {
+                <NavLink class="nav-link non-selectable" href="" Match="NavLinkMatch.All">
+                    Расписание по дням
+                </NavLink>
+                <NavLink class="nav-link non-selectable" href="" Match="NavLinkMatch.All">
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                        @foreach (var sch in Travel.Schedules.OrderBy(x => x.Date))
+                        {
+                            <button type="button" class="btn btn-primary @(sch.Date == Travel.CurrentDate ? "active" : "" )" @onclick="() => OnScheduleSelected(sch.Date)">@((sch.Date - Travel.StartDate).TotalDays + 1)</button>
+                        }
+                    </div>
+                </NavLink>
+
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="OnNextPointClicked">
+                    Следующая точка
+                </NavLink>
+            }
         </li>
     </ul>
 
@@ -48,6 +63,9 @@
     [Parameter]
     public EventCallback NextPointClicked { get; set;}
 
+    [Parameter]
+    public EventCallback<DateTime> ScheduleSelected { get; set; }
+
 
 
     private bool collapseNavMenu = true;
@@ -68,5 +86,10 @@
     private void OnNextPointClicked()
     {
         NextPointClicked.InvokeAsync(null);
+    }
+
+    private void OnScheduleSelected(DateTime date)
+    {
+        ScheduleSelected.InvokeAsync(date);
     }
 }

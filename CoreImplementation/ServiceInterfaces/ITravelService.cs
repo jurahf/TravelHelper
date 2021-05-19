@@ -23,7 +23,7 @@ namespace CoreImplementation.ServiceInterfaces
 
         VMTravel MoveToNextPoint(VMTravel travel);
 
-
+        VMTravel MoveToDate(VMTravel travel, DateTime date);
 
 
 

@@ -12,7 +12,7 @@
 
 
 <div class="sidebar">
-    <NavMenu Travel="travel" NextPointClicked="OnNextPointClickedAsync" />
+    <NavMenu Travel="travel" NextPointClicked="OnNextPointClickedAsync" ScheduleSelected="(date) => OnScheduleSelectedAsync((DateTime)date)" />
 </div>
 
 <div class="main">
@@ -74,6 +74,23 @@
 
         travel = travelService.MoveToNextPoint(travel);
 
+        await SelectDateAndPointOnMap();
+    }
+
+
+    private async void OnScheduleSelectedAsync(DateTime selectedDate)
+    {
+        if (travel == null)
+            return;
+
+        travel = travelService.MoveToDate(travel, selectedDate);
+
+        await SelectDateAndPointOnMap();
+    }
+
+
+    private async Task SelectDateAndPointOnMap()
+    {
         VMSchedule currentSchedule = travel.Schedules.FirstOrDefault(s => s.Date == travel.CurrentDate);
         if (currentSchedule == null)
             currentSchedule = travel.Schedules.FirstOrDefault();
@@ -82,6 +99,7 @@
 
         await JS.InvokeVoidAsync("selectDateAndPoint", currentSchedule.Date, currentPoint);
     }
+
 
 
 

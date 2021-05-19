@@ -61,6 +61,11 @@ app {
     max-width: 215px;
 }
 
+.btn.btn-primary.active {
+    border: 3px solid;
+    border-color: indianred !important;
+}
+
 
 .main {
     flex: 1;
@@ -123,6 +128,10 @@ app {
 
 .sidebar .nav-link a:hover {
     color: #0a0a0a;
+}
+
+.sidebar .nav-link.non-selectable:hover {
+    background-color: transparent;
 }
 
 .sidebar .nav-link:hover {

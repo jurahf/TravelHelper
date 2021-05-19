@@ -103,6 +103,25 @@ namespace Services.Services.DatabaseTravel
         }
 
 
+        public VMTravel MoveToDate(VMTravel travel, DateTime date)
+        {
+            var dbTravel = data.TravelSet
+                .Fetch()
+                .FirstOrDefault(x => x.Id == travel.Id);
+
+            if (dbTravel == null)
+                throw new ArgumentException("Путешествие не найдено");
+
+            dbTravel.CurrentDate = date;
+
+            data.Update(dbTravel);
+            data.SaveChanges();
+
+            return dbTravel.ConvertToVm();
+        }
+
+
+
 
 
 
