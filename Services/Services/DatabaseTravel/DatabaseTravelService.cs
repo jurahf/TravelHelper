@@ -77,6 +77,40 @@ namespace Services.Services.DatabaseTravel
         }
 
 
+        public VMTravel MoveToNextPoint(VMTravel travel)
+        {
+            var dbTravel = data.TravelSet
+                .Fetch()
+                .FirstOrDefault(x => x.Id == travel.Id);
+
+            if (dbTravel == null)
+                throw new ArgumentException("Путешествие не найдено");
+
+            var dbSchedule = dbTravel.ScheduleSet.FirstOrDefault(x => x.Date == dbTravel.CurrentDate);
+
+            if (dbSchedule != null)
+            {
+                dbSchedule.TempPoint++;
+
+                if (dbSchedule.TempPoint >= dbSchedule.PlacePointSet.Count)
+                    dbSchedule.TempPoint = 0;
+
+                data.Update(dbSchedule);
+                data.SaveChanges();
+            }
+
+            return dbTravel.ConvertToVm();
+        }
+
+
+
+
+
+
+
+
+
+
 
 
 

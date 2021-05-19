@@ -2,12 +2,16 @@
 var map;
 var canvas;
 var init = false;
+var tempDate;
 var tempPointIndex = 0;
+var arrPoints = [];
 
+// Lng, Lat
 const moscow = [37.6170, 55.7545];
 const perm = [56.25107070278494, 58.00412682942334];
 
-function getGeolocationAndInitMap(arrPoints, city, elemId) {
+function getGeolocationAndInitMap(arrPoints, city, elemId, currDate, currPoint) {
+    this.arrPoints = arrPoints;
 
     if (!city) {
         city = {};
@@ -52,9 +56,7 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
             setLang('ru');
             map.off('sourcedata');
 
-            arrPoints.forEach(function (point) {
-                addMarkerAndFullRoute([point.lng, point.lat], point.caption, point.shortDescription, point.description, point.imageLink, point.today, point.order);
-            });
+            selectDateAndPoint(currDate, currPoint);
         }
     });
 
@@ -67,11 +69,26 @@ function getGeolocationAndInitMap(arrPoints, city, elemId) {
 }
 
 
+function FillArrPoints() {
+    arrPoints.forEach(function (point) {
+        addMarkerAndFullRoute([point.lng, point.lat], point.caption, point.shortDescription, point.description, point.imageLink, point.date, point.order);
+    });
+}
+
+
+function selectDateAndPoint(date, pointIndex) {
+    tempDate = date;
+    tempPointIndex = pointIndex;
+
+    clearMarkersAndRouts();
+    FillArrPoints();
+}
 
 
 
-function addMarkerAndFullRoute(point, caption, shortDescription, description, imageLink, today, order) {
+function addMarkerAndFullRoute(point, caption, shortDescription, description, imageLink, date, order) {
     var markerColor = '#3FB1CE';
+    var today = date == tempDate;
     if (today) {
         if (order <= tempPointIndex) {
             markerColor = 'green';
@@ -87,7 +104,7 @@ function addMarkerAndFullRoute(point, caption, shortDescription, description, im
     addMarker(point, caption, shortDescription, description, imageLink, markerColor);
 
 
-    if (today == true) {
+    if (today) {
         var routeColor = '#3FB1CE';
         if (order == tempPointIndex + 1)
             routeColor = '#be3887'
@@ -98,35 +115,8 @@ function addMarkerAndFullRoute(point, caption, shortDescription, description, im
 
 
 
-function nextPoint() {
-    if (pointsArr[tempPointIndex]) {
-        if (tripSetted) { // маршрут уже проложен, по-умолчанию идем к следующей точке
-            moveTempPointIndex();
-            pointWasPassed();
-        }
-        else {
-            tripSetted = true;
-        }
-
-        var point = pointsArr[tempPointIndex];
-
-        while (point.Lat == 0) {    // костыль. вообще нулей быть не должно
-            moveTempPointIndex();
-            point = pointsArr[tempPointIndex];
-        }
-        pointWasPassed();
-
-        clearMarkersAndRouts();
-        pointsArr.forEach(function (point) {
-            addMarkerAndFullRoute([point.Lng, point.Lat], point.Caption, point.Description, point.Today, point.Order);
-        });
-    }
-}
-
 
 function clearMarkersAndRouts() {
-    //routs = [];
-
     for (var i = 0; i < layerNames.length; i++)
         map.removeLayer(layerNames[i]);
 
@@ -136,23 +126,6 @@ function clearMarkersAndRouts() {
         allMarkers[i].remove();
 
     allMarkers = [];
-}
-
-
-function moveTempPointIndex() {
-    tempPointIndex++;
-
-    if (tempPointIndex > maxPointIndex) {
-        tempPointIndex = minPointIndex;
-    }
-}
-
-
-function pointWasPassed() {
-    // TODO: отправить запрос на сервер - надо отметить, что точка посещена
-    // данные брать из:
-    //var pointsArr = [];   // точки для отображения на карте
-    //var tempPointIndex = 0;
 }
 
 
@@ -353,7 +326,3 @@ function setOnClickHandler() {
 }
 
 
-
-function ShowTripTo() {
-    // TODO
-}

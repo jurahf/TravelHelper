@@ -37,6 +37,7 @@ namespace Services.ModelsTools
                 Name = travel.Name,
                 StartDate = travel.StartDate,
                 EndDate = travel.EndDate,
+                CurrentDate = travel.CurrentDate,
                 Categories = travel.TravelCategory.Select(x => x.Categories).Select(x => x.ConvertToVm()).ToList(),
                 City = travel.City.ConvertToVm(),
                 User = travel.User.ConvertToVm(),

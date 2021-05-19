@@ -18,6 +18,10 @@
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 @(Travel?.Name ?? "Путешествие не выбрано")
             </NavLink>
+
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="OnNextPointClicked">
+                Следующая точка
+            </NavLink>
         </li>
     </ul>
 
@@ -37,9 +41,14 @@
 
 @code {
 
-    
+
     [Parameter]
     public VMTravel Travel { get; set; }
+
+    [Parameter]
+    public EventCallback NextPointClicked { get; set;}
+
+
 
     private bool collapseNavMenu = true;
 
@@ -54,5 +63,10 @@
     protected override Task OnInitializedAsync()
     {
         return base.OnInitializedAsync();
+    }
+
+    private void OnNextPointClicked()
+    {
+        NextPointClicked.InvokeAsync(null);
     }
 }

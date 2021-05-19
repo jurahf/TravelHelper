@@ -19,8 +19,16 @@ namespace CoreImplementation.ServiceInterfaces
 
         int? GetSelectedTravelId(VMUser user);
 
-
         void CreateDefaultDataForUser(VMUser user);
+
+        VMTravel MoveToNextPoint(VMTravel travel);
+
+
+
+
+
+
+
 
 
         int SelectTravel(VMUser user, int id);

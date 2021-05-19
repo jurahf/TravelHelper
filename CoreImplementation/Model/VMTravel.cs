@@ -10,6 +10,9 @@ namespace CoreImplementation.Model
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
+
+        public DateTime CurrentDate { get; set; }
+
         public VMUser User { get; set;}
         public VMCity City { get; set; }
         public List<VMCategory> Categories { get; set; }

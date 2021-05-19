@@ -26,6 +26,31 @@ namespace TravelHelperDb
         public int CityId { get; set; }
 
 
+        private DateTime currentDate;
+
+        public DateTime CurrentDate 
+        {
+            get
+            {
+                if (currentDate < StartDate)
+                    currentDate = StartDate;
+                else if (currentDate > EndDate)
+                    currentDate = EndDate;
+
+                return currentDate;
+            }
+            set
+            {
+                if (value < StartDate)
+                    currentDate = StartDate;
+                else if (value > EndDate)
+                    currentDate = EndDate;
+                else
+                    currentDate = value;
+            }
+        }
+
+
         [ForeignKey(nameof(CityId))]
         [InverseProperty(nameof(TravelHelperDb.CitySet.TravelSet))]
         public virtual CitySet City { get; set; }
