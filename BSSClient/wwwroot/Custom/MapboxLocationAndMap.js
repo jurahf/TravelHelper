@@ -1,16 +1,35 @@
 ﻿mapboxgl.accessToken = 'pk.eyJ1IjoianVyYWhmIiwiYSI6ImNra253dzkweDM1M3QycXF0ZnF5MzZzMjUifQ.RlwEwOAgzieIbpxdy4TyYQ';
 var map;
 var canvas;
-var init = false;
+
 var tempDate;
 var tempPointIndex = 0;
+
+var init = false;
 var arrPoints = [];
+var allMarkers = [];
+var routs = [];
+var layerNames = [];
+
 
 // Lng, Lat
 const moscow = [37.6170, 55.7545];
 const perm = [56.25107070278494, 58.00412682942334];
 
+
+function resetToDefault() {
+    init = false;
+    arrPoints = [];
+    allMarkers = [];
+    routs = [];
+    layerNames = [];
+}
+
+
 function getGeolocationAndInitMap(arrPoints, city, elemId, currDate, currPoint) {
+    console.log('getGeolocationAndInitMap');
+
+    resetToDefault();
     this.arrPoints = arrPoints;
 
     if (!city) {
@@ -56,6 +75,8 @@ function getGeolocationAndInitMap(arrPoints, city, elemId, currDate, currPoint) 
             setLang('ru');
             map.off('sourcedata');
 
+            console.log('map.on sourcedata');
+
             selectDateAndPoint(currDate, currPoint);
         }
     });
@@ -70,13 +91,17 @@ function getGeolocationAndInitMap(arrPoints, city, elemId, currDate, currPoint) 
 
 
 function FillArrPoints() {
+    console.log('FillArrPoints (' + arrPoints.length + ')');
+
     arrPoints.forEach(function (point) {
-        addMarkerAndFullRoute([point.lng, point.lat], point.caption, point.shortDescription, point.description, point.imageLink, point.date, point.order);
+        addMarkerAndFullRoute([point.lng, point.lat], point.addrId,  point.caption, point.shortDescription, point.description, point.imageLink, point.date, point.order);
     });
 }
 
 
 function selectDateAndPoint(date, pointIndex) {
+    console.log('selectDateAndPoint');
+
     tempDate = date;
     tempPointIndex = pointIndex;
 
@@ -86,7 +111,7 @@ function selectDateAndPoint(date, pointIndex) {
 
 
 
-function addMarkerAndFullRoute(point, caption, shortDescription, description, imageLink, date, order) {
+function addMarkerAndFullRoute(point, addrId, caption, shortDescription, description, imageLink, date, order) {
     var markerColor = '#3FB1CE';
     var today = date == tempDate;
     if (today) {
@@ -101,7 +126,7 @@ function addMarkerAndFullRoute(point, caption, shortDescription, description, im
         }
     }
 
-    addMarker(point, caption, shortDescription, description, imageLink, markerColor);
+    addMarker(point, addrId, caption, shortDescription, description, imageLink, markerColor);
 
 
     if (today) {
@@ -117,6 +142,8 @@ function addMarkerAndFullRoute(point, caption, shortDescription, description, im
 
 
 function clearMarkersAndRouts() {
+    console.log('clear');
+
     for (var i = 0; i < layerNames.length; i++)
         map.removeLayer(layerNames[i]);
 
@@ -130,12 +157,11 @@ function clearMarkersAndRouts() {
 
 
 
-var allMarkers = [];
-function addMarker(point, title, shortDescription, description, imageLink, color) {
+function addMarker(point, addrId, title, shortDescription, description, imageLink, color) {
 
     var link = '';
     if (shortDescription != description)
-        link = '<a href="#" onclick="ShowInfo(\'' + title + '\', \'' + description + '\', \'' + imageLink + '\'); ">подробно...</a>';
+        link = '<a href="/AddrInfo/' + addrId + '">подробно...</a>';
 
     var img = '';
     if (imageLink)
@@ -179,7 +205,6 @@ function setLang(language) {
 }
 
 
-var routs = [];
 function addRoutePoint(point, color) {
     routs.push(point);
 
@@ -188,7 +213,6 @@ function addRoutePoint(point, color) {
     }
 }
 
-var layerNames = [];
 function getRoute(start, end, profile, layerName, color) {
 
     if (layerName == undefined)
@@ -215,57 +239,7 @@ function getRoute(start, end, profile, layerName, color) {
         // if the route already exists on the map, reset it using setData
         if (map.getSource(layerName)) {
             map.getSource(layerName).setData(geojson);
-        } else { // otherwise, make a new request
-
-            // Add starting point to the map
-            //map.addLayer({
-            //    id: 'point-start',
-            //    type: 'circle',
-            //    source: {
-            //        type: 'geojson',
-            //        data: {
-            //            type: 'FeatureCollection',
-            //            features: [{
-            //                type: 'Feature',
-            //                properties: {},
-            //                geometry: {
-            //                    type: 'Point',
-            //                    coordinates: start
-            //                }
-            //            }
-            //            ]
-            //        }
-            //    },
-            //    paint: {
-            //        'circle-radius': 10,
-            //        'circle-color': '#3887be'
-            //    }
-            //});
-
-            //map.addLayer({
-            //    id: 'point-end',
-            //    type: 'circle',
-            //    source: {
-            //        type: 'geojson',
-            //        data: {
-            //            type: 'FeatureCollection',
-            //            features: [{
-            //                type: 'Feature',
-            //                properties: {},
-            //                geometry: {
-            //                    type: 'Point',
-            //                    coordinates: end
-            //                }
-            //            }
-            //            ]
-            //        }
-            //    },
-            //    paint: {
-            //        'circle-radius': 10,
-            //        'circle-color': '#38be87'
-            //    }
-            //});
-
+        } else {
             // add route line
             layerNames.push(layerName);
             map.addLayer({

@@ -11,6 +11,7 @@ namespace CoreImplementation.Model
         private const string basePicturePath = "/images/places/";
 
 
+        public string Name { get; set; }
         public string ContainerAddress { get; set; }
         public string SelfAddress { get; set; }
         public decimal Latitude { get; set; }

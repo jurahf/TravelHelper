@@ -13,6 +13,15 @@ namespace CoreImplementation.ServiceInterfaces
     /// </summary>
     public interface IAddressesService
     {
+        VMAddressInfo GetAddressInfo(int id);
+
+
+
+
+
+
+
+
         List<VMAddressInfo> SearchAddresses(AddressSearchArgs args);
 
         List<VMAddressInfo> SearchNear(AddressSearchNearArgs args);

@@ -120,7 +120,8 @@ namespace Services.ModelsTools
                 Latitude = address.Latitude,
                 Longitude = address.Longitude,
                 Picture = address.Picture,
-                SelfAddress = address.SelfAddress
+                SelfAddress = address.SelfAddress,
+                Name = address.Name
             };
         }
 

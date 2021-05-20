@@ -20,13 +20,36 @@ namespace Services.Services.MapBoxAddresses
         private const string mapBoxToken = "pk.eyJ1IjoianVyYWhmIiwiYSI6ImNra253dzkweDM1M3QycXF0ZnF5MzZzMjUifQ.RlwEwOAgzieIbpxdy4TyYQ";
         private const string serviceUrl = "https://api.mapbox.com/"; // TODO: в конфиг
         private readonly CultureInfo culture;
+        private readonly TravelHelperDatabaseContext data;
         private List<CategorySet> allExistedCategories;
+
 
         public MapBoxAddressesService(TravelHelperDatabaseContext data)
         {
             culture = CultureInfo.InvariantCulture;
             this.allExistedCategories = data.CategorySet.ToList();
+            this.data = data;
         }
+
+
+
+        public VMAddressInfo GetAddressInfo(int id)
+        {
+            return data.NaviAddressInfoSet.FirstOrDefault(x => x.Id == id).ConvertToVm();
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public List<VMAddressInfo> SearchAddresses(AddressSearchArgs args)
         {

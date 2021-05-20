@@ -1,0 +1,73 @@
+﻿@page "/AddrInfo/{addrId:int}"
+
+@using CoreImplementation.ServiceInterfaces;
+@using CoreImplementation.Model;
+
+@inject NavigationManager NavigationManager;
+@inject IAddressesService addressesService
+
+
+<div class="flex-column">
+
+    <div class="row margin-top-2">
+        <div class="col col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2">
+            <h4>@addressInfo.Name</h4>
+        </div>
+    </div>
+
+
+    <div class="row margin-top-1">
+        <div class="col col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2">
+            <img src="@addressInfo.SafePictureUrl" style="width:100%" />
+        </div>
+    </div>
+
+
+    <div class="row margin-top-1">
+        <div class="col col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2">
+            <h6>@addressInfo.Description</h6>
+        </div>
+    </div>
+
+
+    <div class="row margin-top-1">
+        <div class="col col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2">
+            <button class="btn btn-secondary" @onclick="Close">Закрыть</button>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+@code {
+
+    [Parameter]
+    public int AddrId { get; set; }
+
+    private VMAddressInfo addressInfo;
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        try
+        {
+            addressInfo = addressesService.GetAddressInfo(AddrId);
+        }
+        catch
+        {
+            addressInfo = null;
+        }
+    }
+
+
+    private void Close()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+}
