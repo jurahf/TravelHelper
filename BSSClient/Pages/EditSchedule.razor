@@ -1,0 +1,59 @@
+﻿@page "/EditSchedule/{travelId:int}/{scheduleId:int}"
+
+@using CoreImplementation.Model;
+@using CoreImplementation.ServiceInterfaces;
+
+@inject ITravelService travelService
+
+
+<div class="flex-column full-width">
+
+    <div class="row margin-top-2">
+        <div class="col col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2">
+            <h4>Редактировать расписание на @schedule.Date.ToString("dd.MM.yyyy")</h4>
+        </div>
+    </div>
+
+
+
+    <div class="row margin-top-2">
+        <div class="col col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2">
+
+            <table class="table table-bordered">
+                @foreach (var place in schedule.PlacePoint.OrderBy(x => x.Order))
+                {
+                    <tr>
+                        <td>@(place.Order + 1)</td>
+                        <td>@place.Time.ToString("HH:mm")</td>
+                        <td>@place.CustomName</td>
+                    </tr>
+                }
+            </table>
+
+        </div>
+    </div>
+
+</div>
+
+
+@code {
+
+    [Parameter]
+    public int TravelId { get; set; }
+
+    [Parameter]
+    public int ScheduleId { get; set; }
+
+    private VMSchedule schedule;
+
+
+
+    protected override void OnInitialized()
+    {
+        schedule = travelService.GetSchedule(ScheduleId);
+
+        base.OnInitialized();
+    }
+
+
+}

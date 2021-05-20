@@ -14,6 +14,10 @@ app, .content-container, .content-container > div, .content-container > div #map
     height: 100%;
 }
 
+.full-width {
+    width: 100%;
+}
+
 
 
 

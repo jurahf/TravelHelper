@@ -19,5 +19,13 @@ namespace Services.ModelsTools
                 .ThenInclude(z => z.NaviAddressInfo);
         }
 
+
+        public static IQueryable<ScheduleSet> Fetch(this DbSet<ScheduleSet> schedule)
+        {
+            return schedule
+                .Include(y => y.PlacePointSet)
+                .ThenInclude(z => z.NaviAddressInfo);
+        }
+
     }
 }

@@ -5,6 +5,7 @@
 @using CoreImplementation.ServiceInterfaces;
 @using CoreImplementation.Model;
 
+@inject NavigationManager NavigationManager
 @inject IHttpContextAccessor httpContextAccessor
 @inject IJSRuntime JS
 @inject ITravelService travelService
@@ -12,7 +13,7 @@
 
 
 <div class="sidebar">
-    <NavMenu Travel="travel" NextPointClicked="OnNextPointClickedAsync" ScheduleSelected="(date) => OnScheduleSelectedAsync((DateTime)date)" />
+    <NavMenu Travel="travel" NextPointClicked="OnNextPointClickedAsync" ScheduleSelected="(date) => OnScheduleSelectedAsync((DateTime)date)" EditDayClicked="OnEditDayClicked" />
 </div>
 
 <div class="main">
@@ -157,6 +158,17 @@
             // показываем пустую карту
             await JS.InvokeVoidAsync("getGeolocationAndInitMap", new List<MapPointForJs>(), null, "map", DateTime.Today, 0);
         }
+    }
+
+
+    private void OnEditDayClicked()
+    {
+        VMSchedule currentSchedule = travel?.Schedules.FirstOrDefault(s => s.Date == travel.CurrentDate);
+
+        if (currentSchedule == null)
+            return;
+
+        NavigationManager.NavigateTo($"/EditSchedule/{travel.Id}/{currentSchedule.Id}");
     }
 
 

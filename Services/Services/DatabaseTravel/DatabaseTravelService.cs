@@ -121,6 +121,16 @@ namespace Services.Services.DatabaseTravel
         }
 
 
+        public VMSchedule GetSchedule(int id)
+        {
+            return data.ScheduleSet
+                .Fetch()
+                .FirstOrDefault(x => x.Id == id)
+                .ConvertToVm();
+        }
+
+
+
 
 
 

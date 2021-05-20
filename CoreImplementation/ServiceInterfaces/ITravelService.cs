@@ -25,7 +25,7 @@ namespace CoreImplementation.ServiceInterfaces
 
         VMTravel MoveToDate(VMTravel travel, DateTime date);
 
-
+        VMSchedule GetSchedule(int scheduleId);
 
 
 
