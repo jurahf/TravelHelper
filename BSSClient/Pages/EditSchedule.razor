@@ -26,10 +26,32 @@
                         <td>@(place.Order + 1)</td>
                         <td>@place.Time.ToString("HH:mm")</td>
                         <td>@place.CustomName</td>
+                        <td>
+                            <div class="btn-toolbar" role="toolbar" aria-label="Действия">
+                                <div class="btn-group mr-2" role="group" aria-label="group-move">
+                                    <button type="button" class="btn btn-info" disabled="@(place.Order <= 0)" @onclick="() => Up(place)"><span class="oi oi-arrow-thick-top"></span></button>
+                                    <button type="button" class="btn btn-info" disabled="@(place.Order + 1 >= schedule.PlacePoint.Count())"  @onclick="() => Down(place)"><span class="oi oi-arrow-thick-bottom"></span></button>
+                                    <button type="button" class="btn-pseudo"></button>
+                                    <button type="button" class="btn btn-success"><span class="oi oi-plus"></span></button>
+                                    <button type="button" class="btn-pseudo"></button>
+                                    <button type="button" class="btn-pseudo"></button>
+                                    <button type="button" class="btn btn-danger" @onclick="() => Remove(place)"><span class="oi oi-trash"></span></button>
+                                </div>
+                                <div class="btn-group mr-2" role="group" aria-label="group-del">
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                 }
             </table>
 
+        </div>
+    </div>
+
+    <div class="row margin-top-2">
+        <div class="col offset-8 col-4 col-sm-4 offset-sm-8 col-lg-4 offset-lg-8">
+            <button type="button" class="btn btn-light">Отмена</button>
+            <button type="button" class="btn btn-success">Сохранить</button>
         </div>
     </div>
 
@@ -54,6 +76,82 @@
 
         base.OnInitialized();
     }
+
+
+    private void Remove(VMPlacePoint place)
+    {
+        TimeSpan duration = FindDuration(place);
+        int order = place.Order;
+
+        foreach (var i in schedule.PlacePoint.Skip(order + 1))
+        {
+            i.Order--;
+            i.Time -= duration;
+        }
+
+        schedule.PlacePoint.Remove(place);
+    }
+
+
+    private void Up(VMPlacePoint place)
+    {
+        if (place == null)
+            return;
+
+        VMPlacePoint prevPlace = schedule.PlacePoint.FirstOrDefault(p => p.Order == place.Order - 1);
+
+        if (prevPlace != null)
+        {
+            ExchangeTime(place, prevPlace);
+
+            place.Order--;
+            prevPlace.Order++;
+        }
+    }
+
+
+    private void Down(VMPlacePoint place)
+    {
+        if (place == null)
+            return;
+
+        VMPlacePoint nextPlace = schedule.PlacePoint.FirstOrDefault(p => p.Order == place.Order + 1);
+
+        if (nextPlace != null)
+        {
+            ExchangeTime(place, nextPlace);
+
+            place.Order++;
+            nextPlace.Order--;
+        }
+    }
+
+
+    private void ExchangeTime(VMPlacePoint x, VMPlacePoint y)
+    {
+        VMPlacePoint first = x.Time < y.Time ? x : y;
+        VMPlacePoint second = x.Time > y.Time ? x : y;
+
+        DateTime firstStart = first.Time;
+        TimeSpan secondDuration = FindDuration(second);
+
+        second.Time = firstStart;
+        first.Time = firstStart + secondDuration;
+    }
+
+
+    private readonly TimeSpan defaultDuration = TimeSpan.FromHours(1);
+    private TimeSpan FindDuration(VMPlacePoint placePoint)
+    {
+        VMPlacePoint nextPlace = schedule.PlacePoint.FirstOrDefault(p => p.Order == placePoint.Order + 1);
+
+        if (nextPlace != null)
+            return nextPlace.Time - placePoint.Time;
+        else
+            return defaultDuration;
+    }
+
+
 
 
 }

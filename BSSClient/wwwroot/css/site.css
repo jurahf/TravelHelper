@@ -19,6 +19,18 @@ app, .content-container, .content-container > div, .content-container > div #map
 }
 
 
+.btn-pseudo,
+.btn-pseudo:hover,
+.btn-pseudo:active,
+.btn-pseudo:focus {
+    border-color: transparent;
+    cursor: default;
+    background-color: transparent;
+    border: none;
+    border-image-width: unset;
+}
+
+
 
 
 a, .btn-link {
