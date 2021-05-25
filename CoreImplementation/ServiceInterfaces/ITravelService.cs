@@ -27,6 +27,8 @@ namespace CoreImplementation.ServiceInterfaces
 
         VMSchedule GetSchedule(int scheduleId);
 
+        VMSchedule UpdateSchedulePoints(int scheduleId, VMSchedule data);
+
 
 
 
@@ -42,7 +44,5 @@ namespace CoreImplementation.ServiceInterfaces
         /// Сущности должны сохраниться
         /// </summary>
         SaveTravelResult SaveTravel(SaveTravelArgs saveArgs);
-
-        SaveScheduleResult SaveSchedule(SaveScheduleArgs saveArgs);
     }
 }

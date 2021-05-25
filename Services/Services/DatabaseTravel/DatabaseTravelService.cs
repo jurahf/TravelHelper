@@ -25,8 +25,14 @@ namespace Services.Services.DatabaseTravel
         private UserSet GetUserFromDb(VMUser user)
         {
             return data.UserSet
-                .Include(x => x.UserSettings)
+                .Fetch()
                 .FirstOrDefault(u => u.Login.ToLower() == user.Email.ToLower());
+        }
+
+        private NaviAddressInfoSet GetAddressInfoFromDb(VMAddressInfo addressInfo)
+        {
+            return data.NaviAddressInfoSet
+                .FirstOrDefault(a => a.Id == addressInfo.Id);
         }
 
         public List<VMCategory> GetAllCategories()
@@ -130,6 +136,40 @@ namespace Services.Services.DatabaseTravel
         }
 
 
+        public VMSchedule UpdateSchedulePoints(int scheduleId, VMSchedule newSchedule)
+        {
+            ScheduleSet forUpdate = data.ScheduleSet
+                .Fetch()
+                .FirstOrDefault(x => x.Id == scheduleId);
+
+            if (forUpdate == null)
+                throw new ArgumentException("Расписание не найдено");
+
+            data.PlacePointSet.RemoveRange(forUpdate.PlacePointSet);
+            forUpdate.PlacePointSet.Clear();
+
+            foreach (var newPlace in newSchedule.PlacePoint)
+            {
+                PlacePointSet placePoint = new PlacePointSet()
+                {
+                    CustomName = newPlace.CustomName,
+                    NaviAddressInfo = GetAddressInfoFromDb(newPlace.AddressInfo),
+                    Order = newPlace.Order,
+                    Schedule = forUpdate,
+                    Time = newPlace.Time
+                };
+
+                forUpdate.PlacePointSet.Add(placePoint);
+                data.PlacePointSet.Add(placePoint);
+            }
+
+
+            data.Update(forUpdate);
+            data.SaveChanges();
+
+            return forUpdate.ConvertToVm();
+        }
+
 
 
 
@@ -227,37 +267,6 @@ namespace Services.Services.DatabaseTravel
             }
         }
 
-        public SaveScheduleResult SaveSchedule(SaveScheduleArgs saveArgs)
-        {
-            SaveScheduleResult result = new SaveScheduleResult();
-
-            if (string.IsNullOrEmpty(saveArgs?.UserLogin))
-            {
-                result.Valid = false;
-                result.ErrorMessage = "Данные отсутствуют.";
-                return result;
-            }
-
-            try
-            {
-                ScheduleSaveHelper helper = new ScheduleSaveHelper(data);
-                var parsed = helper.ValidateAndParse(saveArgs);
-
-                if (parsed.Result.Valid)
-                {
-                    helper.UpdateRows(parsed, saveArgs);
-                    data.Update(parsed.Schedule);
-                }
-
-                return parsed.Result;
-            }
-            catch (Exception ex)
-            {
-                result.Valid = false;
-                result.ErrorMessage = "Ошибка при обработке запроса. Попробуйте повторить попытку позже.";
-                return result;
-            }
-        }
 
 
     }

@@ -3,6 +3,7 @@
 @using CoreImplementation.Model;
 @using CoreImplementation.ServiceInterfaces;
 
+@inject NavigationManager NavigationManager
 @inject ITravelService travelService
 
 
@@ -30,7 +31,7 @@
                             <div class="btn-toolbar" role="toolbar" aria-label="Действия">
                                 <div class="btn-group mr-2" role="group" aria-label="group-move">
                                     <button type="button" class="btn btn-info" disabled="@(place.Order <= 0)" @onclick="() => Up(place)"><span class="oi oi-arrow-thick-top"></span></button>
-                                    <button type="button" class="btn btn-info" disabled="@(place.Order + 1 >= schedule.PlacePoint.Count())"  @onclick="() => Down(place)"><span class="oi oi-arrow-thick-bottom"></span></button>
+                                    <button type="button" class="btn btn-info" disabled="@(place.Order + 1 >= schedule.PlacePoint.Count())" @onclick="() => Down(place)"><span class="oi oi-arrow-thick-bottom"></span></button>
                                     <button type="button" class="btn-pseudo"></button>
                                     <button type="button" class="btn btn-success"><span class="oi oi-plus"></span></button>
                                     <button type="button" class="btn-pseudo"></button>
@@ -50,8 +51,14 @@
 
     <div class="row margin-top-2">
         <div class="col offset-8 col-4 col-sm-4 offset-sm-8 col-lg-4 offset-lg-8">
-            <button type="button" class="btn btn-light">Отмена</button>
-            <button type="button" class="btn btn-success">Сохранить</button>
+            <button type="button" class="btn btn-light" @onclick="Close">Закрыть</button>
+            <button type="button" class="btn btn-success" @onclick="Save">Сохранить</button>
+        </div>
+    </div>
+    <div class="row margin-top-2">
+        <div class="col offset-8 col-4 col-sm-4 offset-sm-8 col-lg-4 offset-lg-8">
+            <h5 class="text-success">@successMessage</h5>
+            <h5 class="text-danger">@errorMessage</h5>
         </div>
     </div>
 
@@ -60,13 +67,16 @@
 
 @code {
 
-    [Parameter]
-    public int TravelId { get; set; }
+        [Parameter]
+        public int TravelId { get; set; }
 
-    [Parameter]
-    public int ScheduleId { get; set; }
+        [Parameter]
+        public int ScheduleId { get; set; }
 
     private VMSchedule schedule;
+
+    private string successMessage = "";
+    private string errorMessage = "";
 
 
 
@@ -83,7 +93,7 @@
         TimeSpan duration = FindDuration(place);
         int order = place.Order;
 
-        foreach (var i in schedule.PlacePoint.Skip(order + 1))
+        foreach (var i in schedule.PlacePoint.OrderBy(x => x.Order).Skip(order + 1))
         {
             i.Order--;
             i.Time -= duration;
@@ -150,6 +160,32 @@
         else
             return defaultDuration;
     }
+
+
+
+
+    public void Close()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+
+    public void Save()
+    {
+        successMessage = "";
+        errorMessage = "";
+
+        try
+        {
+            travelService.UpdateSchedulePoints(ScheduleId, schedule);
+            successMessage = "Расписание сохранено!";
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ошибка при сохранении: {ex.Message}";
+        }
+    }
+
 
 
 
