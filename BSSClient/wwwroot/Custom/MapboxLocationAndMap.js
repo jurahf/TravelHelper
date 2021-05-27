@@ -1,6 +1,7 @@
 ﻿mapboxgl.accessToken = 'pk.eyJ1IjoianVyYWhmIiwiYSI6ImNra253dzkweDM1M3QycXF0ZnF5MzZzMjUifQ.RlwEwOAgzieIbpxdy4TyYQ';
 var map;
 var canvas;
+var geocoder;
 
 var tempDate;
 var tempPointIndex = 0;
@@ -46,14 +47,17 @@ function getGeolocationAndInitMap(arrPoints, city, elemId, currDate, currPoint) 
         zoom: 12.0
     });
 
-    // геокодирование
+    // геокодирование (текстовый поиск)
     var geocoder = new MapboxGeocoder({
         accessToken: mapboxgl.accessToken,
         language: 'ru-RU',
-        mapboxgl: mapboxgl
+        mapboxgl: mapboxgl,
+        marker: false,
+        placeholder: 'Найти место...'
     });
 
     map.addControl(geocoder);
+    this.geocoder = geocoder;
 
 
     // геолокация
@@ -91,8 +95,6 @@ function getGeolocationAndInitMap(arrPoints, city, elemId, currDate, currPoint) 
 
 
 function FillArrPoints() {
-    console.log('FillArrPoints (' + arrPoints.length + ')');
-
     arrPoints.forEach(function (point) {
         addMarkerAndFullRoute([point.lng, point.lat], point.addrId,  point.caption, point.shortDescription, point.description, point.imageLink, point.date, point.order);
     });
@@ -100,8 +102,6 @@ function FillArrPoints() {
 
 
 function selectDateAndPoint(date, pointIndex) {
-    console.log('selectDateAndPoint');
-
     tempDate = date;
     tempPointIndex = pointIndex;
 
@@ -128,6 +128,8 @@ function addMarkerAndFullRoute(point, addrId, caption, shortDescription, descrip
 
     addMarker(point, addrId, caption, shortDescription, description, imageLink, markerColor);
 
+    if (today)
+        console.log("add " + caption + " (order = " + order + ")");
 
     if (today) {
         var routeColor = '#3FB1CE';
@@ -274,7 +276,14 @@ function getRoute(start, end, profile, layerName, color) {
 }
 
 
-function setOnClickHandler() {
+
+function setSelectMode(CSharpAssemblyName, CSharpCallbackMethodName) {
+    setOnClickHandler(CSharpAssemblyName, CSharpCallbackMethodName);
+    setOnSearchHandler(geocoder, CSharpAssemblyName, CSharpCallbackMethodName);
+}
+
+
+function setOnClickHandler(CSharpAssemblyName, CSharpCallbackMethodName) {
     map.on('click', function (e) {
         var coordsObj = e.lngLat;
         canvas.style.cursor = '';
@@ -292,11 +301,46 @@ function setOnClickHandler() {
             var json = JSON.parse(req.response);
             var feature = json.features[0];
 
+            //console.log(json);
+            //alert(feature.text + '\n\r' + feature.properties.category + '\n\r' + feature.properties.address + '\n\r' + feature.center);
 
-            alert(feature.text + '\n\r' + feature.properties.category + '\n\r' + feature.properties.address);
+            OnSelectedPlaceChanged(CSharpAssemblyName, CSharpCallbackMethodName, feature);
         };
         req.send();
     });
 }
 
+
+function setOnSearchHandler(geocoder, CSharpAssemblyName, CSharpCallbackMethodName) {
+    geocoder.on('result', function (e) {
+        var res = e.result;
+
+        //console.log(res);
+        //alert(res.text + '\n\r' + res.properties.category + '\n\r' + res.properties.address + '\n\r' + res.center);       
+
+        OnSelectedPlaceChanged(CSharpAssemblyName, CSharpCallbackMethodName, res);
+    });
+}
+
+
+function OnSelectedPlaceChanged(CSharpAssemblyName, CSharpCallbackMethodName, mapboxData) {
+    var info = createInfo(mapboxData);
+
+    clearMarkersAndRouts();
+    addMarker(mapboxData.center, null, mapboxData.text, mapboxData.properties.address, mapboxData.properties.address, null, '#0000ff');
+
+    DotNet.invokeMethodAsync(CSharpAssemblyName, CSharpCallbackMethodName, info);
+}
+
+
+function createInfo(mapboxPlaceData) {
+    var info = {};
+    info.name = mapboxPlaceData.text;
+    info.categories = mapboxPlaceData.properties.category;
+    info.address = mapboxPlaceData.properties.address;
+    info.lng = mapboxPlaceData.center[0];
+    info.lat = mapboxPlaceData.center[1];
+
+    return info;
+}
 

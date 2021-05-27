@@ -31,6 +31,18 @@ app, .content-container, .content-container > div, .content-container > div #map
 }
 
 
+.flying-card {
+    position: absolute;
+    bottom: 0;
+    width: 90vw;
+    max-height: 35%;
+    right: auto;
+    left: auto;
+    margin-left: 5vw;
+    margin-right: 5vw;
+    margin-bottom: 5vh;
+}
+
 
 
 a, .btn-link {

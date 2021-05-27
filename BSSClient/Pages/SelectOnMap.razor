@@ -1,0 +1,114 @@
+﻿@using CoreImplementation.Model;
+
+
+@inject IJSRuntime JS
+
+
+
+<div>
+    <div id="map"></div>
+</div>
+
+<div class="card flying-card">
+    <div class="card-header">
+        <h5>Выбранное место</h5>
+    </div>
+    <div class="card-body">
+        <h6>@currentInfo?.Name</h6>
+        <h6>@currentInfo?.Address</h6>
+        @*<h5>@currentInfo?.Categories</h5>
+        <h5>@currentInfo?.Lng, @currentInfo?.Lat</h5>*@
+    </div>
+    <div class="card-footer">
+        <button class="btn btn-primary" @onclick="Done">Готово</button>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@code {
+
+        [Parameter]
+        public EventCallback<VMAddressInfo> Selected { get; set; }
+
+
+    private static Action<SelectedPlaceInfo> assignSelectedInfo;
+    private SelectedPlaceInfo currentInfo;
+
+
+    protected override void OnInitialized()
+    {
+        assignSelectedInfo = info => AssignSelectedInfo(info);
+
+        base.OnInitialized();
+    }
+
+
+    protected async override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+            return;
+
+        // массив точек, стартовый город, id контейнера карты, выбранная дата, выбранная точка
+        await JS.InvokeVoidAsync("getGeolocationAndInitMap", null, null, "map", DateTime.Today, 0);
+
+        string assemblyName = this.GetType().Assembly.GetName().Name;
+        string methodName = nameof(this.SelectionChanged);
+        await JS.InvokeVoidAsync("setSelectMode", assemblyName, methodName);
+    }
+
+
+    [JSInvokable]
+    public static void SelectionChanged(SelectedPlaceInfo info)
+    {
+        assignSelectedInfo(info);
+    }
+
+    private void AssignSelectedInfo(SelectedPlaceInfo info)
+    {
+        currentInfo = info;
+        StateHasChanged();
+    }
+
+
+    private void Done()
+    {
+        VMAddressInfo addr = null;
+
+        if (currentInfo != null)
+        {
+            addr = new VMAddressInfo()
+            {
+                Name = currentInfo.Name,
+                Description = currentInfo.Name,
+                SelfAddress = currentInfo.Address,
+                Latitude = currentInfo.Lat,
+                Longitude = currentInfo.Lng
+            };
+        }
+
+        Selected.InvokeAsync(addr);
+    }
+
+
+    public class SelectedPlaceInfo
+    {
+        public string Name { get; set; }
+        public string Categories { get; set; }
+        public string Address { get; set; }
+        public decimal Lng { get; set; }
+        public decimal Lat { get; set; }
+    }
+
+}

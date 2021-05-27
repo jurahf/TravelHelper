@@ -7,187 +7,242 @@
 @inject ITravelService travelService
 
 
-<div class="flex-column full-width">
-
-    <div class="row margin-top-2">
-        <div class="col col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2">
-            <h4>Редактировать расписание на @schedule.Date.ToString("dd.MM.yyyy")</h4>
+@if (selectPlaceMode)
+{
+    <div class="main">
+        <div class="content-container">
+            <SelectOnMap Selected="(addr) => NewPlaceSelected((VMAddressInfo)addr)"></SelectOnMap>
         </div>
     </div>
-
-
-
-    <div class="row margin-top-2">
-        <div class="col col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2">
-
-            <table class="table table-bordered">
-                @foreach (var place in schedule.PlacePoint.OrderBy(x => x.Order))
-                {
-                    <tr>
-                        <td>@(place.Order + 1)</td>
-                        <td>@place.Time.ToString("HH:mm")</td>
-                        <td>@place.CustomName</td>
-                        <td>
-                            <div class="btn-toolbar" role="toolbar" aria-label="Действия">
-                                <div class="btn-group mr-2" role="group" aria-label="group-move">
-                                    <button type="button" class="btn btn-info" disabled="@(place.Order <= 0)" @onclick="() => Up(place)"><span class="oi oi-arrow-thick-top"></span></button>
-                                    <button type="button" class="btn btn-info" disabled="@(place.Order + 1 >= schedule.PlacePoint.Count())" @onclick="() => Down(place)"><span class="oi oi-arrow-thick-bottom"></span></button>
-                                    <button type="button" class="btn-pseudo"></button>
-                                    <button type="button" class="btn btn-success"><span class="oi oi-plus"></span></button>
-                                    <button type="button" class="btn-pseudo"></button>
-                                    <button type="button" class="btn-pseudo"></button>
-                                    <button type="button" class="btn btn-danger" @onclick="() => Remove(place)"><span class="oi oi-trash"></span></button>
-                                </div>
-                                <div class="btn-group mr-2" role="group" aria-label="group-del">
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                }
-            </table>
-
-        </div>
-    </div>
-
-    <div class="row margin-top-2">
-        <div class="col offset-8 col-4 col-sm-4 offset-sm-8 col-lg-4 offset-lg-8">
-            <button type="button" class="btn btn-light" @onclick="Close">Закрыть</button>
-            <button type="button" class="btn btn-success" @onclick="Save">Сохранить</button>
-        </div>
-    </div>
-    <div class="row margin-top-2">
-        <div class="col offset-8 col-4 col-sm-4 offset-sm-8 col-lg-4 offset-lg-8">
-            <h5 class="text-success">@successMessage</h5>
-            <h5 class="text-danger">@errorMessage</h5>
-        </div>
-    </div>
-
-</div>
-
-
-@code {
-
-        [Parameter]
-        public int TravelId { get; set; }
-
-        [Parameter]
-        public int ScheduleId { get; set; }
-
-    private VMSchedule schedule;
-
-    private string successMessage = "";
-    private string errorMessage = "";
-
-
-
-    protected override void OnInitialized()
-    {
-        schedule = travelService.GetSchedule(ScheduleId);
-
-        base.OnInitialized();
-    }
-
-
-    private void Remove(VMPlacePoint place)
-    {
-        TimeSpan duration = FindDuration(place);
-        int order = place.Order;
-
-        foreach (var i in schedule.PlacePoint.OrderBy(x => x.Order).Skip(order + 1))
-        {
-            i.Order--;
-            i.Time -= duration;
-        }
-
-        schedule.PlacePoint.Remove(place);
-    }
-
-
-    private void Up(VMPlacePoint place)
-    {
-        if (place == null)
-            return;
-
-        VMPlacePoint prevPlace = schedule.PlacePoint.FirstOrDefault(p => p.Order == place.Order - 1);
-
-        if (prevPlace != null)
-        {
-            ExchangeTime(place, prevPlace);
-
-            place.Order--;
-            prevPlace.Order++;
-        }
-    }
-
-
-    private void Down(VMPlacePoint place)
-    {
-        if (place == null)
-            return;
-
-        VMPlacePoint nextPlace = schedule.PlacePoint.FirstOrDefault(p => p.Order == place.Order + 1);
-
-        if (nextPlace != null)
-        {
-            ExchangeTime(place, nextPlace);
-
-            place.Order++;
-            nextPlace.Order--;
-        }
-    }
-
-
-    private void ExchangeTime(VMPlacePoint x, VMPlacePoint y)
-    {
-        VMPlacePoint first = x.Time < y.Time ? x : y;
-        VMPlacePoint second = x.Time > y.Time ? x : y;
-
-        DateTime firstStart = first.Time;
-        TimeSpan secondDuration = FindDuration(second);
-
-        second.Time = firstStart;
-        first.Time = firstStart + secondDuration;
-    }
-
-
-    private readonly TimeSpan defaultDuration = TimeSpan.FromHours(1);
-    private TimeSpan FindDuration(VMPlacePoint placePoint)
-    {
-        VMPlacePoint nextPlace = schedule.PlacePoint.FirstOrDefault(p => p.Order == placePoint.Order + 1);
-
-        if (nextPlace != null)
-            return nextPlace.Time - placePoint.Time;
-        else
-            return defaultDuration;
-    }
-
-
-
-
-    public void Close()
-    {
-        NavigationManager.NavigateTo("/");
-    }
-
-
-    public void Save()
-    {
-        successMessage = "";
-        errorMessage = "";
-
-        try
-        {
-            travelService.UpdateSchedulePoints(ScheduleId, schedule);
-            successMessage = "Расписание сохранено!";
-        }
-        catch (Exception ex)
-        {
-            errorMessage = $"Ошибка при сохранении: {ex.Message}";
-        }
-    }
-
-
-
-
-
 }
+else
+{
+    <div class="flex-column full-width">
+
+        <div class="row margin-top-2">
+            <div class="col col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2">
+                <h4>Редактировать расписание на @schedule.Date.ToString("dd.MM.yyyy")</h4>
+            </div>
+        </div>
+
+
+
+        <div class="row margin-top-2">
+            <div class="col col-12 col-sm-10 offset-sm-1 col-lg-8 offset-lg-2">
+
+                <table class="table table-bordered">
+                    @foreach (var place in schedule.PlacePoint.OrderBy(x => x.Order))
+                    {
+                        <tr>
+                            <td>@(place.Order + 1)</td>
+                            <td>@place.Time.ToString("HH:mm")</td>
+                            <td>@place.CustomName</td>
+                            <td>
+                                <div class="btn-toolbar" role="toolbar" aria-label="Действия">
+                                    <div class="btn-group mr-2" role="group" aria-label="group-move">
+                                        <button type="button" class="btn btn-info" disabled="@(place.Order <= 0)" @onclick="() => Up(place)"><span class="oi oi-arrow-thick-top"></span></button>
+                                        <button type="button" class="btn btn-info" disabled="@(place.Order + 1 >= schedule.PlacePoint.Count())" @onclick="() => Down(place)"><span class="oi oi-arrow-thick-bottom"></span></button>
+                                        <button type="button" class="btn-pseudo"></button>
+                                        <button type="button" class="btn btn-success" @onclick="() => AddPlace(place.Order)"><span class="oi oi-plus"></span></button>
+                                        <button type="button" class="btn-pseudo"></button>
+                                        <button type="button" class="btn-pseudo"></button>
+                                        <button type="button" class="btn btn-danger" @onclick="() => Remove(place)"><span class="oi oi-trash"></span></button>
+                                    </div>
+                                    <div class="btn-group mr-2" role="group" aria-label="group-del">
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </table>
+
+            </div>
+        </div>
+
+        <div class="row margin-top-2">
+            <div class="col offset-8 col-4 col-sm-4 offset-sm-8 col-lg-4 offset-lg-8">
+                <button type="button" class="btn btn-light" @onclick="Close">Закрыть</button>
+                <button type="button" class="btn btn-success" @onclick="Save">Сохранить</button>
+            </div>
+        </div>
+        <div class="row margin-top-2">
+            <div class="col offset-8 col-4 col-sm-4 offset-sm-8 col-lg-4 offset-lg-8">
+                <h5 class="text-success">@successMessage</h5>
+                <h5 class="text-danger">@errorMessage</h5>
+            </div>
+        </div>
+
+    </div>
+}
+
+
+            @code {
+
+                [Parameter]
+                public int TravelId { get; set; }
+
+                [Parameter]
+                public int ScheduleId { get; set; }
+
+                private bool selectPlaceMode = false;
+
+                private VMSchedule schedule;
+                private int orderForInsertPlacePoint { get; set; }
+
+                private string successMessage = "";
+                private string errorMessage = "";
+
+
+
+                protected override void OnInitialized()
+                {
+                    schedule = travelService.GetSchedule(ScheduleId);
+
+                    base.OnInitialized();
+                }
+
+
+                private void Remove(VMPlacePoint place)
+                {
+                    TimeSpan duration = FindDuration(place);
+                    int order = place.Order;
+
+                    foreach (var i in schedule.PlacePoint.OrderBy(x => x.Order).Skip(order + 1))
+                    {
+                        i.Order--;
+                        i.Time -= duration;
+                    }
+
+                    schedule.PlacePoint.Remove(place);
+                }
+
+
+                private void Up(VMPlacePoint place)
+                {
+                    if (place == null)
+                        return;
+
+                    VMPlacePoint prevPlace = schedule.PlacePoint.FirstOrDefault(p => p.Order == place.Order - 1);
+
+                    if (prevPlace != null)
+                    {
+                        ExchangeTime(place, prevPlace);
+
+                        place.Order--;
+                        prevPlace.Order++;
+                    }
+                }
+
+
+                private void Down(VMPlacePoint place)
+                {
+                    if (place == null)
+                        return;
+
+                    VMPlacePoint nextPlace = schedule.PlacePoint.FirstOrDefault(p => p.Order == place.Order + 1);
+
+                    if (nextPlace != null)
+                    {
+                        ExchangeTime(place, nextPlace);
+
+                        place.Order++;
+                        nextPlace.Order--;
+                    }
+                }
+
+
+                private void ExchangeTime(VMPlacePoint x, VMPlacePoint y)
+                {
+                    VMPlacePoint first = x.Time < y.Time ? x : y;
+                    VMPlacePoint second = x.Time > y.Time ? x : y;
+
+                    DateTime firstStart = first.Time;
+                    TimeSpan secondDuration = FindDuration(second);
+
+                    second.Time = firstStart;
+                    first.Time = firstStart + secondDuration;
+                }
+
+
+                private readonly TimeSpan defaultDuration = TimeSpan.FromHours(1);
+                private TimeSpan FindDuration(VMPlacePoint placePoint)
+                {
+                    VMPlacePoint nextPlace = schedule.PlacePoint.FirstOrDefault(p => p.Order == placePoint.Order + 1);
+
+                    if (nextPlace != null)
+                        return nextPlace.Time - placePoint.Time;
+                    else
+                        return defaultDuration;
+                }
+
+
+
+
+                public void Close()
+                {
+                    NavigationManager.NavigateTo("/");
+                }
+
+
+                public void Save()
+                {
+                    successMessage = "";
+                    errorMessage = "";
+
+                    try
+                    {
+                        travelService.UpdateSchedulePoints(ScheduleId, schedule);
+                        successMessage = "Расписание сохранено!";
+                    }
+                    catch (Exception ex)
+                    {
+                        errorMessage = $"Ошибка при сохранении: {ex.Message}";
+                    }
+                }
+
+
+
+                private void AddPlace(int order)
+                {
+                    orderForInsertPlacePoint = order;
+                    selectPlaceMode = true;
+                }
+
+
+
+                private void NewPlaceSelected(VMAddressInfo addr)
+                {
+                    if (addr != null)
+                    {
+                        // TODO: ввести пользовательское название, время, и продолжительность
+
+                        // добавляем новую точку в расписание
+                        VMPlacePoint nextPlacePoint = schedule.PlacePoint.FirstOrDefault(x => x.Order == orderForInsertPlacePoint + 1);
+                        VMPlacePoint newPlacePoint = new VMPlacePoint()
+                        {
+                            AddressInfo = addr,
+                            CustomName = addr.Name,
+                            Time = nextPlacePoint.Time,
+                            Order = nextPlacePoint.Order
+                        };
+
+                        // все точки, которые после - сдвигаем еще больше вниз
+                        TimeSpan duration = TimeSpan.FromHours(1);
+
+                        foreach (var nextPoint in schedule.PlacePoint.Where(x => x.Order > orderForInsertPlacePoint))
+                        {
+                            nextPoint.Time += duration;
+                            nextPoint.Order++;
+                        }
+
+                        schedule.PlacePoint.Add(newPlacePoint);
+
+                    }
+
+                    selectPlaceMode = false;
+                }
+
+
+
+
+            }

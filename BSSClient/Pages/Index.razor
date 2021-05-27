@@ -151,7 +151,7 @@
 
 
             // вызываем инициализацию карты: массив точек, стартовый город, id контейнера карты, выбранная дата, выбранная точка
-            await JS.InvokeVoidAsync("getGeolocationAndInitMap", mapPoints, mapCity, "map", currentSchedule.Date, currentPoint);
+            await JS.InvokeVoidAsync("getGeolocationAndInitMap", mapPoints.OrderBy(x => x.Order), mapCity, "map", currentSchedule.Date, currentPoint);
         }
         else
         {

@@ -153,7 +153,7 @@ namespace Services.Services.DatabaseTravel
                 PlacePointSet placePoint = new PlacePointSet()
                 {
                     CustomName = newPlace.CustomName,
-                    NaviAddressInfo = GetAddressInfoFromDb(newPlace.AddressInfo),
+                    NaviAddressInfo = GetAddressInfoFromDb(newPlace.AddressInfo) ?? FindByCoordsOrCreateNewAddress(newPlace.AddressInfo),
                     Order = newPlace.Order,
                     Schedule = forUpdate,
                     Time = newPlace.Time
@@ -169,6 +169,38 @@ namespace Services.Services.DatabaseTravel
 
             return forUpdate.ConvertToVm();
         }
+
+        private NaviAddressInfoSet FindByCoordsOrCreateNewAddress(VMAddressInfo addressInfo)
+        {
+            if (addressInfo == null)
+                return null;
+
+            var findedAddress = data.NaviAddressInfoSet.FirstOrDefault(x => x.Latitude == addressInfo.Latitude && x.Longitude == addressInfo.Longitude); // TODO: искать в окрестности
+
+            if (findedAddress != null)
+                return findedAddress;
+            else
+            {
+                var result = new NaviAddressInfoSet()
+                {
+                    //Category = addressInfo.Category,
+                    // City
+                    Description = addressInfo.Description,
+                    Latitude = addressInfo.Latitude,
+                    Longitude = addressInfo.Longitude,
+                    Name = addressInfo.Name,
+                    Picture = addressInfo.Picture
+                };
+
+                data.NaviAddressInfoSet.Add(result);
+
+                return result;
+            }
+        }
+
+
+
+
 
 
 
