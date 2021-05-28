@@ -35,5 +35,11 @@ namespace Services.ModelsTools
         }
 
 
+        public static IQueryable<CitySet> Fetch(this DbSet<CitySet> city)
+        {
+            return city;
+        }
+
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using CoreImplementation.Args;
 using CoreImplementation.Model;
@@ -28,6 +29,8 @@ namespace CoreImplementation.ServiceInterfaces
         VMSchedule GetSchedule(int scheduleId);
 
         VMSchedule UpdateSchedulePoints(int scheduleId, VMSchedule data);
+
+        Task<List<VMCity>> SearchCitiesAsync(string queryString, int limit);
 
 
 

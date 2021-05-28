@@ -8,6 +8,7 @@ using CoreImplementation.Results;
 using CoreImplementation.ServiceInterfaces;
 using CoreImplementation.Model;
 using Services.ModelsTools;
+using System.Threading.Tasks;
 
 namespace Services.Services.DatabaseTravel
 {
@@ -197,6 +198,22 @@ namespace Services.Services.DatabaseTravel
                 return result;
             }
         }
+
+        public async Task<List<VMCity>> SearchCitiesAsync(string queryString, int limit)
+        {
+            if (string.IsNullOrWhiteSpace(queryString))
+                return await Task.FromResult(new List<VMCity>());
+
+            return await data.CitySet
+                .Fetch()
+                .Where(x => x.Name.StartsWith(queryString))
+                .OrderBy(x => x.Country == "Россия" ? 0 : 1)
+                .Take(limit)
+                .Select(x => x.ConvertToVm())
+                .ToListAsync();
+        }
+
+
 
 
 

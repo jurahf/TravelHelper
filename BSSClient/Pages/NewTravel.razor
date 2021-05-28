@@ -1,17 +1,62 @@
 ﻿@page "/NewTravel"
 
+@using Blazored.Typeahead
+@using CoreImplementation.Model
+@using CoreImplementation.ServiceInterfaces
 
-<h3>NewTravel</h3>
+@inject ITravelService travelService
 
-TODO: 
-    выбор города - автокомплит
-    выбор категорий
-    ввод дат
-    составление и открытие предварительного расписания (по дням) на редактирование
-    редактирование и сохранение окончательного варианта
+
+<div class="main">
+
+    <div class="row">
+        <div class="col col-12">
+            <h3>NewTravel</h3>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col col-4">
+            <BlazoredTypeahead SearchMethod="SearchCities" @bind-Value="selectedCity">
+                <SelectedTemplate>
+                    @context.Name
+                </SelectedTemplate>
+                <ResultTemplate>
+                    @context.Name (@context.Country)
+                </ResultTemplate>
+            </BlazoredTypeahead>
+        </div>
+    </div>
+
+
+
+    <div class="row">
+        <div class="col col-12">
+            TODO:
+            выбор города - автокомплит
+            выбор категорий
+            ввод дат
+            составление и открытие предварительного расписания (по дням) на редактирование
+            редактирование и сохранение окончательного варианта
+        </div>
+    </div>
+
+</div>
 
 
 
 @code {
+
+    private const int limit = 10;
+
+    private VMCity selectedCity { get; set; }
+
+
+
+    private async Task<IEnumerable<VMCity>> SearchCities(string searchText)
+    {
+        return await travelService.SearchCitiesAsync(searchText, limit);
+    }
 
 }
