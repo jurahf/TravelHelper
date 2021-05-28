@@ -14,16 +14,23 @@
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Домашняя страница
             </NavLink>
+        </li>
 
+        <li class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <b>@(Travel?.Name ?? "Путешествие не выбрано")</b>
             </NavLink>
+        </li>
 
-            @if (Travel != null)
-            {
+        @if (Travel != null)
+        {
+            <li class="nav-item px-3">
                 <NavLink class="nav-link non-selectable" href="" Match="NavLinkMatch.All">
                     <span class="oi oi-calendar" aria-hidden="true"></span> Расписание по дням
                 </NavLink>
+            </li>
+
+            <li class="nav-item px-3">
                 <NavLink class="nav-link non-selectable" href="" Match="NavLinkMatch.All">
                     <div class="btn-group" role="group" aria-label="Basic example">
                         @foreach (var sch in Travel.Schedules.OrderBy(x => x.Date))
@@ -32,16 +39,28 @@
                         }
                     </div>
                 </NavLink>
+            </li>
 
+            <li class="nav-item px-3">
                 <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="OnEditDayClicked">
                     <span class="oi oi-pencil" aria-hidden="true"></span> Редактировать день
                 </NavLink>
+            </li>
 
+            <li class="nav-item px-3">
                 <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="OnNextPointClicked">
                     <span class="oi oi-map" aria-hidden="true"></span> Следующая точка
                 </NavLink>
-            }
-        </li>
+            </li>
+
+            <!-- TODO: тут вообще-то надо не поналичию путешествия, а по авторизации показывать -->
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="OnNewTravelClicked">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Новое путешествие
+                </NavLink>
+            </li>
+        }
+
     </ul>
 
 
@@ -61,17 +80,20 @@
 @code {
 
 
-    [Parameter]
-    public VMTravel Travel { get; set; }
+        [Parameter]
+        public VMTravel Travel { get; set; }
 
-    [Parameter]
-    public EventCallback NextPointClicked { get; set;}
+        [Parameter]
+        public EventCallback NextPointClicked { get; set;}
 
-    [Parameter]
-    public EventCallback<DateTime> ScheduleSelected { get; set; }
+        [Parameter]
+        public EventCallback<DateTime> ScheduleSelected { get; set; }
 
-    [Parameter]
-    public EventCallback EditDayClicked { get; set;}
+        [Parameter]
+        public EventCallback EditDayClicked { get; set;}
+
+        [Parameter]
+        public EventCallback NewTravelClicked { get; set; }
 
 
     private bool collapseNavMenu = true;
@@ -102,6 +124,11 @@
     private void OnEditDayClicked()
     {
         EditDayClicked.InvokeAsync(null);
+    }
+
+    private void OnNewTravelClicked()
+    {
+        NewTravelClicked.InvokeAsync(null);
     }
 
 }

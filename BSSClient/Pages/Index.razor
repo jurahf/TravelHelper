@@ -13,7 +13,7 @@
 
 
 <div class="sidebar">
-    <NavMenu Travel="travel" NextPointClicked="OnNextPointClickedAsync" ScheduleSelected="(date) => OnScheduleSelectedAsync((DateTime)date)" EditDayClicked="OnEditDayClicked" />
+    <NavMenu Travel="travel" NextPointClicked="OnNextPointClickedAsync" ScheduleSelected="(date) => OnScheduleSelectedAsync((DateTime)date)" EditDayClicked="OnEditDayClicked" NewTravelClicked="OnNewTravelClicked" />
 </div>
 
 <div class="main">
@@ -171,6 +171,11 @@
         NavigationManager.NavigateTo($"/EditSchedule/{travel.Id}/{currentSchedule.Id}");
     }
 
+
+    private void OnNewTravelClicked()
+    {
+        NavigationManager.NavigateTo($"/NewTravel");
+    }
 
 
 
