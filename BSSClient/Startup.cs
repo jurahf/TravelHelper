@@ -53,7 +53,7 @@ namespace BSSClient
             string connectionString = Configuration.GetConnectionString("ProdConnection");
 #endif
 
-            services.AddDbContext<TravelHelperDatabaseContext>(options => options.UseSqlServer(connectionString));
+            services.AddDbContext<TravelHelperDatabaseContext>(options => options.UseNpgsql(connectionString));
 
             services.AddRazorPages();
             services.AddServerSideBlazor();

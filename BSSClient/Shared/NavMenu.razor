@@ -1,4 +1,10 @@
-﻿@using CoreImplementation.Model;
+﻿@using System.Security.Claims
+@using Microsoft.AspNetCore.Http
+@using CoreImplementation.ServiceInterfaces;
+@using CoreImplementation.Model;
+
+@inject IHttpContextAccessor httpContextAccessor
+@inject IUserService userService
 
 
 <div class="top-row pl-4 navbar navbar-dark">
@@ -26,7 +32,7 @@
                 {
                     <NavLink class="dropdown-item" href="" @onclick="() => OnSelectTravelClicked(innerTravel)">
                         <span>@innerTravel.Name</span>
-                    </NavLink> 
+                    </NavLink>
                 }
             </div>
         </li>
@@ -62,7 +68,10 @@
                 </NavLink>
             </li>
 
-            <!-- TODO: тут вообще-то надо не поналичию путешествия, а по авторизации показывать -->
+        }
+
+        @if (!string.IsNullOrEmpty(user?.Email))
+        {
             <li class="nav-item px-3">
                 <NavLink class="nav-link" href="" Match="NavLinkMatch.All" @onclick="OnNewTravelClicked">
                     <span class="oi oi-plus" aria-hidden="true"></span> Новое путешествие
@@ -88,27 +97,28 @@
 
 @code {
 
-        [Parameter]
-        public List<VMTravel> AllTravels { get; set; }
+    [Parameter]
+    public List<VMTravel> AllTravels { get; set; }
 
-        [Parameter]
-        public VMTravel SelectedTravel { get; set; }
+    [Parameter]
+    public VMTravel SelectedTravel { get; set; }
 
-        [Parameter]
-        public EventCallback NextPointClicked { get; set;}
+    [Parameter]
+    public EventCallback NextPointClicked { get; set; }
 
-        [Parameter]
-        public EventCallback<DateTime> ScheduleSelected { get; set; }
+    [Parameter]
+    public EventCallback<DateTime> ScheduleSelected { get; set; }
 
-        [Parameter]
-        public EventCallback EditDayClicked { get; set;}
+    [Parameter]
+    public EventCallback EditDayClicked { get; set; }
 
-        [Parameter]
-        public EventCallback NewTravelClicked { get; set; }
+    [Parameter]
+    public EventCallback NewTravelClicked { get; set; }
 
-        [Parameter]
-        public EventCallback<VMTravel> SelectTravelClicked { get; set; }
+    [Parameter]
+    public EventCallback<VMTravel> SelectTravelClicked { get; set; }
 
+    private VMUser user;
 
     private bool collapseNavMenu = true;
 
@@ -122,6 +132,16 @@
 
     protected override Task OnInitializedAsync()
     {
+        try
+        {
+            var principal = httpContextAccessor.HttpContext.User;
+
+            user = userService.ExtractUserData(principal);
+        }
+        catch
+        {
+        }
+
         return base.OnInitializedAsync();
     }
 
