@@ -1,34 +1,31 @@
-﻿--- Пользователь
-SET IDENTITY_INSERT UserSet ON;
-insert into UserSet
-(Id, Login, UserSettings_Id)
+﻿
+--- Пользователь
+insert into "UserSet"
+("Id", "Login", "UserSettingsId")
 values
-(1, 'TestUser', null)
-SET IDENTITY_INSERT UserSet OFF;
+(1, 'TestUser', null);
 
 
 
 --- Путешествие
-SET IDENTITY_INSERT TravelSet ON;
-insert into TravelSet
-(id, Name, StartDate, EndDate, User_id, City_id)
+insert into "TravelSet"
+("Id", "Name", "StartDate", "EndDate", "CurrentDate", "UserId", "CityId")
 values
-(1, 'В Казань на выходные', '2018-09-22', '2018-09-23', 1, (select id from CitySet where Name = 'Казань'))
-SET IDENTITY_INSERT TravelSet OFF;
+(1, 'В Казань на выходные', '2021-06-01', '2021-06-02', '2021-06-01', 1, (select "Id" from "CitySet" where "Name" = 'Казань'))
+;
 
 
 
 --- Настройки пользователя
-SET IDENTITY_INSERT UserSettingsSet ON;
-insert into UserSettingsSet
-(id, SelectedTravelId)
+insert into "UserSettingsSet"
+("Id", "SelectedTravelId")
 values
 (1, 1)
-SET IDENTITY_INSERT UserSettingsSet OFF;
+;
 
-update UserSet
-set UserSettings_id = 1
-where ID = 1
+update "UserSet"
+set "UserSettingsId" = 1
+where "Id" = 1;
 
 
 

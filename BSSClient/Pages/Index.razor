@@ -156,11 +156,11 @@
             if (currentSchedule == null)
                 currentSchedule = travel.Schedules.FirstOrDefault();
 
-            int currentPoint = currentSchedule.TempPoint;
+            int currentPoint = currentSchedule?.TempPoint ?? 0;
 
 
             // вызываем инициализацию карты: массив точек, стартовый город, id контейнера карты, выбранная дата, выбранная точка
-            await JS.InvokeVoidAsync("getGeolocationAndInitMap", mapPoints.OrderBy(x => x.Order), mapCity, "map", currentSchedule.Date, currentPoint);
+            await JS.InvokeVoidAsync("getGeolocationAndInitMap", mapPoints.OrderBy(x => x.Order), mapCity, "map", currentSchedule?.Date ?? DateTime.Today, currentPoint);
         }
         else
         {
