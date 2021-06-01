@@ -13,7 +13,14 @@
 
 
 <div class="sidebar">
-    <NavMenu Travel="travel" NextPointClicked="OnNextPointClickedAsync" ScheduleSelected="(date) => OnScheduleSelectedAsync((DateTime)date)" EditDayClicked="OnEditDayClicked" NewTravelClicked="OnNewTravelClicked" />
+    <NavMenu 
+             AllTravels="travelList"
+             SelectedTravel="travel" 
+             NextPointClicked="OnNextPointClickedAsync" 
+             ScheduleSelected="(date) => OnScheduleSelectedAsync((DateTime)date)" 
+             EditDayClicked="OnEditDayClicked" 
+             NewTravelClicked="OnNewTravelClicked"
+             SelectTravelClicked="(travel) => OnSelectTravelClicked((VMTravel)travel)"/>
 </div>
 
 <div class="main">
@@ -27,7 +34,9 @@
 
 @code {
 
+    private VMUser user;
     private VMTravel travel;
+    private List<VMTravel> travelList = new List<VMTravel>();
 
 
     protected override void OnInitialized()
@@ -45,13 +54,13 @@
 
     private void GetAndFillUserData(ClaimsPrincipal principal)
     {
-        VMUser user = userService.ExtractUserData(principal);
+        user = userService.ExtractUserData(principal);
 
         if (user == null)
             return;
 
 
-        List<VMTravel> travelList = travelService.GetTravelsList(user);
+        travelList = travelService.GetTravelsList(user);
 
         if (travelList == null || !travelList.Any())
         {
@@ -175,6 +184,13 @@
     private void OnNewTravelClicked()
     {
         NavigationManager.NavigateTo($"/NewTravel");
+    }
+
+
+    private void OnSelectTravelClicked(VMTravel travel)
+    {
+        travelService.SelectTravel(user, travel.Id);
+        NavigationManager.NavigateTo("/", forceLoad: true);
     }
 
 

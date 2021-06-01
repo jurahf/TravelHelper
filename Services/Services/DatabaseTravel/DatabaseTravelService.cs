@@ -16,6 +16,7 @@ namespace Services.Services.DatabaseTravel
     {
         private readonly TravelHelperDatabaseContext data;
         private readonly IAddressesService addressesService;
+        private const string Motherland = "Россия";
 
         public DatabaseTravelService(TravelHelperDatabaseContext data, IAddressesService addressesService)
         {
@@ -28,6 +29,20 @@ namespace Services.Services.DatabaseTravel
             return data.UserSet
                 .Fetch()
                 .FirstOrDefault(u => u.Login.ToLower() == user.Email.ToLower());
+        }
+
+        private CitySet GetCityFromDb(int cityId)
+        {
+            return data.CitySet
+                .Fetch()
+                .FirstOrDefault(c => c.Id == cityId);
+        }
+
+        private CategorySet GetCategoryFromDb(int categoryId)
+        {
+            return data.CategorySet
+                .Fetch()
+                .FirstOrDefault(c => c.Id == categoryId);
         }
 
         private NaviAddressInfoSet GetAddressInfoFromDb(VMAddressInfo addressInfo)
@@ -207,33 +222,11 @@ namespace Services.Services.DatabaseTravel
             return await data.CitySet
                 .Fetch()
                 .Where(x => x.Name.StartsWith(queryString))
-                .OrderBy(x => x.Country == "Россия" ? 0 : 1)
+                .OrderBy(x => x.Country == Motherland ? 0 : 1)
                 .Take(limit)
                 .Select(x => x.ConvertToVm())
                 .ToListAsync();
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         public int SelectTravel(VMUser user, int id)
         {
@@ -244,77 +237,71 @@ namespace Services.Services.DatabaseTravel
             else
             {
                 if (userFromDb.UserSettings == null)
+                {
                     userFromDb.UserSettings = new UserSettingsSet();
-                userFromDb.UserSettings.SelectedTravelId = id;
+                    userFromDb.UserSettings.SelectedTravelId = id;
+                    data.UserSettingsSet.Add(userFromDb.UserSettings);
+                }
+                else
+                {
+                    userFromDb.UserSettings.SelectedTravelId = id;
+                    data.UserSettingsSet.Update(userFromDb.UserSettings);
+                }
 
-                data.UserSettingsSet.Add(userFromDb.UserSettings);
+                data.SaveChanges();
             }
 
             return userFromDb.UserSettings.SelectedTravelId.Value;
         }
 
 
-        public PreSaveTravelResult PreSaveTravel(PreSaveTravelArgs preSaveArgs)
+        public VMTravel GenerateAndSaveTravel(GenerateTravelArgs args)
         {
-            PreSaveTravelResult result = new PreSaveTravelResult();
+            if (args?.User == null)
+                throw new ArgumentException("Пользователь не задан");
 
-            if (string.IsNullOrEmpty(preSaveArgs?.UserLogin))
+            if (args?.City == null)
+                throw new ArgumentException("Город не задан");
+
+            UserSet dbUser = GetUserFromDb(args.User);
+            if (dbUser == null)
+                throw new ArgumentException("Пользователь не найден");
+
+            CitySet dbCity = GetCityFromDb(args.City.Id);
+            if (dbCity == null)
+                throw new ArgumentException("Город не найден");
+
+            if (args.StartDate > args.EndDate)
+                throw new ArgumentException("Дата конца путешествия не может быть меньше даты начала");
+
+            List<CategorySet> dbCategories = args.Categories
+                .Select(x => GetCategoryFromDb(x.Id))
+                .Where(x => x != null)
+                .ToList();
+
+            TravelSet travel = new TravelSet()
             {
-                result.Valid = false;
-                result.ErrorMessage = "Данные отсутствуют.";
-                return result;
-            }
+                User = dbUser,
+                City = dbCity,
+                StartDate = args.StartDate,
+                EndDate = args.EndDate,
+                CurrentDate = args.StartDate,
+                Name = $"{dbCity.Name} с {args.StartDate:dd.MM.yyyy}",
+            };
 
-            try
-            {
-                ScheduleCreator helper = new ScheduleCreator(data, addressesService);
-                var parsed = helper.ValidateAndParse(preSaveArgs);
+            travel.TravelCategory = dbCategories.Select(x => new TravelCategory() { Categories = x, TravelCategoryCategory = travel }).ToList();
 
-                if (parsed.Result.Valid)
-                {
-                    parsed.Result.Schedules = helper.CreateShedules(parsed).Select(x => x.ConvertToVm()).ToList();
-                }
+            ScheduleCreator creator = new ScheduleCreator(data, addressesService);
+            travel.ScheduleSet = creator.CreateShedules(args, travel);
 
-                return parsed.Result;
-            }
-            catch (Exception ex)
-            {
-                result.Valid = false;
-                result.ErrorMessage = "Ошибка при обработке запроса. Попробуйте повторить попытку позже.";
-                return result;
-            }
+            data.TravelCategory.AddRange(travel.TravelCategory);
+            //data.ScheduleSet.AddRange(travel.ScheduleSet);
+            data.TravelSet.Add(travel);
+            data.SaveChanges();
+
+            return travel.ConvertToVm();
         }
 
-        public SaveTravelResult SaveTravel(SaveTravelArgs saveArgs)
-        {
-            SaveTravelResult result = new SaveTravelResult();
-
-            if (string.IsNullOrEmpty(saveArgs?.UserLogin))
-            {
-                result.Valid = false;
-                result.ErrorMessage = "Данные отсутствуют.";
-                return result;
-            }
-
-            try
-            {
-                TravelFromArgsCreator helper = new TravelFromArgsCreator(data);
-                var parsed = helper.ValidateAndParse(saveArgs);
-
-                if (parsed.Result.Valid)
-                {
-                    helper.SaveTravel(parsed);
-                }
-
-                return parsed.Result;
-            }
-            catch (Exception ex)
-            {
-                result.Valid = false;
-                result.ErrorMessage = "Ошибка при обработке запроса. Попробуйте повторить попытку позже.";
-                return result;
-            }
-        }
 
 
 

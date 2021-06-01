@@ -32,20 +32,8 @@ namespace CoreImplementation.ServiceInterfaces
 
         Task<List<VMCity>> SearchCitiesAsync(string queryString, int limit);
 
-
-
-
-
         int SelectTravel(VMUser user, int id);
 
-        /// <summary>
-        /// Создаются сущности, но не сохраняются. Здесь и генерируется расписание, а потом предлагается его отредактировать и сохранить
-        /// </summary>
-        PreSaveTravelResult PreSaveTravel(PreSaveTravelArgs preSaveArgs);
-
-        /// <summary>
-        /// Сущности должны сохраниться
-        /// </summary>
-        SaveTravelResult SaveTravel(SaveTravelArgs saveArgs);
+        VMTravel GenerateAndSaveTravel(GenerateTravelArgs args);
     }
 }

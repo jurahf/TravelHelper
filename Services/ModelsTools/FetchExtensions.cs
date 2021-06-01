@@ -40,6 +40,13 @@ namespace Services.ModelsTools
             return city;
         }
 
+        public static IQueryable<CategorySet> Fetch(this DbSet<CategorySet> category)
+        {
+            return category;
+        }
+
+
+
 
     }
 }

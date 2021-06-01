@@ -1,47 +1,120 @@
 ﻿@page "/NewTravel"
 
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Http
 @using Blazored.Typeahead
+@using CoreImplementation.Args
 @using CoreImplementation.Model
 @using CoreImplementation.ServiceInterfaces
 
+
+@inject IHttpContextAccessor httpContextAccessor
+@inject NavigationManager navigationManager
 @inject ITravelService travelService
+@inject IUserService userService
 
 
 <div class="main">
+    <div class="container">
 
-    <div class="row">
-        <div class="col col-12">
-            <h3>NewTravel</h3>
+        <div class="row">
+            <div class="col col-12">
+                <h3>Новое путешествие</h3>
+            </div>
         </div>
-    </div>
 
 
-    <div class="row">
-        <div class="col col-4">
-            <BlazoredTypeahead SearchMethod="SearchCities" @bind-Value="selectedCity">
-                <SelectedTemplate>
-                    @context.Name
-                </SelectedTemplate>
-                <ResultTemplate>
-                    @context.Name (@context.Country)
-                </ResultTemplate>
-            </BlazoredTypeahead>
+        <div class="row">
+            <div class="col col-4">
+                <h6>Город</h6>
+                <BlazoredTypeahead SearchMethod="SearchCities" @bind-Value="selectedCity">
+                    <SelectedTemplate>
+                        @context.Name
+                    </SelectedTemplate>
+                    <ResultTemplate>
+                        @context.Name (@context.Country)
+                    </ResultTemplate>
+                </BlazoredTypeahead>
+            </div>
         </div>
-    </div>
 
 
+        <div class="row">
+            <div class="col col-4">
+                <h6>Выберите категории мест, которые хотите посетить</h6>
 
-    <div class="row">
-        <div class="col col-12">
-            TODO:
-            выбор города - автокомплит
-            выбор категорий
-            ввод дат
-            составление и открытие предварительного расписания (по дням) на редактирование
-            редактирование и сохранение окончательного варианта
+                <div class="accordion" id="accordion">
+
+                    @foreach (var parent in allCategories.Where(x => x.Parent == null).OrderBy(x => x.Name))
+                    {
+                        <div class="card">
+                            <div class="card-header" id="card-@(parent.Id)">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse-@(parent.Id)" aria-expanded="false" aria-controls="collapse-@(parent.Id)">
+                                        @parent.Name
+                                    </button>
+                                </h2>
+                            </div>
+
+                            <div id="collapse-@(parent.Id)" class="collapse" aria-labelledby="card-@(parent.Id)" data-parent="#accordion">
+                                <div class="card-body">
+
+                                    <table class="table table-hover">
+                                        <tbody>
+                                            @foreach (var child in parent.Childs)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="checkbox" value="" id="checkbox-@(child.Id)" @onchange="e => CategorySelectionChanged(child, (bool)e.Value)">
+                                                        </div>
+                                                    </td>
+                                                    <td>@child.Name</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
         </div>
-    </div>
 
+
+        <EditForm Model="dates">
+            <div class="row">
+                <h6>Выберите даты путешествия</h6>
+
+                <div class="col col-4">
+                    <InputDate @bind-Value="dates.StartDate"></InputDate>
+                </div>
+                <div class="col col-4">
+                    <InputDate @bind-Value="dates.EndDate"></InputDate>
+                </div>
+            </div>
+        </EditForm>
+
+
+
+        <div class="row">
+            <div class="col col-12">
+                <button class="btn btn-light" @onclick="Cancel">Отмена</button>
+                <button class="btn btn-success" @onclick="Save">Создать</button>
+            </div>
+        </div>
+        <div class="row margin-top-2">
+            <div class="col offset-8 col-4 col-sm-4 offset-sm-8 col-lg-4 offset-lg-8">
+                <h5 class="text-success">@successMessage</h5>
+                <h5 class="text-danger">@errorMessage</h5>
+            </div>
+        </div>
+
+
+    </div>
 </div>
 
 
@@ -51,6 +124,21 @@
     private const int limit = 10;
 
     private VMCity selectedCity { get; set; }
+    private List<VMCategory> allCategories { get; set; }
+    private List<VMCategory> selectedCategories { get; set; }
+    private TravelDates dates { get; set; } = new TravelDates();
+
+    private string successMessage = "";
+    private string errorMessage = "";
+
+
+    protected override void OnInitialized()
+    {
+        allCategories = travelService.GetAllCategories();
+        selectedCategories = new List<VMCategory>();
+
+        base.OnInitialized();
+    }
 
 
 
@@ -58,5 +146,68 @@
     {
         return await travelService.SearchCitiesAsync(searchText, limit);
     }
+
+
+
+    private class TravelDates
+    {
+        public DateTime StartDate { get; set; } = DateTime.Today;
+        public DateTime EndDate { get; set; } = DateTime.Today.AddDays(1);
+    }
+
+
+    private void CategorySelectionChanged(VMCategory category, bool selected)
+    {
+        if (selected && !selectedCategories.Contains(category))
+            selectedCategories.Add(category);
+
+        if (!selected && selectedCategories.Contains(category))
+            selectedCategories.Remove(category);
+    }
+
+
+    private void Cancel()
+    {
+        navigationManager.NavigateTo("/");
+    }
+
+
+    private void Save()
+    {
+        successMessage = "";
+        errorMessage = "";
+
+        try
+        {
+            var principal = httpContextAccessor.HttpContext.User;
+
+            VMUser user = userService.ExtractUserData(principal);
+
+            if (user == null)
+                throw new Exception("Пользователь не найден");
+
+            GenerateTravelArgs args = new GenerateTravelArgs()
+            {
+                City = selectedCity,
+                StartDate = dates.StartDate,
+                EndDate = dates.EndDate,
+                User = user,
+                Categories = selectedCategories
+            };
+
+
+            var travel = travelService.GenerateAndSaveTravel(args);
+
+            successMessage = "Путешествие создано!";
+
+            travelService.SelectTravel(user, travel.Id);
+            navigationManager.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Ошибка при создании: {ex.Message}";
+        }
+    }
+
 
 }

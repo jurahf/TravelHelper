@@ -38,19 +38,6 @@ namespace Services.Services.MapBoxAddresses
             return data.NaviAddressInfoSet.FirstOrDefault(x => x.Id == id).ConvertToVm();
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
         public List<VMAddressInfo> SearchAddresses(AddressSearchArgs args)
         {
             int limit = args.limit ?? 100;
@@ -115,7 +102,7 @@ namespace Services.Services.MapBoxAddresses
         }
 
 
-        public List<NaviAddressInfoSet> SendAndParseGeocodingQuery(string query)
+        private List<NaviAddressInfoSet> SendAndParseGeocodingQuery(string query)
         {
             using (var client = CreateClient())
             {
